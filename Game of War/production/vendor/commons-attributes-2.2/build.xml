@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<project default="jar" name="commons-attributes-api" basedir=".">
+    <property name="defaulttargetdir" value="target">
+    </property>
+    <property name="libdir" value="target/lib">
+    </property>
+    <property name="classesdir" value="target/classes">
+    </property>
+    <property name="testclassesdir" value="target/test-classes">
+    </property>
+    <property name="testreportdir" value="target/test-reports">
+    </property>
+    <property name="distdir" value="dist">
+    </property>
+    <property name="javadocdir" value="dist/docs/api">
+    </property>
+    <property name="plugindir" value="plugin">
+    </property>
+    <property name="version" value="2.2">
+    </property>
+    <property name="final.name.api" value="commons-attributes-api-${version}">
+    </property>
+    <property name="final.name.compiler" value="commons-attributes-compiler-${version}">
+    </property>
+    <property name="final.name.plugin" value="commons-attributes-plugin-${version}">
+    </property>
+    <target name="init" description="o Initializes some properties">
+        <mkdir dir="${libdir}">
+        </mkdir>
+        <condition property="noget">
+            <equals arg2="only" arg1="${build.sysclasspath}">
+            </equals>
+        </condition>
+    </target>
+    <target name="compile" description="o Compile the code" depends="get-deps">
+        <mkdir dir="${classesdir}">
+        </mkdir>
+        <javac destdir="${classesdir}" deprecation="true" debug="true" optimize="false" excludes="**/package.html"
+            source="1.4" target="1.4">
+            <src>
+                <pathelement location="api/src/java">
+                </pathelement>
+                <pathelement location="compiler/src/java">
+                </pathelement>
+            </src>
+            <classpath>
+                <fileset dir="${libdir}">
+                    <include name="*.jar">
+                    </include>
+                </fileset>
+            </classpath>
+        </javac>
+        <copy todir="${classesdir}">
+            <fileset dir="api/src/java">
+                <include name="**/*.dtd">
+                </include>
+                <include name="**/*.properties">
+                </include>
+                <include name="**/*.xinfo">
+                </include>
+                <include name="**/*.xtype">
+                </include>
+                <include name="**/*.xprofile">
+                </include>
+                <include name="**/*.xconfig">
+                </include>
+                <include name="**/*.xml">
+                </include>
+                <include name="**/*.xservice">
+                </include>
+            </fileset>
+        </copy>
+        <copy todir="${classesdir}">
+            <fileset dir="." includes="LICENSE.txt,NOTICE.txt"/>
+        </copy>
+        <copy todir="${classesdir}">
+            <fileset dir=".">
+                <include name="block.xml">
+                </include>
+            </fileset>
+        </copy>
+    </target>
+    <target name="jar" description="o Create the jar" depends="compile">
+        <jar jarfile="target/${final.name.api}.jar" includes="org/apache/commons/attributes/*,LICENSE.txt,NOTICE.txt,manifest.mf" basedir="${classesdir}" manifest="api/manifest.mf">
+        </jar>
+        <jar jarfile="target/${final.name.compiler}.jar" excludes="org/apache/commons/attributes/*,manifest.mf" includes="**/*" basedir="${classesdir}" manifest="compiler/manifest.mf">
+        </jar>
+        <jar jarfile="target/${final.name.plugin}.jar" includes="**/*" excludes="manifest.mf" basedir="${plugindir}" manifest="${plugindir}/manifest.mf">
+        </jar>
+    </target>
+    <target name="clean" description="o Clean up the generated directories">
+        <delete dir="${defaulttargetdir}">
+        </delete>
+        <delete dir="${distdir}">
+        </delete>
+    </target>
+    <target name="dist" description="o Create a distribution" depends="jar, javadoc">
+        <mkdir dir="dist">
+        </mkdir>
+        <copy todir="dist">
+            <fileset dir="${defaulttargetdir}" includes="*.jar">
+            </fileset>
+            <fileset dir="${basedir}" includes="LICENSE*, README*">
+            </fileset>
+        </copy>
+    </target>
+    <target name="javadoc" description="o Generate javadoc" depends="jar">
+        <mkdir dir="${javadocdir}">
+        </mkdir>
+        <tstamp>
+            <format pattern="2003-yyyy" property="year">
+            </format>
+        </tstamp>
+        <property name="copyright" value="Copyright &amp;copy;  Apache Software Foundation. All Rights Reserved.">
+        </property>
+        <property name="title" value="Jakarta Commons Attribute Compiler API ${version} API">
+        </property>
+        <javadoc use="true" private="true" destdir="${javadocdir}" author="true" version="true" sourcepath="api/src/java" packagenames="org.apache.commons.attributes.*">
+            <classpath>
+                <fileset dir="${libdir}">
+                    <include name="*.jar">
+                    </include>
+                </fileset>
+                <pathelement location="target/${final.name}.jar">
+                </pathelement>
+            </classpath>
+        </javadoc>
+    </target>
+    <target name="get-deps" unless="noget" depends="init">
+        <get dest="${libdir}/ant-1.5.jar" usetimestamp="true" ignoreerrors="true" src="http://www.ibiblio.org/maven/ant/jars/ant-1.5.jar">
+        </get>
+        <get dest="${libdir}/qdox-1.5.jar" usetimestamp="true" ignoreerrors="true" src="http://www.ibiblio.org/maven/qdox/jars/qdox-1.5.jar">
+        </get>
+        <get dest="${libdir}/junit-3.8.1.jar" usetimestamp="true" ignoreerrors="true" src="http://www.ibiblio.org/maven/junit/jars/junit-3.8.1.jar">
+        </get>
+        <get dest="${libdir}/ant-optional-1.5.jar" usetimestamp="true" ignoreerrors="true" src="http://www.ibiblio.org/maven/ant/jars/ant-optional-1.5.jar">
+        </get>
+        <jar destfile="${libdir}/javadoc-1.4.jar">
+            <zipfileset src="${java.home}/../lib/tools.jar" includes="com/sun/javadoc/**,com/sun/tools/doclets/Taglet.class"/>
+        </jar>
+    </target>
+    <target name="install-maven">
+        <get dest="${user.home}/maven-install-latest.jar" usetimestamp="true" src="${repo}/maven/maven-install-latest.jar">
+        </get>
+        <unjar dest="${maven.home}" src="${user.home}/maven-install-latest.jar">
+        </unjar>
+    </target>
+</project>

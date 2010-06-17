@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Changelog</title>
+    </properties>
+    
+    <body>
+        <section name="2006-06-29">
+            <ul>
+                <li>
+                    <p>
+                        Fixed a potential bug in RuntimeAttributeRepository - the seal() method and the
+                        checkSealed() method weren't synchronized properly.
+                    </p>
+                </li>
+            </ul>
+        </section>
+        
+        <section name="2005-10-26">
+            <ul>
+                <li>
+                    <p>
+                        Added support for attribute packages (<a href="http://issues.apache.org/jira/browse/ATTRIBUTES-4">Issue ATTRIBUTES-4</a>):
+                    </p>
+                    
+                    <blockquote>
+                        <p>When the ant:attribute-compiler is used in ant, there is no way for maven to
+                            pass a value for the attributepackages property.</p>
+                        
+                        <p>It would be nice if it were possible to add a property in the project.properties
+                            of the current project that specifies the attributepackages. E.g.</p>
+                        
+                        <source><![CDATA[project.properties:
+[...]
+org.apache.commons.attributes.packages=my.package
+[...]]></source>
+                        
+                        <p>which is then used in the maven plugin:</p>
+                        
+                        <source><![CDATA[[...]
+<ant:attribute-compiler inMaven="true" sourcepathref="maven.compile.src.set"
+    attributepackages="${org.apache.commons.attributes.packages}"
+    destdir="${maven.build.dir}/commons-attributes"/>
+[...]]]></source>
+                        
+                    </blockquote>
+                    <p>And that is exactly what was implemented.</p>
+                </li>
+            </ul>
+        </section>
+        
+        
+        <section name="2004-09-11">
+            <ul>
+                <li>
+                    <p>
+                        <span style="color: #a00000; font-weight:bold;">BUG:</span> Checks for Target specifications would go unnoticed for attributes
+                        attached to fields, methods and constructors. The following code would
+                        <b>not</b> result in an <a href="api/org/apache/commons/attributes/InvalidAttributeTargetError.html">InvalidAttributeTargetError</a>.
+                        The bug is fixed in current CVS.
+                    </p>
+                    
+                    <source><![CDATA[/**
+ * @@Target(Target.METHOD) 
+ */
+public class AttributeWithTargetMethod {}
+
+public class FieldAttributes1 {
+    /**
+     * @@AttributeWithTargetMethod() 
+     */
+    private Object o;
+}]]></source>
+                </li>
+            </ul>
+        </section>
+        
+        <section name="2004-09-10">
+            <ul>
+                <li>
+                    <p>
+                        Ported the code to qDox. XJavadoc had an annoying bug where it would silently rewrite the value of
+                        a JavaDoc tag, making the resulting expression unparseable by the attribute compiler.
+                    </p>
+                </li>
+            </ul>
+        </section>
+        
+        <section name="2004-08-27">
+            <ul>
+                <li>
+                    <p>
+                        <a href="api/org/apache/commons/attributes/CircularDependencyError.html">CircularDependencyError</a> 
+                        now expects a list of Class instances instead of a list of any object type. The old behavior is still
+                        supported and will remain so.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <a href="api/org/apache/commons/attributes/CircularDependencyError.html">CircularDependencyError</a> 
+                        now shows the full circle of dependencies.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        Added a <a href="api/org/apache/commons/attributes/ParameterIndexOutOfBoundsException.html">ParameterIndexOutOfBoundsException</a> to be thrown when
+                        the client tries to retrieve attributes from a parameter of a
+                        constructor or method and the parameter index is out of bounds.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        Added a <a href="api/org/apache/commons/attributes/SealedAttributeException.html">SealedAttributeException</a> 
+                        to be thrown when an attempt to
+                        modify a sealed attribute is made. The exception is a subclass
+                        of the IllegalStateException that used to be thrown.
+                    </p>
+                </li>
+            </ul>
+        </section>
+        
+        <section name="2004-08-26">
+            <ul>
+                <li>
+                    <p>
+                        Added <source>getCause()</source> to applicable Throwables, making them
+                        compliant with the standard Java2 1.4 nested throwable spec.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        CVS version number is now 2.2.
+                    </p>
+                </li>
+            </ul>
+        </section>
+        
+        <section name="2004-07-24">
+            <ul>
+                <li>
+                    <p>
+                        Made the Maven plugin only run the attribute compiler if
+                        a project property named org.apache.commons.attributes.enabled
+                        was set to 'true'. Likewise, the attribute indexer will only run if
+                        a project property named org.apache.commons.attributes.index.enabled
+                        is set to 'true'. This to keep these two tasks to be run on
+                        every single project being built.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        Created a Maven demo.
+                    </p>
+                </li>
+            </ul>
+        </section>
+        
+        
+        <section name="2004-07-06">
+            <ul>
+                <li>
+                    <p>
+                        <span style="color: #a00000; font-weight:bold;">BUG:</span> 
+                        Fixed bug in the compiler that made it impossible to add
+                        attributes to a method that took a parameter whose type 
+                        was an inner class. The bug would manifest itself thus:
+                    </p>
+                    
+                    <source><![CDATA[public class Outer {
+    public static class Inner {}
+
+    /**
+     * @@SomeAttribute()
+     */
+    public void method (Inner inner) {}
+}
+
+...
+
+Method method = 
+    Outer.class.getMethod(
+        "method", 
+        new Class[]{ Outer.Inner.class });
+
+Collection methodAttributes = 
+    Attributes.getAttributes (method);
+
+// Prints 0, not 1
+System.out.println (methodAttributes.size ()); ]]></source>
+                    
+                    <p>The bug is fixed in current CVS.</p>
+                </li>
+                <li>
+                    <p>
+                        Bumped version number to 2.1. The rationale for this is as follows: Many people had told me that
+                        a 2.0 release was required in order for them to get on with their own releases
+                        that could only depend on released versions of libraries. Since I could not move Attributes
+                        through the promotion and release process fast enough, and since the existing code appeared to
+                        work for people, I recommended that the jars simply be renamed from -2.0alpha to -2.0. After all,
+                        it was my intent to release the current CVS unchanged as 2.0.
+                        Then the bug above popped up and something had to be done. If I release the fixed version
+                        as 2.0, we have two "versions" of 2.0 - the one with the bug and the one without - clearly
+                        an undesirable state. Therefore the version number went from 2.0alpha to 2.1alpha.
+                    </p>
+                </li>
+            </ul>
+        </section>
+        
+        <section name="2004-05-04">
+            <ul>
+                <li>
+                    <p>
+                        Added a Taglet for Javadoc 1.4 and later.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        Added a the attribute-validator task.
+                    </p>
+                </li>
+            </ul>
+        </section>
+        
+        
+        <section name="2004-03-21">
+            
+            <ul>
+                <li>
+                    <p>
+                        Fixed bug where attributes would be inherited from
+                        private methods. Since the methods themselves aren't
+                        inherited, the attributes shouldn't be either.
+                    </p>
+                </li>
+            </ul>
+            
+        </section>
+        
+        <section name="2004-03-19">
+            
+            <ul>
+                <li>
+                    <p>
+                        Changed the way AttributeIndexes are implemented. Previously,
+                        any attributes that were both Indexed and Inheritable would
+                        not work as expected - the index would not find the class that
+                        had inherited the indexed attribute, only the class declaring it.
+                    </p>
+                </li>
+            </ul>
+            
+        </section>
+        
+    </body>
+    
+</document>

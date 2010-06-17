@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+=
+= Copyright 2003-2006 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<project>
+    <pomVersion>3</pomVersion>
+    <name>Attributes</name>
+    <groupId>commons-attributes</groupId>
+    <artifactId>commons-attributes</artifactId>
+    
+    <logo>/images/attributes-logo-white.png</logo>
+    
+    <organization>
+        <name>The Apache Software Foundation</name>
+        <url>http://jakarta.apache.org/</url>
+        <logo>http://jakarta.apache.org/images/original-jakarta-logo.gif</logo>
+    </organization>
+    
+    <currentVersion>2.2</currentVersion>
+    <inceptionYear>2003</inceptionYear>
+    <shortDescription>Commons Attributes</shortDescription>
+    <description>A package for handling runtime information about types (including Java classes)</description>
+    <url>http://jakarta.apache.org/commons/${pom.artifactId.substring(8)}/</url>
+    
+    <developers>
+        <developer>
+            <name>Leo Sutic</name>
+            <id>leosutic</id>
+            <email>leosutic@apache.org</email>
+            <organization>-</organization>
+            <roles>
+                <role>All of them.</role>
+            </roles>
+        </developer>
+    </developers>
+    
+    <contributors>
+    </contributors>
+    
+    
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <gumpRepositoryId>jakarta</gumpRepositoryId>
+    
+    <issueTrackingUrl>http://issues.apache.org/jira/browse/${pom.artifactId.substring(8).toUpperCase()}</issueTrackingUrl>
+    
+    <siteAddress>people.apache.org</siteAddress>
+    <siteDirectory>/www/jakarta.apache.org/commons/${pom.artifactId.substring(8)}/</siteDirectory>
+    <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-commons/${pom.artifactId.substring(8)}/</distributionDirectory>
+    
+    <repository>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk</connection>
+        <url>http://svn.apache.org/repos/asf/jakarta/commons/proper/${pom.artifactId.substring(8)}/trunk/</url>
+    </repository>
+    
+    <mailingLists>
+        <mailingList>
+            <name>Commons Dev List</name>
+            <subscribe>commons-dev-subscribe@jakarta.apache.org</subscribe>
+            <unsubscribe>commons-dev-unsubscribe@jakarta.apache.org</unsubscribe>
+            <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=commons-dev@jakarta.apache.org</archive>
+        </mailingList>
+        <mailingList>
+            <name>Commons User List</name>
+            <subscribe>commons-user-subscribe@jakarta.apache.org</subscribe>
+            <unsubscribe>commons-user-unsubscribe@jakarta.apache.org</unsubscribe>
+            <archive>http://mail-archives.apache.org/eyebrowse/SummarizeList?listName=commons-user@jakarta.apache.org</archive>
+        </mailingList>
+    </mailingLists>    
+    
+    <dependencies>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-xdoc-plugin</artifactId>
+            <version>1.9.2</version>
+            <url>http://maven.apache.org/maven-1.x/reference/plugins/xdoc/</url>
+            <type>plugin</type>
+            <properties>
+                <comment>
+                    &lt;strong&gt;Site Only&lt;/strong&gt; - v1.9.2 (minimum)
+                </comment>
+                <optional>true</optional>
+            </properties>
+        </dependency>
+    </dependencies>
+  
+    <build>
+        
+        <nagEmailAddress>commons-dev@jakarta.apache.org</nagEmailAddress>
+        <sourceDirectory>${basedir}/src/java</sourceDirectory>
+        <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
+        <integrationUnitTestSourceDirectory/>
+        <aspectSourceDirectory/>
+        
+        <unitTest>
+            <includes>
+                <include>**/*TestCase*</include>
+            </includes>
+            <excludes>
+                <exclude>**/Abstract*</exclude>
+            </excludes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/src/test</directory>
+                    <includes> 
+                        <include>**/*.dtd</include>
+                        <include>**/*.properties</include>
+                        <include>**/*.xinfo</include>
+                        <include>**/*.xtype</include>
+                        <include>**/*.xprofile</include>
+                        <include>**/*.xconfig</include>
+                        <include>**/*.xml</include>
+                        <include>**/*.xservice</include>
+                        <include>**/*.mf</include>
+                        <include>**/*.jar</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>${maven.conf.dir}</directory>
+                    <includes> 
+                        <include>**/*.properties</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>${basedir}/src/test/conf</directory>
+                    <includes> 
+                        <include>**/*</include>
+                    </includes>
+                </resource>
+            </resources>
+        </unitTest>
+        
+        <resources>
+            <resource>
+                <directory>${basedir}/src/java</directory>
+                <includes>
+                    <include>**/*.dtd</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xinfo</include>
+                    <include>**/*.xtype</include>
+                    <include>**/*.xprofile</include>
+                    <include>**/*.xconfig</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.xservice</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/../</directory>
+                <includes>
+                    <include>LICENSE.txt</include>
+                    <include>NOTICE.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${maven.conf.dir}</directory>
+                <targetPath>BLOCK-INF</targetPath>
+                <includes>
+                    <include>block.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+    
+    <packageGroups>
+        <packageGroup>
+            <title>Runtime API</title>
+            <packages>org.apache.commons.attributes</packages>
+        </packageGroup>
+        <packageGroup>
+            <title>Compiler and Tools API</title>
+            <packages>org.apache.commons.attributes.validation</packages>
+        </packageGroup>
+    </packageGroups>
+    
+</project>

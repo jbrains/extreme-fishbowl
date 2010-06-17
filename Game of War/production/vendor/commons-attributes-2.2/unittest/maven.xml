@@ -1,0 +1,79 @@
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<project default="attributes:test" xmlns:maven="jelly:maven" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:util="jelly:util">
+    
+    <property file="${basedir}/../build.properties"/>
+    <property file="${basedir}/../project.properties"/>
+    <property file="project.properties"/>
+    <property name="maven.jar.manifest.extensions.add" value="true"/>
+    <property name="maven.checkstyle.format" value="avalon"/>
+    <property name="pom.organization.identifier" value="ASF"/>
+    <property name="pom.specificationVersion" value="1.0"/>
+    
+    <goal name="attributes:test" description="Compile and run unit tests.">
+        <taskdef resource="org/apache/commons/attributes/anttasks.properties">
+            <classpath>
+                <path refid="maven.dependency.classpath"/>
+            </classpath>
+        </taskdef>
+        
+        <!-- Set up the classloader tests -->
+        <attribute-compiler destDir="target/cl1/">
+            <fileset dir="src/cl1/" includes="**/*.java"/>
+        </attribute-compiler>
+        <attribute-compiler destDir="target/cl2/">
+            <fileset dir="src/cl2/" includes="**/*.java"/>
+        </attribute-compiler>
+        <javac destdir="target/cl1/"
+            debug="true"
+            deprecation="true">
+            <src> 
+                <pathelement path="target/cl1/"/>
+                <pathelement path="src/cl1/"/>
+                <pathelement path="src/java/"/>
+            </src>
+            <classpath>
+                <path refid="maven.dependency.classpath"/>
+                <pathelement path="target/cl1/"/>
+            </classpath>
+        </javac>
+        <javac destdir="target/cl2/"
+            classpath="target/cl2/"
+            debug="true"
+            deprecation="true">
+            <src> 
+                <pathelement path="target/cl2/"/>
+                <pathelement path="src/cl2/"/>
+                <pathelement path="src/java/"/>
+            </src>
+            <classpath>
+                <path refid="maven.dependency.classpath"/>
+                <pathelement path="target/cl1/"/>
+            </classpath>
+        </javac>
+        
+        <jar jarfile="target/cl2/cl2.jar">
+            <fileset dir="target/cl2/" includes="**/*.class"/>
+            <fileset dir="target/cl2/" includes="META-INF/**/*"/>
+        </jar>        
+        
+        <attribute-indexer jarFile="target/cl2/cl2.jar"/>
+        
+        <attainGoal name="jar:install-snapshot"/>
+    </goal>
+</project>

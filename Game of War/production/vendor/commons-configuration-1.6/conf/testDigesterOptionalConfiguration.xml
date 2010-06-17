@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- Configuration test file that demonstrates
+     optional configurations -->
+
+<configuration>
+  <properties fileName="test.properties"/>
+  <xml fileName="test.xml" optional="false"/>
+  <hierarchicalXml fileName="nonExistingHierarchicalXML1.xml" optional="true"/>
+  <properties fileName="nonExistingProperties1.properties" optional="yes"/>
+  <xml fileName="nonExistingXML1.xml" optional="true"/>
+  
+  <additional>
+    <properties fileName="nonExistingProperties2.properties" optional="yes"/>
+    <hierarchicalXml fileName="nonExistingHierarchicalXML2.xml" optional="true"/>
+    <xml fileName="nonExistingXML2.xml" optional="true"/>
+  </additional>
+</configuration>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- Configuration test file that demonstrates usage of ConfigurationXMLDocument -->
+
+<configuration>
+  <additional>
+    <hierarchicalXml fileName="testHierarchicalXMLConfiguration.xml" at="database"/>
+    <hierarchicalXml fileName="testDigesterConfigurationInclude1.xml" at="database.tables"/>
+    <hierarchicalXml fileName="testDigesterCreateObject.xml" at="database"/>
+  </additional>
+</configuration>

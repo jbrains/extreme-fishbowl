@@ -1,0 +1,85 @@
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<project default="help" xmlns:maven="jelly:maven" xmlns:j="jelly:core" xmlns:util="jelly:util">
+    
+    <property name="maven.jar.manifest.extensions.add" value="true"/>
+    <property name="maven.checkstyle.format" value="avalon"/>
+    <property name="pom.organization.identifier" value="ASF"/>
+    <property name="pom.specificationVersion" value="1.0"/>
+    
+    <property file="${basedir}/project.properties"/>
+    
+    <goal name="help">
+        <echo><![CDATA[
+-----------------------------------------------------------------------
+JAKARTA COMMONS ATTRIBUTES: Maven Demo
+-----------------------------------------------------------------------
+
+This is a small demo that shows how to...
+
+ + ...use attributes in your code
+
+ + ...declare the dependencies in the project.xml
+
+ + ...add the precompilation step to your build
+
+In order to run the demo, execute:
+
+    maven run
+
+]]></echo>
+    </goal>
+    
+    <goal name="install-plugin">
+        <get src="http://www.apache.org/dist/java-repository/commons-attributes/plugins/commons-attributes-plugin-2.2.jar"
+            dest="${maven.home}/plugins/commons-attributes-plugin-2.2.jar"/>
+    </goal>
+    
+    <goal name="run">
+        <available property="antPluginPresent" file="${maven.home}/plugins/commons-attributes-plugin-2.2.jar"/>
+        <fail unless="antPluginPresent"><![CDATA[
+Couldn't find the Commons-Attributes plugin at:
+
+    ${maven.home}/plugins/commons-attributes-plugin-2.2.jar
+
+Please install the plugin and try again. You can either manually 
+download the plugin from:
+
+    http://www.apache.org/dist/java-repository/commons-attributes/plugins/commons-attributes-plugin-2.2.jar
+
+and place it into your Maven plugins directory, or execute:
+
+    maven install-plugin
+
+which will do the download and installation for you.
+]]></fail>
+            <echo><![CDATA[
+-----------------------------------------------------------------------
+JAKARTA COMMONS ATTRIBUTES: Maven Demo
+-----------------------------------------------------------------------
+]]></echo>
+        <attainGoal name="java:compile"/>
+        <java classname="AttributeDemo">
+            <classpath>
+                <pathelement path="${basedir}/target/classes"/>
+                <path refid="maven.dependency.classpath"/>
+            </classpath>
+        </java>
+    </goal>
+    
+</project>

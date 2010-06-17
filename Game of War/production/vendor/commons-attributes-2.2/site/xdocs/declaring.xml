@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Reference - Declaring and Using</title>
+    </properties>
+    
+    <body>
+        <section name="What are Attributes?">
+            
+            <p>Attributes are value objects that can be added to language elements such as 
+                classes, methods and fields.</p>
+            
+            <subsection name="Value Objects">
+                
+                <p>What is a value object? Simply stated, a value object is an object that is 
+                    read-only, constant and can be replaced with another object of the same value
+                    without it making any difference. For example, instances of the class 
+                    <code>java.lang.Integer</code> are value objects. You can replace any instance
+                    of that class with any other instance, provided that they are equal. An 
+                    <code>java.io.Socket</code> is not a value object, as you can't replace an 
+                    instance of a socket with another - it corresponds to a real resource, in 
+                    this case a connection.</p>
+                
+                <p>You should therefore not allow your attribute classes to be mutable, and not 
+                    use Sockets or similar classes as attributes.</p>
+                
+            </subsection>
+        </section>
+        
+        <section name="How Are They Added?">
+            
+            <p>Let's look at the way attributes are added to the code. The general form of the 
+                attribute expression is (optional parts are in [brackets]):</p>
+            
+            <source><![CDATA[@@[target] ClassName ([constructor args] [named args])]]></source>
+            
+            <subsection name="target">
+                <p>This name indicates what sub-element the attribute is to be applied to. 
+                    Classes and fields have no sub-elements, but methods do. The sub-elements 
+                    of a method are (1) the arguments and (2) the return value. In order to 
+                    apply an element to a method argument, you let the target be <code>.argument name</code>. 
+                    For example:</p>
+                
+                <source><![CDATA[/**
+ * @@.arg1 MyAttribute()
+ */
+public Object myMethod (int arg1) { ... }]]></source>
+                
+                <p>Will attach MyAttribute to the first argument of the method - not to 
+                    the method itself. The attribute can be retrieved via 
+                    <code>Attributes.getParameterAttributes(Method,int)</code>.</p>
+                
+                <p>Adding an attribute to the return value is done by the reserved target 
+                    name <code>.return</code>:</p>
+                
+                <source><![CDATA[/**
+ * @@.return MyAttribute()
+ */
+public Object myMethod (int arg1) { ... }]]></source>
+                
+                <p>The attribute can then be retrieved via <code>Attributes.getReturnAttributes(Method)</code>.</p>
+            </subsection>
+            
+            
+            <subsection name="ClassName">
+                <p>This is the name of the attribute class. You can use a qualified or 
+                    unqualified name here - but if you use the unqualified name one of
+                    the following must be true:</p>
+                
+                <ul>
+                    <li>
+                        <p>
+                            The attribute class is in the same package as the class
+                            you are attaching it to. (Standard Java rules for when
+                            you need to import a class.)
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            You have an import statement that imports the attribute class.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            You have listed the package the attribute class is in in the attributePackages
+                            attribute of the attribute compiler in your build script. <a href="compiler.html">See
+                                here.</a>
+                        </p>
+                    </li>
+                </ul>
+                
+            </subsection>
+            
+            <subsection name="constructor args">
+                <p>
+                    This is simply a list of arguments to pass to the constructor when 
+                    instantiating the attribute class. For example, given an attribute:</p>
+                
+                <source><![CDATA[class MyAttribute {
+    private final String name;
+
+    public MyAttribute(String name) { this.name = name };
+
+    public String getName() { return name; }
+}]]></source>
+                
+                <p>You would specify the name by including it as a constructor argument:</p>
+                
+                <source><![CDATA[/**
+ * @@MyAttribute("this is a name")
+ */]]></source>
+                
+            </subsection>
+            
+            <subsection name="named arguments">
+                <p>Commons Attributes provides a simple way of having named arguments. 
+                    This is done by having setter metods in the attribute class. Adding a 
+                    field and two methods to the attribute class above we get:</p>
+                
+                <source><![CDATA[class MyAttribute {
+    private final String name;
+    private boolean optional = false;
+
+    public MyAttribute(String name) { this.name = name };
+
+    public String getName() { return name; }
+
+    public boolean isOptional { return optional; }
+
+    public void setOptional (boolean optional) { this.optional = optional; }
+}]]></source>
+                
+                <p>We can now set the <code>optional</code> field by using a named parameter:</p>
+                
+                <source><![CDATA[/**
+ * @@MyAttribute("this is a name", optional=true)
+ */]]></source>
+                
+                <p>The attribute compiler will pass any parameter up to the first one that is 
+                    on the form <code><i>name</i> = <i>expression</i></code> to the constructor. 
+                    For the remaining parameters, it will invoke a method named 
+                    <code>setName(expression)</code> on the attribute instance. 
+                    So for our example above, the following code will be generated:</p>
+                
+                <source><![CDATA[MyAttribute attr = new MyAttribute("this is a name");
+attr.setOptional(true);]]></source>
+                
+                <p>Named parameters are always optional.</p>
+                
+            </subsection>
+        </section>
+        
+        <section name="How are they Retrieved?">
+            
+            <p>You retrieve attributes by using the methods in the org.apache.commons.attributes.Attributes 
+                class. See the <a href="api/index.html">JavaDoc</a> for a description of methods in this class.</p>
+            
+        </section>
+        
+        <section name="How are Attributes Stored?">
+            
+            <p>
+                See the <a href="compiler.html">Compiling</a> section of the reference.
+            </p>
+            
+        </section>
+        
+        <section name="Gotchas and Other Questions">
+            <subsection name="What happens if I add the same attribute twice?">
+                
+                <p>Let's define the question via a use case. Suppose you have an attribute (MyAttribute), and you have a class MyClass:</p>
+                
+                <source><![CDATA[/**
+ * @@MyAttribute()
+ * @@MyAttribute()
+ */
+public class MyClass {}]]></source>
+                
+                <p>The question is now, will the collection returned by Attributes.getAttributes (MyClass.class) have one or 
+                    two elements? The answer is that it depends on the way MyAttribute handles equality. The attributes associated
+                    with a class, method or field always for a Set, meaning that there are no duplicates. So if MyAttribute is 
+                    implemented this way:</p>
+                
+                <source><![CDATA[public class MyAttribute {}]]></source>
+                
+                <p>Then you will get two elements, since each instance of MyAttribute is different from every other instance. 
+                    However, if MyAttribute is implemented like this:</p>
+                
+                <source><![CDATA[public class MyAttribute {
+    public int hashCode () { return 0; }
+    public boolean equals (Object o) { return o instanceof MyAttribute; }
+}]]></source>
+                
+                <p>That is, every instance of MyAttribute is equal to any other instance of the class, then you will only get
+                    one element in the collection.</p>
+                
+                <p>The above also holds true if the attribute has been inherited.</p>
+                
+            </subsection>
+            
+            <subsection name="What are the requirements for an attribute class?">
+                
+                <p>It must have a public constructor. That's all.</p>
+                
+            </subsection>
+            
+            <subsection name="I tried adding attributes to an anonymous class and it didn't work.">
+                
+                <p>That's not supported (yet). It is also very hard to implement since the class name is decided by the Java compiler.</p>
+                
+            </subsection>
+            
+            <subsection name="I want to add a constant value as an attribute.">
+                
+                <p>So you have this</p>
+                
+                <source><![CDATA[public class Values {
+    public static final Integer ONE = new Integer (1);
+}]]></source>
+                
+                <p>and now you'd like to add ONE as an attribute like this:</p>
+                
+                <source><![CDATA[/**
+ * @@Values.ONE
+ */
+public class MyClass { ... }]]></source>
+                
+                <p>how can this be done?</p>
+                
+                <p>The best that can be offered is:</p>
+                
+                <source><![CDATA[/**
+ * @@Integer(Values.ONE)
+ */
+public class MyClass { ... }]]></source>
+                
+                <p>I'm afraid. The expression follwing the @@ must fit the template "new (expression)" optionally suffixed by "()". This makes the compiler much simpler, and the loss of functionality was considered worth it. You can also define a separate ONE class:</p>
+                
+                <source><![CDATA[public class One {}]]></source>
+                
+                <p>and use it.</p>
+            </subsection>
+        </section>
+    </body>
+    
+</document>

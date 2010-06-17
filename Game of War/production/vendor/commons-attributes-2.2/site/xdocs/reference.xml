@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Reference</title>
+    </properties>
+    
+    <body>
+        <section name="Reference">
+            
+            <p><a href="declaring.html">Declaring and Using</a>:
+                This section describes how you add attributes to your source code and how
+                you access them.
+            </p>
+            
+            <p><a href="compiler.html">Compiling</a>:
+                This section describes the changes and additions you need to do to your
+                build scripts if you are not using the Maven plugin.
+            </p>
+            
+            <p><a href="indexer.html">Indexing</a>:
+                How to use the attribute indexer tool.
+            </p>
+            
+            <p><a href="documenting.html">Documenting</a>:
+                Commons-Attributes includes a Taglet for the Javadoc tool, which
+                will include any attributes in the javadoc for the class. Note:
+                Taglets are only supported in Javadoc 1.4 and later.
+            </p>
+            
+            <p><a href="validator.html">Validating</a>:
+                How the attribute-validator task helps you ensure the
+                attributes given to each program element are consistent.
+            </p>
+            
+        </section>
+    </body>
+    
+</document>

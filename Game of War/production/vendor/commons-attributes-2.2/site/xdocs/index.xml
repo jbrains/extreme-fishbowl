@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Overview</title>
+    </properties>
+
+    <body>
+
+        <section name="Overview">
+            <p>
+                Commons Attributes enables Java programmers to use C#/.Net-style
+                attributes in their code.
+            
+                Please see the <a href="tutorial.html">tutorial</a> and 
+                <a href="reference.html">reference</a> for a thorough explanation of the features
+                and how the project integrates into the development process.
+            </p>
+        </section>
+
+        <section name="News">
+            <p>Please see the <a href="changelog.html">change log</a> for summaries of code changes.</p>
+
+            <p><b>2006-08-03</b></p>
+            <ul>
+                <li><p>Attributes 2.2 is released (<a href="http://svn.apache.org/repos/asf/jakarta/commons/proper/attributes/tags/CA_2_2/RELEASE_NOTES.txt">release notes</a>)</p></li>
+            </ul>
+            
+            <p><b>2004-08-15</b></p>
+            <ul>
+                <li><p>Attributes 2.1 released!</p></li>
+            </ul>
+ 
+            <p><b>2004-07-12</b></p>
+            <ul>
+                <li><p>Attributes promoted out of sandbox to Commons proper.</p></li>
+            </ul>
+        </section>
+        
+        <section name="Download and Installation">
+
+            <subsection name="Full Distribution">
+                <p>You can download the full Commons Attributes distribution <a href="http://jakarta.apache.org/site/downloads/downloads_commons-attributes.cgi">here</a>. </p>
+            </subsection>
+            
+            <subsection name="Ant Users">
+                <p>
+                    Download the following files and put them in your <code>$ANT_HOME/lib</code> directory:
+                </p>
+                
+                <ul>
+                    <li>
+                        <p>Client API: <a href="http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-api-2.2.jar">commons-attributes-api-2.2.jar</a></p>
+                    </li>
+                    <li>
+                        <p>Ant task: <a href="http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-compiler-2.2.jar">commons-attributes-compiler-2.2.jar</a></p>
+                    </li>
+                    <li>
+                        <p>qDox 1.5: <a href="http://www.ibiblio.org/maven/qdox/jars/qdox-1.5.jar">qdox-1.5.jar</a></p>
+                    </li>
+                </ul>
+            </subsection>
+            
+            <subsection name="Maven Users">
+                
+                <p>
+                    Download the following files:
+                </p>
+                
+            <ul>
+                <li>
+                    <p>Client API: <a href="http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-api-2.2.jar">commons-attributes-api-2.2.jar</a></p>
+                </li>
+                <li>
+                    <p>Ant task: <a href="http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-compiler-2.2.jar">commons-attributes-compiler-2.2.jar</a></p>
+                </li>
+                <li>
+                    <p>Maven plugin: <a href="http://www.apache.org/dist/java-repository/commons-attributes/plugins/commons-attributes-plugin-2.2.jar">commons-attributes-plugin-2.2.jar</a></p>
+                </li>
+            </ul>
+            
+            <p>Drop the <code>-api</code> and <code>-compiler</code> jars into your <code>${maven repository}/commons-attributes/jars/</code>
+                    directory, and the Maven <code>-plugin</code> in your <code>${maven home}/plugins/</code> directory. 
+                    You can now use attributes in your Java code, provided that you declare a dependency on the client API:</p>
+            
+            <source><![CDATA[<dependency>
+    <groupId>commons-attributes</groupId>
+    <artifactId>commons-attributes-api</artifactId>
+    <version>2.2</version>
+</dependency>]]></source>
+
+            
+            <p>The attribute compiler will act as a precompiler to the java:compile goal, so you do not need to do
+                anything else.</p>
+            </subsection>
+        </section>
+        
+        <section name="A Quick Sample">
+            
+            <p>
+                Commons Attributes enables you to add attributes to your code:
+                </p>
+            
+                <source><![CDATA[
+/**
+ * Make this attribute inheritable...
+ * 
+ * @@Inheritable()
+ */
+public class MyAttribute {
+    private final float value;
+
+    public MyAttribute( float value ) {
+        this.value = value;
+    }
+
+    public float getValue() {
+        return value;
+    }
+}
+
+/**
+ * Add a MyAttribute with value 0.8.
+ *
+ * @@MyAttribute( 0.8 )
+ */
+public class MyClass {
+    public static void main( String[] args ) {
+        System.out.println( "MyClass has the following attributes:" + 
+            Attributes.getAttributes( MyClass.class ) );
+    }
+}]]></source>
+            
+            <p>
+                As the example shows, the attributes are type-safe and provides for validation
+                of values.
+            </p>
+            
+        </section>
+        
+        <section name="Features">
+            
+            <table>
+                <tr>
+                    <th colspan="2">
+                        API
+                    </th>
+                </tr>
+                <tr>
+                    <td>Can add attributes to classes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Can add attributes to nested classes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Can add attributes to methods and constructors</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Can add attributes to return values of methods</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Can add attributes to method parameters</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Can add attributes to fields</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Type safe attributes</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Ability to restrict targets</td>
+                    <td>Yes, add an appropriate @@Target() attribute.</td>
+                </tr>
+                <tr>
+                    <td>Attribute inheritance</td>
+                    <td>Yes, add the @@Inheritable() attribue to any attribute you wish to be inheritable.</td>
+                </tr>
+                <tr>
+                    <td>Inheritance without access to superclass source code</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Named parameters in attribute declaration</td>
+                    <td>Yes, corresponds to setter methods. A Sealable interface enables the instance to
+                        become read-only when all relevant setters have been called.</td>
+                </tr>
+                <tr>
+                    <td>Ability to quickly find all classes with a specific attribute</td>
+                    <td>Yes, via attribute indexes.</td>
+                </tr>
+                <tr>
+                    <td>Object attributes don't have to be serializable</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Multiple attributes with same tag on an element</td>
+                    <td>Yes, this is controlled by the attribute itself</td>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        Tools
+                    </th>
+                </tr>
+                <tr>
+                    <td>Ant task</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Maven plugin</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Javadoc Taglet</td>
+                    <td>Yes <i>(Note: Taglets only exist in Javadoc 1.4 and later)</i></td>
+                </tr>
+                <tr>
+                    <td>Incremental compilation</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Compile-time Validation</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        Implementation
+                    </th>
+                </tr>
+                <tr>
+                    <td>Attribute storage</td>
+                    <td>Generated classes</td>
+                </tr>
+                <tr>
+                    <td>Runtime code size</td>
+                    <td>36kB</td>
+                </tr>
+                <tr>
+                    <td>Unit test coverage</td>
+                    <td>Excellent</td>
+                </tr>
+            </table>
+                
+        </section>
+        
+        
+        
+    </body>
+
+</document>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<configuration xmlns:foo="namespace-one"
+               xmlns:bar="namespace-two">
+  <foo:properties fileName="test.properties"/>
+  <bar:xml fileName="test.xml"/>
+</configuration>

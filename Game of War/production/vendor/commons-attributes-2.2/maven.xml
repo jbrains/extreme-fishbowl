@@ -1,0 +1,285 @@
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<project default="attributes:help" xmlns:maven="jelly:maven" xmlns:j="jelly:core" xmlns:util="jelly:util">
+    
+    <property file="${basedir}/../build.properties"/>
+    <property file="${basedir}/../project.properties"/>
+    <property file="project.properties"/>
+    <property name="maven.jar.manifest.extensions.add" value="true"/>
+    <property name="maven.checkstyle.format" value="avalon"/>
+    <property name="pom.organization.identifier" value="ASF"/>
+    <property name="pom.specificationVersion" value="1.0"/>
+    
+    <property name="javadoc14.jar" value="${maven.repo.local}/javadoc/jars/javadoc-1.4.jar"/>
+    
+    <goal name="attributes:help"
+        description="Print some help.">
+        <echo><![CDATA[
+-----------------------------------------------------------------------
+JAKARTA COMMONS ATTRIBUTES: How To Build This Thing
+-----------------------------------------------------------------------
+
+Since the unit tests depend on the Maven plugin, which depend on the
+api, which require the unit tests to pass, you have to build this
+package in the following way:
+
+    maven install
+    maven install-plugin
+    maven test
+
+]]></echo>
+    </goal>
+    
+    <goal name="attributes:install-javadoc-1.4">
+        <available file="${javadoc14.jar}" property="javadoc14.jar.present"/>
+        <j:set var="jd14present" value="${javadoc14.jar.present}"/>
+        <j:if test="${!jd14present.equals ('true')}">
+            
+            <echo><![CDATA[
+-----------------------------------------------------------------------
+JAKARTA COMMONS ATTRIBUTES: Dependency Resolution
+-----------------------------------------------------------------------
+
+You do not have Javadoc-1.4.jar in your local repository. Since this 
+jar can't be downloaded, it will be created from your tools.jar and put 
+in your local repository. Should the creation fail, please copy the
+files 
+
+    com/sun/javadoc/*.class
+    com/sun/tools/doclets/Taglet.class
+
+from your tools.jar (which should be in $JAVA_HOME/lib/) into a jar file
+named 
+
+    ${maven.repo.local}/javadoc/jars/javadoc-1.4.jar
+
+If you don't find the Taglet.class file in your tools.jar, this is
+probably caused by you not having Javadoc 1.4 or later. In order for
+the compilation to proceed anyway, you can do the following:
+
+    1. Go to java.sun.com
+    2. Download JDK 1.4.2 (without NetBeans)
+    3. Install it.
+    4. Get the tools.jar from the installation.
+    5. Get the files listed above and put them into a jar file
+       as described above.
+
+If that's too much, then you should perhaps look into the binary
+distributions available at the project's homepage.
+
+Finally, please be aware that I *have* contacted Sun regarding putting
+the javadoc API classes into a Maven repository...
+]]></echo>
+            
+            <mkdir dir="${maven.repo.local}/javadoc/jars/"/>
+            <jar destfile="${maven.repo.local}/javadoc/jars/javadoc-1.4.jar">
+                <zipfileset src="${java.home}/../lib/tools.jar" includes="com/sun/javadoc/**,com/sun/tools/doclets/Taglet.class"/>
+            </jar>
+        </j:if>        
+    </goal>
+    
+    <goal name="install" 
+        description="Build and install the Jakarta Commons Attributes jars." >
+        <attainGoal name="attributes:install-javadoc-1.4"/>
+        <maven:reactor
+            basedir="${basedir}"
+            includes="api/project.xml,compiler/project.xml"
+            goals="jar:install"
+            banner="Building:"
+            ignoreFailures="false" />
+    </goal>
+    
+    <goal name="install-snapshot" 
+        description="Build and install the Jakarta Commons Attributes jars." >
+        <attainGoal name="attributes:install-javadoc-1.4"/>
+        <maven:reactor
+            basedir="${basedir}"
+            includes="api/project.xml,compiler/project.xml"
+            goals="jar:install-snapshot"
+            banner="Building:"
+            ignoreFailures="false" />
+    </goal>
+    
+    <goal name="test" 
+        description="Test the installation." >
+        <maven:reactor
+            basedir="${basedir}"
+            includes="unittest/project.xml"
+            goals="attributes:test"
+            banner="Building:"
+            ignoreFailures="false" />
+    </goal>
+    
+    <goal name="clean">
+        <maven:reactor
+            basedir="${basedir}"
+            includes="*/project.xml"
+            goals="clean:clean"
+            banner="Cleaning subproject:"
+            ignoreFailures="false"/>
+    </goal>
+    
+    <goal name="site">
+        <maven:reactor
+            basedir="${basedir}"
+            includes="site/project.xml"
+            goals="license,xjavadoc,attributes:site"
+            banner="Building Site:"
+            ignoreFailures="false" />
+    </goal>
+    
+    <goal name="deploy-site">
+        <maven:reactor
+            basedir="${basedir}"
+            includes="site/project.xml"
+            goals="site:deploy"
+            banner="Building Site:"
+            ignoreFailures="false" />
+    </goal>
+    
+    <goal name="dist">
+        <property name="maven.dist.assembly.dir" value="${maven.build.dir}/${maven.final.name}"/>
+        <property name="maven.dist.bin.archive.dir" value="${maven.dist.assembly.dir}/bin"/>
+        <property name="maven.dist.src.archive.dir" value="${maven.dist.assembly.dir}/src"/>
+        <property name="maven.dist.bin.assembly.dir" value="${maven.dist.assembly.dir}/bin/${maven.final.name}"/>
+        <property name="maven.dist.src.assembly.dir" value="${maven.dist.assembly.dir}/src/${maven.final.name}"/>
+        <property name="maven.dist.dir" value="${maven.build.dir}/distributions"/>
+        
+        
+        <attainGoal name="clean"/>
+        <attainGoal name="install"/>
+        <attainGoal name="install-plugin"/>
+        <attainGoal name="site"/>
+        
+        <delete dir="${maven.dist.dir}"/>
+        <mkdir dir="${maven.dist.dir}"/>
+        
+        <!--
+        Copy the Jars across
+        -->
+        <copy todir="${maven.dist.dir}">
+            <fileset dir="${basedir}/api/target/"
+                includes="commons-attributes-api-${pom.currentVersion}.jar"/>
+            <fileset dir="${basedir}/compiler/target/"
+                includes="commons-attributes-compiler-${pom.currentVersion}.jar"/>
+            <fileset dir="${basedir}/plugin/target/"
+                includes="commons-attributes-plugin-${pom.currentVersion}.jar"/>
+        </copy>
+        
+        <!--
+        
+        Make binary distribution consisting of:
+        
+        + Compiler and API Jars.
+        + Maven plugin
+        + Javadocs
+        + LICENSE, NOTICE and RELEASE files
+        
+        -->
+        <mkdir dir="${maven.dist.bin.assembly.dir}"/>
+        <copy todir="${maven.dist.bin.assembly.dir}">
+            <fileset dir="${basedir}/api/target/"
+                includes="commons-attributes-api-${pom.currentVersion}.jar"/>
+            <fileset dir="${basedir}/compiler/target/"
+                includes="commons-attributes-compiler-${pom.currentVersion}.jar"/>
+            <fileset dir="${basedir}/plugin/target/"
+                includes="commons-attributes-plugin-${pom.currentVersion}.jar"/>
+            <fileset dir="${basedir}/site/target/docs/" includes="api/**"/>
+            <fileset dir="${basedir}/" includes="LICENSE.txt,NOTICE.txt,RELEASE.txt"/>
+        </copy>
+        <!-- zip and tar.gz -->
+        <zip destfile="${maven.dist.dir}/${maven.final.name}.zip">
+            <fileset dir="${maven.dist.bin.archive.dir}"/>
+        </zip>
+        <tar destfile="${maven.dist.dir}/${maven.final.name}.tar.gz"
+            compression="gzip"
+            basedir="${maven.dist.bin.archive.dir}"/>
+        
+        <!--
+        
+        Make source distribution consisting of:
+        
+        + Source files from api, compiler, plugin, site and unittest
+        + build files
+        + LICENSE, NOTICE and RELEASE files
+        
+        -->
+        <copy todir="${maven.dist.src.assembly.dir}">
+            <fileset dir="${basedir}/" includes="api/*,api/src/**" excludes="api/target/,**/CVS/**"/>
+            <fileset dir="${basedir}/" includes="compiler/*,compiler/src/**" excludes="compiler/target/**/CVS/**"/>
+            <fileset dir="${basedir}/" includes="plugin/*" excludes="**/CVS/**" />
+            <fileset dir="${basedir}/" includes="site/*,site/etc/**,site/xdocs/" excludes="site/target/,**/CVS/**"/>
+            <fileset dir="${basedir}/" includes="unittest/*,unittest/src/**" excludes="unittest/target/,**/CVS/**" />
+            
+            <fileset dir="${basedir}/" includes="build.xml,maven.xml,project.xml,project.properties" excludes="**/CVS/**" />
+            
+            <fileset dir="${basedir}/" includes="LICENSE.txt,NOTICE.txt,RELEASE.txt,README.html"/>
+        </copy>
+        <!-- zip and tar.gz -->
+        <zip destfile="${maven.dist.dir}/${maven.final.name}-src.zip">
+            <fileset dir="${maven.dist.src.archive.dir}"/>
+        </zip>
+        <tar destfile="${maven.dist.dir}/${maven.final.name}-src.tar.gz"
+            compression="gzip"
+            basedir="${maven.dist.src.archive.dir}"/>
+    </goal>
+    
+    <goal name="install-plugin">
+        <maven:reactor
+            basedir="${basedir}"
+            includes="plugin/project.xml"
+            goals="plugin:install"
+            banner="Installing plugin:"
+            ignoreFailures="false"
+            />
+    </goal>
+    
+    <goal name="xjavadoc">
+        <mkdir dir="${basedir}/target/docs/api" />
+        <property name="copyright"
+            value="Copyright &amp;copy; ${year} ${pom.organization.name}. All Rights Reserved." />
+        <property name="title" value="Commons-${pom.name} ${pom.currentVersion} API"/>
+        <javadoc destdir="${basedir}/target/docs/api" 
+            doctitle="&lt;h1&gt;Jakarta Commons Attributes 2.2&lt;/h1&gt;" 
+            noindex="false" author="true" use="true"
+            windowtitle="${title}" 
+            bottom="${copyright}"
+            additionalparam="-J-Xmx128m "
+            packagenames="org.apache.commons.attributes,org.apache.commons.attributes.validation"
+            overview="${basedir}/../api/src/java/overview.html">
+            <j:forEach var="packageGroup" items="${pom.packageGroups}">
+                <group title="${packageGroup.title}" packages="${packageGroup.packages}"/>
+            </j:forEach>
+            <sourcepath path="${basedir}/../api/src/java"/>
+            <sourcepath path="${basedir}/../compiler/src/java"/>
+            <classpath>
+                <path refid="maven.dependency.classpath"/>
+            </classpath>
+            <link href="${sun.j2se.link}" />
+        </javadoc>
+    </goal>
+    
+    <goal name="attributes:windeploysite">
+        <attainGoal name="site"/>
+        <mkdir dir="target"/>
+        <zip destfile="target/site.zip">
+            <fileset dir="site/target/docs/" includes="**/*"/>
+        </zip>
+    </goal>
+    
+</project>

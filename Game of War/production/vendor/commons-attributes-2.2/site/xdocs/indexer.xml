@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Reference - Indexing</title>
+    </properties>
+    
+    <body>
+        <section name="The AttributeIndexer Ant Task">
+            
+            <p>The AttributeIndexer tool creates a list of classes that the o.a.c.a.AttributeIndex class
+                should consider for inclusion in its index. The tool is run on a JAR file and will create a file named
+                attrs.index in the META-INF folder. The process is:</p>
+            
+            <source><![CDATA[+------------+
+|.class Files|
++------------+
+      |       
+   JAR Tool
+      |       
+      v
++-------------+
+|  .JAR File  |
++-------------+
+      |       
+   Indexer
+      |       
+      v
++-------------+
+|Jar w. index |
++-------------+]]></source>
+            
+            <p>
+                This is how the indexer is used:
+            </p>
+            
+            <source><![CDATA[<taskdef resource="org/apache/commons/attributes/anttasks.properties"/>
+      
+<attribute-indexer jarfile="myclasses.jar"/>]]></source>
+            
+            <table>
+                <tr>
+                    <th>
+                        Parameter
+                    </th>
+                    <th>
+                        Required
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        jarfile
+                    </td>
+                    <td>
+                        Yes
+                    </td>
+                    <td>
+                        The jar file to create an index for.
+                    </td>
+                </tr>
+            </table>
+        </section>
+    </body>
+    
+</document>

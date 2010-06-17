@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<project default="run" name="commons-attributes ant demo" basedir=".">
+    
+    <taskdef resource="org/apache/commons/attributes/anttasks.properties"/>
+    
+    <target name="clean" description="o Clean up the generated files">
+        <delete>
+            <fileset dir="${basedir}" includes="*.class,*$*"/>
+        </delete>
+    </target>
+    
+    <target name="compile-attributes" description="o Run the commons-attributes precompiler">
+        <attribute-compiler destdir=".">
+            <fileset dir="." includes="*.java"/>
+        </attribute-compiler>
+    </target>
+    
+    <target name="compile" depends="compile-attributes" description="o Compile the code">
+        <javac 
+            srcdir="." 
+            destdir="${basedir}" 
+            deprecation="true" 
+            debug="true" 
+            classpath="${ant.home}/lib/commons-attributes-api-2.2.jar;."
+            optimize="false">
+        </javac>
+    </target>
+    
+    <target name="run" description="o Compile and run the demo" depends="compile">
+        <java 
+            classpath="${ant.home}/lib/commons-attributes-api-2.2.jar;."
+            classname="AttributeDemo"/>
+    </target>
+    
+    <target name="javadoc" description="o Create Javadocs for the demo (Requires Javadoc 1.4+)">
+        <mkdir dir="${basedir}/javadoc/"/>
+        <javadoc 
+            destdir="${basedir}/javadoc/"
+            additionalparam="-J-Dorg.apache.commons.attributes.javadoc.CATaglet.sources=${basedir}">
+            <taglet
+                name="org.apache.commons.attributes.javadoc.CATaglet"
+                path="${ant.home}/lib/commons-attributes-compiler-2.2.jar"
+                />
+            <fileset dir="${basedir}/" includes="**/*.java" />
+        </javadoc>
+    </target>
+   
+</project>

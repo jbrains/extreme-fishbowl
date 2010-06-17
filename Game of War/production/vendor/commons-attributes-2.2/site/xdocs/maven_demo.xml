@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Tutorial - Maven Demo</title>
+    </properties>
+    
+    <body>
+        <section name="About This Demo">
+            <p>
+                This is a quick demo that shows how to use attributes together with 
+                Maven. Don't worry about 90% here seemingly being pure unexplainable
+                magic - the purpose of this part of the tutorial is to show you
+                what steps you must do to make the Commons Attributes package work.
+                In the reference we'll focus more on just what happens, and how
+                the all features work.
+            </p>
+            
+        </section>
+        
+        <section name="The Demo Files">
+            <p>
+                All files required for this demo can be found in <a href="maven_demo.zip">maven_demo.zip</a>.
+            </p>
+        </section>    
+        
+        <section name="Project Setup">
+                
+                <p>
+                    In order to get attributes working in your project you need to do three things:
+                    (1) declare dependencies, (2) install the commons-attributes plugin and (3) set project
+                    properties that will enable the plugin for your project.
+                </p>
+                
+                <subsection name="Declaring Dependencies">
+                    <p>
+                        Dependencies are declared as you would expect in your project.xml:
+                    </p>
+                    <source><![CDATA[<dependency>
+    <groupId>commons-attributes</groupId>
+    <artifactId>commons-attributes-api</artifactId>
+    <version>2.2</version>
+</dependency>
+
+<dependency>
+    <groupId>commons-attributes</groupId>
+    <artifactId>commons-attributes-compiler</artifactId>
+    <version>2.2</version>
+</dependency>]]></source>
+                </subsection>
+                
+                <subsection name="Installing the Plugin">
+                    <p>
+                        You can install the plugin by checking out the sources and doing:
+                    </p>
+                    
+                    <source><![CDATA[$ maven install
+$ maven install-plugin]]></source>
+                    
+                    <p>
+                        Alternatively, you can download the plugin and put it in your Maven
+                        plugin directory.
+                    </p>
+                </subsection>
+                
+                <subsection name="Project Properties">
+                    
+                    <p>Since Maven will unconditionally apply all plugins to every project being compiled
+                        it is neccessary to explicitly enable the attribute compiler and/or indexer. This
+                        is simply to keep them from being run on projects that do not want anything to do 
+                        with Commons-Attributes. The compiler and/or indexer are enabled by two project 
+                        properties that you can set in your project.properties file or in your maven.xml 
+                        file:
+                    </p>
+                    
+                    <source><![CDATA[######################################################################
+# Commons-Attributes
+######################################################################
+org.apache.commons.attributes.enable=true
+org.apache.commons.attributes.index.enable=true]]></source>
+                    
+                    <p>
+                        The first property will enable the attribute precompilation step. The second will
+                        enable the attribute indexing step that takes place after the jar:jar target.
+                        Both properties can be set independently of each other, although it makes little
+                        sense to enable indexing if compilation isn't enables as well.
+                    </p>
+                </subsection>
+                
+        </section>
+            
+            <section name="Running the Demo">
+                
+                <p>
+                    You should be able to unzip the demo files, cd into the directory and execute
+                    "maven run", like this:
+                </p>
+                
+                <source><![CDATA[$ unzip maven_demo.zip
+$ cd maven_demo
+$ maven run]]></source>
+            </section>
+    </body>
+    
+</document>

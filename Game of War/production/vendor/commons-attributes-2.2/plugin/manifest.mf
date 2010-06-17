@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: Apache Maven
+Built-By: leo
+Package: org.apache.commons.attributes
+Build-Jdk: 1.4.2_02
+Extension-Name: commons-attributes-plugin
+Specification-Title: Commons Attributes Plugin for Maven
+Specification-Vendor: The Apache Software Foundation
+Implementation-Title: org.apache.commons.attributes
+Implementation-Vendor: The Apache Software Foundation
+Implementation-Version: 2.2
+Extension-List: commons-attributes-api commons-attributes-compiler ant qdox
+commons-attributes-api-Extension-Name: commons-attributes-api
+commons-attributes-api-Implementation-Version: 2.2
+commons-attributes-api-Implementation-URL: http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-api-2.2.jar
+commons-attributes-compiler-Extension-Name: commons-attributes-compiler
+commons-attributes-compiler-Implementation-Version: 2.2
+commons-attributes-compiler-Implementation-URL: http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-compiler-2.2.jar
+ant-Extension-Name: ant
+ant-Implementation-Version: 1.5
+ant-Implementation-URL: http://www.ibiblio.org/maven/ant/jars/ant-1.5.jar
+qdox-Extension-Name: qdox
+qdox-Implementation-Version: 1.5
+qdox-Implementation-URL: http://www.ibiblio.org/maven/qdox/jars/qdox-1.5.jar

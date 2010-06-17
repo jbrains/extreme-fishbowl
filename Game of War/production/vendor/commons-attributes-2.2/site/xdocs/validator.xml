@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Reference - Validating Attributes at Compile-Time</title>
+    </properties>
+    
+    <body>
+        <section name="Why?">
+            
+            <p>
+                In many cases an attribute can only be applied to certain elements,
+                and its parameters must satisfy some set of constraints. For example,
+                suppose we have an attribute that declares transaction metadata:
+            </p>
+            
+            <source><![CDATA[/**
+ * @@TransactionDeclaration (TransactionDeclaration.EXPLICIT)
+ */]]></source>
+            
+            <p>
+                Now, the rule is that if a class has a <tt>TransactionDeclaration.EXPLICIT</tt>
+                setting, then <b>all</b> methods must have a <tt>@@TransactionLevel</tt> attribute.
+                For example, this class is valid:
+            </p>
+            
+            <source><![CDATA[/**
+ * @@TransactionDeclaration(TransactionDeclaration.EXPLICIT)
+ */
+class ValidClass {
+
+    /**
+     * @@TransactionLevel(TransactionLevel.SERIALIZABLE)
+     */
+    void methodOne() { ... }
+
+    /**
+     * @@TransactionLevel(TransactionLevel.READ_UNCOMMITTED)
+     */
+    void methodTwo() { ... }
+
+}]]></source>
+            
+            <p>While this one is not, since <tt>methodTwo</tt> does not define a <tt>@@TransactionLevel</tt>.</p>
+            
+            <source><![CDATA[/**
+ * @@TransactionDeclaration(TransactionDeclaration.EXPLICIT)
+ */
+class ValidClass {
+
+    /**
+     * @@TransactionLevel(TransactionLevel.SERIALIZABLE)
+     */
+    void methodOne() { ... }
+
+    void methodTwo() { ... }
+
+}]]></source>
+            
+            <p>
+                The attribute-validator task enables you to check the consistency of 
+                attributes at compile-time.
+            </p>
+            
+        </section>
+        
+        <section name="The attribute-validator Task">
+            <p>
+                The attribute-validator task is run like this from your Ant file:
+            </p>
+            
+            <source><![CDATA[<attribute-validator jarFile="myclasses.jar">
+    <classpath>
+        ...
+    </classpath>
+    <validator class="my.Validator"/>
+    <validator class="my.other.Validator"/>
+</attribute-validator>]]></source>
+            
+            <table>
+                <tr>
+                    <th>
+                        Parameter
+                    </th>
+                    <th>
+                        Required
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        jarFile
+                    </td>
+                    <td>
+                        yes
+                    </td>
+                    <td>
+                        The jar file whose classes should be validated.
+                    </td>
+                </tr>
+            </table>
+            
+            <table>
+                <tr>
+                    <th>
+                        Element
+                    </th>
+                    <th>
+                        Required
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        classpath
+                    </td>
+                    <td>
+                        yes
+                    </td>
+                    <td>
+                        The classpath to use when loading classes from the jar file.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        validator
+                    </td>
+                    <td>
+                        yes
+                    </td>
+                    <td>
+                        One or more validators, which are classes implementing the
+                        <a href="api/org/apache/commons/attributes/validation/AttributeValidator.html">AttributeValidator</a>
+                        interface.
+                    </td>
+                </tr>
+            </table>
+            
+        </section>
+        
+        <section name="Writing Your Own Validation Rules">
+            <p>
+                Writing a validation rule simply means implementing the 
+                <a href="api/org/apache/commons/attributes/validation/AttributeValidator.html">AttributeValidator</a>
+                interface in a class. For example, this AttributeValidator will check that there
+                are no more than three class attributes given to each class.
+            </p>
+            
+            <source><![CDATA[public class MyValidator 
+    implements AttributeValidator {
+
+    public void validate (Set classes) throws ValidationException {
+        Iterator iter = classes.iterator ();
+        while (iter.hasNext ()) {
+            Class clazz = (Class) iter.next ();
+            if (Attributes.getAttributes (clazz).size () > 3) {
+                throw new ValidationException (clazz, 
+                    "Classes must have at most three attributes!");
+            }
+        }
+    }
+
+}]]></source>
+        </section>
+    </body>
+    
+</document>

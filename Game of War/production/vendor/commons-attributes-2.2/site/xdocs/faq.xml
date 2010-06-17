@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Frequently Asked Question</title>
+    </properties>
+    
+    <body>
+        <section name="Java 1.5 Annotations">
+            
+            <p><b>Q: How does Commons-Attributes fit in with the annotations in Java 5.0?</b></p>
+            
+            <p>
+                <b>A:</b> With annotations we'll finally have a standard API for metadata in Java. The downside
+                is that we have to switch to Java 5.0. Since people even now are still stuck with 
+                Java 1.2 and Java 1.3, it may be a while before a project can require 5.0 and still 
+                have a reasonably-sized audience and/or usefulness.
+            </p>
+            
+            <p>
+                This is where Commons-Attributes comes in.
+            </p>
+            
+            <p>
+                Ultimately this s a choice you must make based on your own preconditions, but this
+                is my advice: You should switch to 5.0 if you can, given stability, compatibility 
+                et cetera. After all, it is the standard that people will use when it becomes the standard
+                (which it will). However, if you foresee that you'll stick with 1.4 or earlier and you 
+                think that metadata is the most cost-effective way of solving your problem, then
+                you should definitely take a closer look at Commons-Attributes.
+            </p>
+        </section>
+        
+        <section name="Other Users">
+            
+            <p><b>Q: Anyone else using C-A?</b></p>
+            
+            <p>
+                <b>A:</b> A number of companies use C-A in their products, and I have myself used in 
+                deployed business-critical systems. Less anonymous users are:
+            </p>
+            
+            <ul>
+                <li>
+                    <p><a href="http://www.springframework.org/">Spring Framework</a></p>
+                </li>
+                <li>
+                    <p><a href="http://acegisecurity.sourceforge.net/">Acegi Security System for Spring</a></p>
+                </li>
+            </ul>
+            
+        </section>
+        
+        <section name="Other Frameworks">
+            
+            <p><b>Q: How does Commons-Attributes compare to  other metadata frameworks, such as 
+                    JSR175, MetaClass, qDox, JAM, etc?</b></p>
+            
+            <p><b>A:</b> This is a two-part answer. First JSR175: When Java 5.0 becomes as commonly 
+                used as 1.3+1.4 is today, nobody will want to use any other metadata framework, just 
+                like nobody wants to use any other string class than the java.lang one. Therefore, by 
+                that time, C-A will have been rendered superfluous, and development will stop.</p>
+            
+            <p>Compared to JAM, QDox, etc. C-A stands up very well. It offers a simple API, powerful 
+                annotation features, type-safety and low overhead. Let's examine these points:</p>
+            
+            <ul>
+                <li>
+                    <p>Simple API: Too many frameworks try to be the all-encompassing &#xfc;ber-framework - 
+                        and usually fails at that. The result is an over-complicated API, that still 
+                        won't let you do what you want to do. C-A aims to do one thing, and do it well.</p>
+                </li>
+                <li>
+                    <p>Powerful annotation features: You can attach attributes to classes, methods, 
+                        fields, method parameters and return values. You can also control how an 
+                        attribute can be used via the <a href="api/org/apache/commons/attributes/Target.html"><tt>Target</tt></a>
+                        meta-attribute. Few other frameworks offer all these features.</p>
+                </li>
+                <li>
+                    <p>Type safety: Most other frameworks are limited to key-value pairs of Strings. 
+                        C-A lets you use JavaBeans, which gives you a layer of compile-time safety 
+                        against mistyping an attribute name.</p>
+                </li>
+                <li>
+                    <p>Low overhead: C-A has no runtime dependencies, and fits into a 36k jar file.</p>
+                </li>
+            </ul>
+            
+            <p>In summary, C-A stands up very well.</p>
+            
+        </section>
+        
+        <section name="Future Plans">
+            
+            <p><b>Q: What are the future plans for Commons-Attributes?</b></p>
+            
+            <p><b>A:</b> As indicated above, C-A isn't expected to live beyond widespread adoption
+                of Java 5.0. With the 2.2 release it is considered to have approached its end of 
+		life, so there are no future plans. </p>
+
+	     <p>Prior to reaching end of life, the future plans were for ease of use and included: </p>
+            
+            <ul>
+                <li>
+                    <p>Documentation: The existing code should be further documented, making it
+                        easier to understand the package.</p>
+                </li>
+                <li>
+                    <p>
+                        Helpful code: Exceptions should go out of their way to help the developer 
+                        find the bug by being precise and having relevant messages. Very often,
+                        all a developer will have will be a stack trace in a logfile - let's make
+                        that all they need as well.
+                    </p>
+                </li>
+                <li>
+                    <p>Standards compliance: The code should behave as expected in all Java
+                        environments. For example, all Throwables that have a nested Throwable
+                        should implement getCause(). This makes it easy for developers to deploy the
+                        package in various environments.</p>
+                </li>
+                <li>
+                    <p>No dependencies: The runtime API should have no dependencies, making upgrades
+                        easy and painless.</p>
+                </li>
+                <li>
+                    <p>Maximum backwards compatibility: Upgrading to the latest version of C-A should be
+                        a no-brainer, not a carefully decided tradeoff between new features and
+                        migration pain.</p>
+                </li>
+            </ul>
+            
+        </section>
+        
+    </body>
+    
+</document>

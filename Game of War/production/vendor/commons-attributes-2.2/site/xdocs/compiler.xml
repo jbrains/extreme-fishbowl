@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Reference - Compiling</title>
+    </properties>
+    
+    <body>
+        <section name="The AttributeCompiler Ant Task">
+            
+            <p>This is the process your source files have to go through:</p>
+            
+            <source><![CDATA[+------------+                              +--------------------+
+|Java Sources|----> Attribute Compiler ---->|Generated Java Files|   
++------------+                              +--------------------+
+      |                                                 |
+      |                                                 |
+      |               +-------------+                   |
+      +-------------->|Java Compiler|<------------------+
+                      +-------------+
+                             |
+                             v
+                    +-----------------+
+                    |Java .class files|
+                    +-----------------+]]></source>
+            
+            <p>
+                This section will focus on the "Attribute Compiler" step. As is implied by the diagram,
+                the Attribute Compiler compiles Java source files into other Java source files.
+            </p>
+            
+            <p>
+                This is how the compiler is used:
+            </p>
+            
+            <source><![CDATA[<taskdef resource="org/apache/commons/attributes/anttasks.properties"/>
+      
+<attribute-compiler 
+    destdir="temp/" 
+    attributepackages="my.attributes;my.otherattributes">
+    <fileset dir="src/" includes="*.java"/>
+</attribute-compiler>]]></source>
+            
+            <table>
+                <tr>
+                    <th>
+                        Parameter
+                    </th>
+                    <th>
+                        Required
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        destdir
+                    </td>
+                    <td>
+                        Yes
+                    </td>
+                    <td>
+                        Destination directory for generated source files
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        attributepackages
+                    </td>
+                    <td>
+                        No
+                    </td>
+                    <td>
+                        A semi-colon separated list of package names. Attributes in these packages
+                        can be used without specifying their fully-qualified names, even if they are not
+                        in the same package as the class they are being attached to, and even if they
+                        are not imported. (The compiler generates import statements in the generated
+                        source files.)
+                    </td>
+                </tr>
+            </table>
+            
+            <p>
+                After the attribute compiler has generated the new source files, you should
+                feed them <b>and your own source files</b> to the Java compiler.
+            </p>
+            
+        </section>
+        
+        <section name="Do I Have to Use the Attribute Compiler?">
+            
+            <p>
+                No, you don't. You can add attributes to a class by programmatically
+                creating an attribute repository in the class's static initializer.
+                
+                See the Javadoc for 
+                <a href="api/org/apache/commons/attributes/RuntimeAttributeRepository.html">RuntimeAttributeRepository</a>
+                for an example. <i>It's not pretty, but it works.</i>
+            </p>
+            
+        </section>
+        
+        <section name="How Do I Use It With Maven?">
+            <p>
+                If you use Maven you can just install the Commons-Attributes plugin and add the following lines
+                to your project.properties:
+            </p>
+                
+                <source><![CDATA[######################################################################
+# Commons-Attributes
+######################################################################
+org.apache.commons.attributes.enable=true
+
+#
+# Optional, enables attribute indexing
+#
+org.apache.commons.attributes.index.enable=true
+
+#
+# Optional, equivalent to specifying attributepackages for the compiler
+#
+org.apache.commons.attributes.attributepackages=mypackage;myotherpackage]]></source>
+                
+                <p>
+                    Attribute compilation will happen automatically.
+                </p>
+        </section>
+        
+    </body>
+    
+</document>

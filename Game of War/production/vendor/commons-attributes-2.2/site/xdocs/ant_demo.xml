@@ -1,0 +1,314 @@
+<?xml version="1.0"?>
+<!--
+=
+= Copyright 2003-2004 The Apache Software Foundation
+= 
+= Licensed under the Apache License, Version 2.0 (the "License");
+= you may not use this file except in compliance with the License.
+= You may obtain a copy of the License at
+= 
+=     http://www.apache.org/licenses/LICENSE-2.0
+= 
+= Unless required by applicable law or agreed to in writing, software
+= distributed under the License is distributed on an "AS IS" BASIS,
+= WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+= See the License for the specific language governing permissions and
+= limitations under the License.
+=
+-->
+<document>
+    
+    <properties>
+        <author email="commons-dev@jakarta.apache.org">Jakarta Commons Development Team</author>
+        <title>Tutorial - Ant Demo</title>
+    </properties>
+    
+    <body>
+        <section name="About This Demo">
+            <p>
+                This is a quick demo that shows how to use attributes together with 
+                Ant. Don't worry about 90% here seemingly being pure unexplainable
+                magic - the purpose of this part of the tutorial is to show you
+                what steps you must do to make the Commons Attributes package work.
+                In the walkthrough we'll focus more on just what happens, and how
+                the all features work.
+            </p>
+        </section>
+        
+        <section name="Download and Installation">
+            
+            <p>
+                Download the following files and put them in your <code>$ANT_HOME/lib</code> directory:
+            </p>
+            
+            <ul>
+                <li>
+                    <p>Client API: <a href="http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-api-2.2.jar">commons-attributes-api-2.2.jar</a></p>
+                    <p>
+                        <i>It is important that you do not rename this file - it is referred to by name in the example build.xml.</i>
+                    </p>
+                </li>
+                <li>
+                    <p>Ant task: <a href="http://www.ibiblio.org/maven/commons-attributes/jars/commons-attributes-compiler-2.2.jar">commons-attributes-compiler-2.2.jar</a></p>
+                    <p>
+                        <i>It is important that you do not rename this file - it is referred to by name in the example build.xml.</i>
+                    </p>
+                </li>
+                <li>
+                    <p>qDox 1.5: <a href="http://www.ibiblio.org/maven/qdox/jars/qdox-1.5.jar">qdox-1.5.jar</a></p>
+                </li>
+            </ul>
+            
+        </section>
+        
+        <section name="Getting the Demo Files">
+            <p>
+                Download these files and put them in a directory of your choice:
+            </p>
+            
+            <ul>
+                <li>
+                    <p>Ant build file: <a href="ant_demo/build.xml">build.xml</a></p>
+                </li>
+                <li>
+                    <p>Java source file: <a href="ant_demo/AttributeDemo.java">AttributeDemo.java</a></p>
+                </li>
+            </ul>
+        </section>
+        
+        <section name="Running the Demo">
+            
+            <p>
+                The buildfile is already set up, so you should only have to do the following:
+            </p>
+            
+            <source><![CDATA[# cd directory-where-i-put-demo-files
+# ant
+Buildfile: build.xml
+
+compile-attributes:
+[attribute-compiler] Generated attribute information for 1 classes.
+
+compile:
+    [javac] Compiling 2 source files to /home/leosutic/demo
+
+run:
+     [java] [[MyAttribute  constructor argument: "This string is passed to the c
+onstructor." named argument: "This argument will be passed to the setNamedArgume
+nt method"]]
+
+BUILD SUCCESSFUL
+Total time: 7 seconds]]></source>
+         
+            <p>
+                If you have JDK 1.4 or later, you can also generate Javadocs for the demo
+                with attribute information in the docs:
+            </p>
+            
+            <source><![CDATA[# ant javadoc
+Buildfile: build.xml
+
+javadoc:
+  [javadoc] Generating Javadoc
+  [javadoc] Javadoc execution
+  [javadoc] Loading source file /home/leosutic/demo/AttributeDemo.java...
+  [javadoc] Constructing Javadoc information...
+  [javadoc] /home/leosutic/demo/AttributeDemo.java:18: 
+            package org.apache.commons.attributes does not exist
+  [javadoc] import org.apache.commons.attributes.Attributes;
+  [javadoc]                                      ^
+  [javadoc] Registered Taglet org.apache.commons.attributes.javadoc.CATaglet ...
+
+  [javadoc] Standard Doclet version 1.4.0
+
+  [javadoc] Building tree for all the packages and classes...
+  [javadoc] Building index for all the packages and classes...
+  [javadoc] Building index for all classes...
+  [javadoc] Generating /home/leosutic/demo/javadoc/stylesheet.css...
+  [javadoc] 1 warning
+
+BUILD SUCCESSFUL
+Total time: 7 seconds]]></source>
+            
+            <p>
+                Look in the javadoc/ subdirectory for the results.
+            </p>
+        </section>
+        
+        <section name="Demo Walkthrough">
+            
+            <p>The demo consists of two files. We will first look at the Java source file, and
+                then the build.xml file.</p>
+            
+            <subsection name="Java Sources">
+                
+                <source><![CDATA[class MyAttribute {
+    private final String ctorArg;
+    private String namedArg = null;
+    
+    public MyAttribute (String ctorArg) {
+        this.ctorArg = ctorArg;
+    }
+    
+    public void setNamedArgument (String namedArg) {
+        this.namedArg = namedArg;
+    }
+    
+    public String toString () {
+        return "[MyAttribute  constructor argument: \"" + 
+            ctorArg + "\" named argument: \"" + namedArg + "\"]";
+    }
+}]]></source>
+                
+                <p>This is simply the definition of an attribute class. It takes one constructor
+                    argument, and has one named argument.</p>
+                
+                <source><![CDATA[/**
+ * @@MyAttribute ("This string is passed to the constructor.", 
+ *                namedArgument="This argument will be passed to the setNamedArgument method")
+ */
+public class AttributeDemo {]]></source>
+                
+                <p>
+                    OK, now it is getting interesting! This is where we add one instance of 
+                    the MyAttribute class to the AttributeDemo class. The two @-signs indicate that
+                    this is an attribute, and will cause the attribute compiler to pick up the
+                    attribute. The first string will be passed to the constructor. The second parameter,
+                    however, is on the form <code>name = expression</code>, and will result in the
+                    <code>setNamedArgument</code> method being called.
+                </p>
+                
+<source><![CDATA[public class AttributeDemo {
+    public static void main (String args[]) {
+        System.out.println (Attributes.getAttributes (AttributeDemo.class));
+    }
+}]]></source>
+                
+                <p>
+                    This is where we access the attributes. The <code>Attributes.getAttributes</code>
+                    method returns a Collection of all attributes attached to the <code>AttributeDemo</code>
+                    class.
+                </p>
+                
+            </subsection>
+            
+            <subsection name="build.xml">
+                
+                <p>
+                    The build.xml file is pretty much what you'd expect - a target to compile the
+                    Java sources, and a target to run the demo. But in addition you'll find a target
+                    to preprocess the Java sources.
+                </p>
+                
+                <p>
+                    The attribute compiler works by first generating a bunch of extra Java sources
+                    (one extra file per class with attributes). These extra java sources are then
+                    compiled along with the original Java sources. Here's some art to illustrate
+                    the process:
+                </p>
+                
+                <source><![CDATA[+------------+                              +--------------------+
+|Java Sources|----> Attribute Compiler ---->|Generated Java Files|   
++------------+                              +--------------------+
+      |                                                 |
+      |                                                 |
+      |               +-------------+                   |
+      +-------------->|Java Compiler|<------------------+
+                      +-------------+
+                             |
+                             v
+                    +-----------------+
+                    |Java .class files|
+                    +-----------------+]]></source>
+                
+                <p>
+                    We must therefore invoke the Attribute Compiler before compiling the sources.
+                </p>
+                
+                <source><![CDATA[<project default="run" name="commons-attributes ant demo" basedir=".">
+    
+    <taskdef resource="org/apache/commons/attributes/anttasks.properties"/>]]></source>
+                
+                <p>
+                    Nothing special here. We define the Ant tasks provided by the
+                    commons-attributes compiler.
+                </p>
+                
+                <source><![CDATA[    <target name="clean" description="o Clean up the generated files">
+        <delete>
+            <fileset dir="${basedir}" includes="*.class,*$*"/>
+        </delete>
+    </target>]]></source>
+    
+                <p>
+                    Again nothing special. Just a convenience target to clean up all
+                    generated files. But after that comes:
+                </p>
+                
+                <source><![CDATA[    <target name="compile-attributes" description="o Run the commons-attributes precompiler">
+        <attribute-compiler destdir=".">
+            <fileset dir="." includes="*.java"/>
+        </attribute-compiler>
+    </target>]]></source>
+                
+                <p>
+                    This is where we do all the preprocessing. The Attribute Compiler generates a set of Java
+                    sources with attribute information in them. This is where we tell the compiler to generate
+                    <i>attribute repositories</i> (autogenerated .java files) for all existing .java files.
+                    When those files are generated, we go on to compile everything:
+                </p>
+                
+                <source><![CDATA[    <target name="compile" depends="compile-attributes" description="o Compile the code">
+        <javac 
+            srcdir="." 
+            destdir="${basedir}" 
+            deprecation="true" 
+            debug="true" 
+            classpath="${ant.home}/lib/commons-attributes-api-2.2.jar;."
+            optimize="false">
+        </javac>
+    </target>]]></source>
+                
+                <p>
+                    Since we use attributes, we have to include the commons-attributes-api-2.2.jar file in the classpath.
+                </p>
+                
+                <source><![CDATA[    <target name="run" description="o Compile and run the demo" depends="compile">
+        <java 
+            classpath="${ant.home}/lib/commons-attributes-api-2.2.jar;."
+            classname="AttributeDemo"/>
+    </target>]]></source>
+                
+                <p>
+                    This target simply runs the compiled demo class. JDK 1.4 users can in addition to this generate 
+                    Javadocs:
+                </p>
+                
+                <source><![CDATA[    <target name="javadoc" description="o Create Javadocs for the demo">
+        <mkdir dir="${basedir}/javadoc/"/>
+        <javadoc 
+            destdir="${basedir}/javadoc/"
+            additionalparam="-J-Dorg.apache.commons.attributes.javadoc.CATaglet.sources=${basedir}">
+            <taglet
+                name="org.apache.commons.attributes.javadoc.CATaglet"
+                path="${ant.home}/lib/commons-attributes-compiler-2.2.jar"
+             />
+            <fileset dir="${basedir}/" includes="**/*.java" />
+        </javadoc>
+    </target>]]></source>
+                
+                <p>
+                    See <a href="documenting.html">Documenting</a> for a walkthrough of the Javadoc
+                    Taglet.
+                </p>
+                
+                <source><![CDATA[</project>
+]]></source>
+                
+            </subsection>
+            
+        </section>
+        
+    </body>
+    
+</document>
