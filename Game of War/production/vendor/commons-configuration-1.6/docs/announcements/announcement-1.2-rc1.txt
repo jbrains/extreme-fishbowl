@@ -1,0 +1,146 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.2-rc1 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  New Features:
+
+o If an include file with a relative path cannot be found in the base path, 
+  PropertiesConfiguration now also tries to resolve it based on its own 
+  location. Issue: CONFIGURATION-83. 
+o XMLConfiguration now sets a valid system id in the InputSource used for 
+  loading files. This enables XML parsers to correctly resolve relative 
+  files, e.g. DTDs. 
+o New configurations implementing the "property list" format used in 
+  NeXT/OpenStep and its XML variant used in Mac OS X. 
+  (PropertyListConfiguration and XMLPropertyListConfiguration) Issue: 
+  CONFIGURATION-195. 
+o Added support for XMLPropertiesConfiguration in ConfigurationFactory. A 
+  &amp;lt;properties&amp;gt; element will generate a XMLPropertiesConfiguration if 
+  the filename ends with ".xml". 
+o PropertiesConfiguration now supports escaped key/value separators in the 
+  keys (i.e foo\:key = bar). Issue: CONFIGURATION-184. 
+o PropertiesConfiguration now supports all key/value separators supported by 
+  java.util.Properties ('=', ':' and white space characters). Issue: 
+  CONFIGURATION-166. 
+o XMLConfiguration now provides some support for validating XML documents. 
+  With the setValidating() method DTD validation can be enabled. It is also 
+  possible to set a custom DocumentBuilder allowing a caller to perform 
+  enhanced configuration of the XML loading process. Issue: 
+  CONFIGURATION-206. 
+
+  Changes:
+
+o The reload() method in AbstractFileConfiguration was updated to prevent 
+  reentrant invocation, which may be caused by some methods when they are 
+  called during a reloading operation. Issue: CONFIGURATION-33. 
+o AbstractHierarchicalFileConfiguration, a new base class for file based 
+  hierarchical configurations, was introduced. XMLConfiguration now extends 
+  this class. 
+o XMLConfiguration now prints the used encoding in the xml declaration of 
+  generated files. In earlier versions always the default encoding was 
+  written. PropertiesConfiguration now always uses the platform specific line 
+  separator when saving files. Issue: CONFIGURATION-41. Thanks to Kay Doebl. 
+o PropertiesConfiguration now translates properly the escaped unicode 
+  characters (like \u1234) used in the property keys. This complies with the 
+  specification of java.util.Properties. Issue: CONFIGURATION-8. 
+o ConfigurationConverter.getProperties() now uses the delimiter of the 
+  specified configuration to convert the list properties into strings. Issue: 
+  CONFIGURATION-123. 
+o The interpolation of variables (${foo}) is now performed in all property 
+  getters of AbstractConfiguration and DataConfiguration. As a side effect 
+  the Properties object returned by ConfigurationConverter.getProperties() 
+  contains only interpolated values. Issue: CONFIGURATION-123. 
+o PropertiesConfiguration now uses the ISO-8859-1 encoding by default instead 
+  of the system encoding to comply with the specification of 
+  java.util.Properties. Issue: CONFIGURATION-35. 
+o JNDIConfiguration no longer logs an error when attempting to get a property 
+  that doesn't exist in the configuration. Issue: CONFIGURATION-44. 
+o Attempting to load a configuration from a directory instead of a file will 
+  now throw a ConfigurationException. Issue: CONFIGURATION-99. 
+o If a multi-valued property was involved in an interpolation operation, 
+  AbstractConfiguration created a string representation of the list of all 
+  values. This was changed to only use the first value, which makes more 
+  sense in this context and is consistent with other getters for single 
+  valued properties. Issue: CONFIGURATION-28. 
+o Fixed MapConfiguration to store the list of values added under a same key 
+  instead of the last value added. Issue: CONFIGURATION-117. Thanks to Steve 
+  Bate. 
+o Fixed a bug in the handling of relative file names in ConfigurationFactory: 
+  In most cases relative file names were not resolved relative to the 
+  location of the configuration definition file as stated in the 
+  documentation. This behavior was now changed to always be in sync with the 
+  documentation. This may have an impact on existing code which uses 
+  workarounds for the erroneous resolving mechanism. Issue: CONFIGURATION-80. 
+o Empty elements or elements whose content consists only of comments or 
+  whitespace are now taken into account by XMLConfiguration. They are added 
+  to the configuration; their value is an empty string. Issue: 
+  CONFIGURATION-6. 
+o getKeys() in HierarchicalConfiguration now returns the keys in the same 
+  order the properties were inserted. Issue: CONFIGURATION-74. 
+o Commons Configuration now depends on Commons Collections 3.1 instead of 3.0 
+o Resolved some issues with XMLConfiguration and properties containing the 
+  delimiter character. These properties are now correctly treated, escaping 
+  the delimiter will work, too. Issue: CONFIGURATION-97. 
+o Commons Configuration now depends on Commons Lang 2.1 instead of 2.0 
+o Comment lines for PropertiesConfiguration can start with the '!' char 
+  (compatibility with java.util.Properties). Issue: CONFIGURATION-207. 
+o Because ConfigurationUtils.copy() does not fully support hierarchical 
+  configurations a clone() method was added to HierarchicalConfiguration that 
+  can be used instead. Issue: CONFIGURATION-84. 
+o AbstractFileConfiguration now always sets a valid base path if the 
+  configuration file could be located. This allows PropertiesConfiguration to 
+  resolve include files even when loaded from class path. Issue: 
+  CONFIGURATION-121. 
+o Updated XMLConfiguration to correctly deal with properties containing dots 
+  in their names. Such properties could not be accessed before. Issue: 
+  CONFIGURATION-85. 
+o PropertiesConfiguration's handling of backslash characters at the end of 
+  line was incorrect when there was an even number of trailing backslashes. 
+  This is now fixed. Issue: CONFIGURATION-9. 
+o Fixed a problem related to file based configurations that are loaded from a 
+  URL which is application/x-www-form-urlencoded: the save() method would 
+  store such files at a wrong location. Issue: CONFIGURATION-130. 
+o Updated FileChangedReloadingStrategy to use the file based configuration's 
+  source URL to find the file to watch. Before that it was possible that the 
+  strategy checked the wrong file. For configuration files loaded from a jar 
+  FileChangedReloadingStrategy now checks the jar file itself for changes. 
+  Finally a bug was fixed which caused the strategy to check the watched 
+  file's last change date on every invocation of its reloadingRequired() 
+  method ignoring its refresh delay. Thanks to Jorge Ferrer. Issue: 
+  CONFIGURATION-50. 
+o Fixed a bug in the collaboration between XMLConfiguration and its reloading 
+  strategy: The configuration did not check its reloading strategy, so no 
+  reload was performed. Issue: CONFIGURATION-62. 
+o Disabled auto save mode during PropertiesConfiguration.load(). Prior it was 
+  possible that the properties file to be loaded was immideately overwritten. 
+  Issue: CONFIGURATION-119. 
+o Under certain circumstances it was possible that a reloading strategy set 
+  for PropertiesConfiguration interferred with the save() method causing the 
+  configuration file to be erased. This has now been fixed. Issue: 
+  CONFIGURATION-89. 
+o AbstractFileConfiguration now stores the URL of the config file in the 
+  load() methods. This URL is reused by the save() method to ensure that the 
+  same file is written. Issue: CONFIGURATION-94. Thanks to Jamie M. 
+  Guillemette. 
+o XMLPropertiesConfiguration no longer depends on Digester to parse the 
+  configuration file, it's now implemented with a pure SAX parser. Thanks to 
+  Alistair Young. 
+o Fixed a bug which causes XMLConfiguration.save to lose attribute values 
+  under some circumstances. The clear() method now also ensures that the 
+  associated DOM document is always cleared. Issue: CONFIGURATION-49. Thanks 
+  to Mi Zhang. 
+o XMLConfiguration now parse the configuration using the encoding declared in 
+  the XML header instead of the OS default encoding. Issue: CONFIGURATION-13. 
+  Thanks to Kunihara Tetsuya. 
+o XMLConfiguration now uses the delimiter set by setDelimiter(char). Thanks 
+  to Zsolt Koppany.  
+
+Have fun!
+-The commons-configuration team
+      

@@ -1,0 +1,143 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.5 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  New Features:
+
+o A new method interpolatedConfiguration() was added to 
+  AbstractConfiguration. This method returns a configuration with the same 
+  type and content as the original configuration, however all variables have 
+  been resolved. Issue: CONFIGURATION-273. 
+o There is a new configuration implementation EnvironmentConfiguration, which 
+  provides access to (OS) environment variables. On Java &amp;gt;= 1.5 this class 
+  can be directly used; on earlier versions a dependency to ant is required. 
+  Issue: CONFIGURATION-284. Thanks to Nicolas De Loof. 
+o A new method registerEntityId() was added to XMLConfiguration, which allows 
+  to register URLs for entities. A new default implementation of the 
+  EntityResolver interface handles these entities automatically. Issue: 
+  CONFIGURATION-290. 
+o DefaultConfigurationBuilder will now notify registered error listeners 
+  about optional configuration sources that could not be created. Before 
+  exceptions thrown by optional configurations were swallowed Issue: 
+  CONFIGURATION-285. 
+o The base implementation of clear() in AbstractConfiguration now checks for 
+  a potential UnsupportedOperationException when iterating over the existing 
+  properties. Issue: CONFIGURATION-277. 
+o A new getSource() method was added to CompositeConfiguration and 
+  CombinedConfiguration, which returns the child configuration, in which a 
+  given property is defined. Issue: CONFIGURATION-215. 
+o A SubnodeConfiguration per default does not see certain changes of its 
+  parent configuration (e.g. reloads). With a new boolean parameter of 
+  HierarchicalConfiguration's configurationAt() method a mode can be enabled, 
+  in which the subnode configuration checks for such changes and reconstructs 
+  itself if necessary. Issue: CONFIGURATION-264. 
+o DataConfiguration now supports java.net.InetAddress, 
+  javax.mail.internet.InternetAddress, and Java 5 enumeration types. 
+  Properties are converted to these types using the new generic getters. 
+o Generic get methods have been added to DataConfiguration (get(), getArray() 
+  and getList()) 
+o File configurations can now be saved to FTP URLs, or any other URL protocol 
+  supporting data output. Issue: CONFIGURATION-249. 
+o Date objects are now supported in ASCII plist files. Issue: 
+  CONFIGURATION-261. 
+
+  Fixed bugs:
+
+o Resolving of variables with the prefix const (constant fields) caused a 
+  ClassCastException under certain circumstances if non-String fields were 
+  involved. This has been fixed. Issue: CONFIGURATION-299. 
+o A bug in XMLConfiguration caused that attributes of the root element could 
+  not be changed. This has been fixed. Issue: CONFIGURATION-296. 
+o The subset() method of HierarchicalConfiguration now takes the value of the 
+  subset's root node into account if it is not ambigous. Issue: 
+  CONFIGURATION-295. 
+o Nodes added to a XMLConfiguration using the addNodes() method could lose 
+  their value when the configuration was saved. This is now fixed. Issue: 
+  CONFIGURATION-294. 
+o New copy() and append() methods have been added to AbstractConfiguration. 
+  They replace the methods with the same names in ConfigurationUtils, which 
+  do not handle all features of AbstractConfiguration properly (e.g. list 
+  delimiters in property values are incorrectly treated). To avoid such 
+  problems, the new methods should be used. Issue: CONFIGURATION-272. 
+o The addNodes() method of hierarchical file-based configurations now 
+  correctly triggers an auto save. Issue: CONFIGURATION-291. 
+o HierarchicalConfiguration.addNodes() now resets the reference property of 
+  all nodes to be added. This fixes a problem with XMLConfiguration, which 
+  now detects the added nodes as new and treats them correctly when the 
+  configuration is saved. Issue: CONFIGURATION-287. 
+o ConfigurationUtils.convertToHierarchical() now correctly deals with 
+  property values containing escaped list delimiters. This also affects 
+  CombinedConfiguration when sub configurations with such property values are 
+  contained. Issue: CONFIGURATION-283. 
+o AbstractConfiguration.addProperty() now correctly deals with list and array 
+  properties if delimiter parsing is disabled. Issue: CONFIGURATION-275. 
+o The default expression engine used by HierarchicalConfiguration instances 
+  is now lazily initialized. This avoids NullPointerExceptions in certain 
+  server environments after a redeploy. Issue: CONFIGURATION-282. 
+o Cycles in the JNDI tree no longer cause a stack overflow in 
+  JNDIConfiguration. Issue: CONFIGURATION-281. 
+o Using file-based configurations in auto-save mode together with a reloading 
+  strategy could cause data loss. This has been fixed. Issue: 
+  CONFIGURATION-280. Thanks to Roman Kurmanowytsch. 
+o A PropertiesConfiguration that was created from a non existing file lost 
+  its content when it was saved. This problem has been solved. Issue: 
+  CONFIGURATION-279. 
+o PropertiesConfiguration now supports escaping the escape character for list 
+  delimiters. Issue: CONFIGURATION-274. 
+o PropertiesConfiguration no longer escapes the list delimiter on saving if 
+  the list delimiter has been disabled. Issue: CONFIGURATION-269. 
+o List properties and properties containing interpolated variables are now 
+  properly saved by INIConfiguration. Issue: CONFIGURATION-270. 
+o INIConfiguration flushes the output at the end of a save operation. Issue: 
+  CONFIGURATION-267. 
+o byte[] properties are properly saved as data fields in the plist 
+  configurations (PropertyListConfiguration and 
+  XMLPropertyListConfiguration). 
+o The object getters in DataConfiguration with no default value (i.e 
+  getURL(key)) now throw a NoSuchElementException if the flag 
+  throwExceptionOnMissing is set. 
+o XMLConfiguration used to drop attributes when an element's value was a 
+  list. This has been fixed. Issue: CONFIGURATION-263. 
+o Fixed a potential issue in DatabaseConfiguration where an error on closing 
+  a statement would prevent the connection from being closed. Issue: 
+  CONFIGURATION-180. 
+
+  Changes:
+
+o Some of the dependencies in the m2 pom have been updated to be more 
+  consistent. Thanks to Jörg Schaible. 
+o The dependency to commons-logging was updated to the current version 1.1. 
+  Older versions of commons-logging will still work. Thanks to Jörg Schaible. 
+o The dependencies to commons-codec and commons-jxpath have been marked as 
+  optional. They are not required by the core classes. Thanks to Nicolas De 
+  Loof. 
+o When delimiter parsing was disabled for XMLConfiguration, saving and 
+  loading the configuration accidently added escape characters to properties 
+  containing the list delimiter character. This has been fixed. It is now 
+  also possible to escape the escape character itself. Issue: 
+  CONFIGURATION-268. 
+o The return value of FileConfiguration.getFile() is now always consistent 
+  with the result of getURL(). Issue: CONFIGURATION-253. 
+o INIConfiguration uses the platform's specific line separator instead of the 
+  Windows line separator. 
+o For hierarchical file-based configurations the auto-save mechanism is now 
+  also triggered if a subnode configuration is changed. In such a case the 
+  new event type EVENT_SUBNODE_CHANGED will be sent to registered listeners. 
+  Issue: CONFIGURATION-265. 
+o ConfigurationInterpolator now also invokes the default lookup object for 
+  variables with a prefix that could not be resolved by their associated 
+  lookup object. Issue: CONFIGURATION-266. Thanks to Tobias Noebel. 
+o XMLPropertyListConfiguration no longer requires commons-digester and 
+  commons-beanutils to work. 
+o Fixed INIConfiguration to handle the quoted values and the lines containing 
+  a value and a comment.  
+
+Have fun!
+-The commons-configuration team
+      

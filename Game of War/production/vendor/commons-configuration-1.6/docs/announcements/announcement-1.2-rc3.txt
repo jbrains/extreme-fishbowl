@@ -1,0 +1,24 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.2-rc3 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  Changes:
+
+o Commons Configuration now declares a dependency to Xalan. As with Xerces 
+  this dependency is only needed for JDK 1.3. It was introduced in a process 
+  of making Configuration buildable on a JDK 1.3. Documentation about the 
+  build process was also added. 
+o The dependency to Commons Beanutils Collections was unnecessary and thus 
+  removed. 
+o Commons Configuration now depends on Commons Digester 1.6 instead of 1.5. 
+  (This was done only to pick up the latest available release of digester.)  
+
+Have fun!
+-The commons-configuration team
+      

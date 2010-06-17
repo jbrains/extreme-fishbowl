@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Commons Configuration - Configuration Overview</title><style type="text/css" media="all">
+          @import url("../style/maven-base.css");
+          
+			    @import url("../style/maven-theme.css");@import url("../style/project.css");</style><link rel="stylesheet" href="../style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Eric Pugh"></meta><meta name="email" content="epugh@upstate.com"></meta><meta name="author" content="Emmanuel Bourg"></meta><meta name="email" content="smanux@lfjr.net"></meta></head><body class="composite"><div id="banner"><a href="http://commons.apache.org/" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://commons.apache.org/images/logo.png"></img></a><a href="http://commons.apache.org/configuration/" id="projectLogo"><img alt="Commons Configuration" src="../images/logo.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft">
+                	Last published: 19 December 2008
+                  | Doc for 1.6</div><div class="xright">
+        
+        <a href="http://commons.apache.org/" class="externalLink" title="External Link">Apache Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuConfiguration"><h5>Configuration</h5><ul><li class="none"><a href="../index.html">Home</a></li><li class="none"><a href="http://commons.apache.org/downloads/download_configuration.cgi" class="externalLink" title="External Link">Download</a></li><li class="none"><a href="../changes-report.html">Release History</a></li><li class="none"><a href="../userguide/user_guide.html">User's Guide</a></li><li class="none"><a href="../userguide-1.2/index.html">Howtos (1.2 release)</a></li><li class="none"><a href="../dependencies.html">Runtime Dependencies</a></li><li class="none"><a href="../apidocs/index.html">Javadoc (current release)</a></li><li class="none"><a href="../javadocarchive.html">Javadoc (old releases)</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="../building.html">Building</a></li><li class="none"><a href="../tasks-report.html">Roadmap</a></li><li class="none"><a href="../issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="http://svn.apache.org/repos/asf/commons/proper/configuration/" class="externalLink" title="External Link">SVN</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="../index.html">About Commons Configuration</a></li><li class="none"><a href="../downloads.html">Downloads</a></li><li class="collapsed"><a href="../project-info.html">Project Info</a></li><li class="collapsed"><a href="../maven-reports.html">Project Reports</a></li><li class="none"><a href="http://commons.apache.org/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://commons.apache.org/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://commons.apache.org/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://commons.apache.org/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://commons.apache.org/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://commons.apache.org/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://commons.apache.org/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://commons.apache.org/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://commons.apache.org/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="../images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Using_Configuration"></a><h2>Using Configuration</h2><p>
+        Commons Configuration allows you to access configuration properties from
+        a variety of different sources. No matter if they are stored in a properties file,
+        a XML document, or a JNDI tree, they can all be accessed in the same way
+        through the generic <code><a href="../apidocs/org/apache/commons/configuration/Configuration.html">Configuration</a></code>
+        interface.
+      </p><p>
+        Another strength of Commons Configuration is its ability to mix configurations
+        from heterogeneous sources and treat them like a single logic configuration.
+        This section will introduce you to the different configurations
+        available and will show you how to combine them.
+      </p><div class="subsection"><a name="Configuration_Sources"></a><h3>Configuration Sources</h3><p>
+        Currently there are quite a number of different sources of Configuration objects. But,
+        by just using a Configuration object versus a specific type like XMLConfiguration or
+        JNDIConfiguration, you are sheltered from the mechanics of actually retrieving the
+        configuration values. These various sources include:
+        <ul>
+          <li>
+              <strong>PropertiesConfiguration</strong>
+              Loads configuration values from a properties file.
+          </li>
+          <li>
+              <strong>XMLConfiguration</strong>
+              Takes values from an XML document.
+          </li>
+          <li>
+              <strong>INIConfiguration</strong>
+              Loads the values from a .ini file as used by Windows.
+          </li>
+          <li>
+              <strong>PropertyListConfiguration</strong>
+              Loads values from an OpenStep .plist file. XMLPropertyListConfiguration is also
+              available to read the XML variant used by Mac OS X.
+          </li>
+          <li>
+              <strong>JNDIConfiguration</strong>
+              Using a key in the JNDI tree, can retrieve values as configuration properties.
+          </li>
+          <li>
+              <strong>BaseConfiguration</strong>
+              An in-memory method of populating a Configuration object.
+          </li>
+          <li>
+              <strong>HierarchicalConfiguration</strong>
+              An in-memory Configuration object that is able to deal with complex
+              structured data.
+          </li>
+          <li>
+              <strong>SystemConfiguration</strong>
+              A configuration using the system properties
+          </li>
+          <li>
+              <strong>ConfigurationConverter</strong>
+              Takes a java.util.Properties or an org.apache.commons.collections.ExtendedProperties
+              and converts it to a Configuration object.
+          </li>
+       </ul>
+
+      </p></div><div class="subsection"><a name="Mixing_Configuration_Sources"></a><h3>Mixing Configuration Sources</h3><p>
+        Often you want to provide a base set of configuration values, but allow the user to easily
+        override them for their specific environment.  Well one way is to hard code the default
+        values into your code, and have then provide a property file that overrides this.  However,
+        this is a very rigid way of doing things. Instead, with the <code>CompositeConfiguration</code>
+        you can provide many different ways of setting up a configuration. You can either do it
+        manually:
+      </p>
+    <div class="source"><pre>
+CompositeConfiguration config = new CompositeConfiguration();
+config.addConfiguration(new SystemConfiguration());
+config.addConfiguration(new PropertiesConfiguration("application.properties"));
+</pre></div>
+  <p>or via the <code>ConfigurationFactory</code> class:</p>
+    <div class="source"><pre>
+ConfigurationFactory factory = new ConfigurationFactory("config.xml");
+Configuration config = factory.getConfiguration();
+</pre></div>
+  <p>
+        The <code>config.xml</code> file used in the example above is a configuration descriptor,
+        it specifies the Configuration objects to load. Here is an example of descriptor:
+      </p>
+    <div class="source"><pre>
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+
+&lt;configuration&gt;
+  &lt;system/&gt;
+  &lt;properties fileName="application.properties"/&gt;
+&lt;/configuration&gt;
+</pre></div>
+  <p>
+        What this says is that we are loading up all system properties, as well as the properties
+        file <code>application.properties</code>. The order of precedence is first to last. So in
+        the above example, if a property is not found in the system properties, it'll be searched
+        in the properties file. This allows you to set up default values in a properties file, and
+        override them with the system properties.
+      </p></div><div class="subsection"><a name="The_Configuration_interface"></a><h3>The Configuration interface</h3><p>
+        All the classes in this package that represent different kinds of configuration
+        sources share a single interface:
+        <code><a href="../apidocs/org/apache/commons/configuration/Configuration.html">Configuration</a></code>.
+        This interface allows you to access and manipulate configuration properties
+        in a generic way.
+      </p><p>
+        A major part of the methods defined in the <code>Configuration</code>
+        interface deals with retrieving properties of different data types. All
+        these methods take a key as an argument that points to the desired
+        property. This is a string value whose exact meaning depends on the
+        concrete <code>Configuration</code> implementation used. They try to
+        find the property specified by the passed in key and convert it to their
+        target type; this converted value will be returned. There are also
+        overloaded variants of all methods that allow to specify a default value,
+        which will be returned if the property cannot be found. The following
+        data types are supported:
+        <ul>
+          <li>BigDecimal</li>
+          <li>BigInteger</li>
+          <li>boolean</li>
+          <li>byte</li>
+          <li>double</li>
+          <li>float</li>
+          <li>int</li>
+          <li>long</li>
+          <li>short</li>
+          <li>String</li>
+        </ul>
+        The names of these methods start with <code>get</code> followed by their
+        data type. The <code>getString()</code> method for instance will return
+        String values, <code>getInt()</code> will operate on integers.
+      </p><p>
+        Properties can have multiple values, so it is also possible to query a
+        list containing all of the available values. This is done using the
+        <code>getList()</code> method.
+      </p><p>
+        For manipulating properties or their values the following methods can
+        be used:
+        <dl>
+          <dt><code>addProperty()</code></dt>
+          <dd>Adds a new property to the configuration. If this property already
+          exists, another value is added to it (so it becomes a multi-valued
+          property).</dd>
+          <dt><code>clearProperty()</code></dt>
+          <dd>Removes the specified property from the configuration.</dd>
+          <dt><code>setProperty()</code></dt>
+          <dd>Overwrites the value of the specified property. This is the same
+          as removing the property and then calling <code>addProperty()</code>
+          with the new property value.</dd>
+          <dt><code>clear()</code></dt>
+          <dd>Wipes out the whole configuration</dd>
+        </dl>
+      </p></div><div class="subsection"><a name="Threading_issues"></a><h3>Threading issues</h3><p>
+        The most concrete implementations of the <code>Configuration</code>
+        interface that are shipped with this library are not thread-safe.
+        They can be accessed concurrently in a read-only manner. However if one
+        thread modifies a configuration object, manual synchronization has to be
+        performed to ensure correctness of data. Notes about the thread
+        safety of conrete implementation classes can be found in the Javadocs
+        for these classes.
+      </p></div></div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2001-2008, The Apache Software Foundation</div><div class="clear"><hr></hr></div></div></body></html>

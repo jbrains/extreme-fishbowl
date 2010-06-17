@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Ant Tasks - Commons VFS</title><style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          
+          @import url("./style/maven-theme.css");@import url("./style/project.css");</style><link rel="stylesheet" href="./style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Adam Murdoch"></meta><meta name="email" content="adammurdoch@apache.org"></meta></head><body class="composite"><div id="banner"><a href="http://jakarta.apache.org" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://jakarta.apache.org/images/original-jakarta-logo.gif"></img></a><a href="http://jakarta.apache.org/commons/vfs/" id="projectLogo"><img alt="Commons VFS" src="./images/vfs-logo-white.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft"></div><div class="xright">
+        
+        <a href="http://www.apache.org" class="externalLink" title="External Link">Apache</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org" class="externalLink" title="External Link">Jakarta</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuCommons VFS"><h5>Commons VFS</h5><ul><li class="none"><a href="index.html">Overview</a></li><li class="none"><a href="download.html">Download and Build</a></li><li class="none"><a href="3rdparty.html">3rd party plugins</a></li><li class="none"><a href="api.html">Using the API</a></li><li class="none"><a href="apidocs/index.html">API JavaDocs</a></li><li class="none"><a href="filesystems.html">File Systems</a></li><li class="none"><strong><a href="anttasks.html">Ant Tasks</a></strong></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/VFS" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="testserver.html">Test Server</a></li><li class="none"><a href="mail-lists.html">Mailing Lists</a></li><li class="none"><a href="issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="cvs-usage.html">Source Repository</a></li><li class="none"><a href="todo.html">To Do List</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="index.html">About</a></li><li class="collapsed"><a href="project-info.html">Project Info</a></li><li class="collapsed"><a href="maven-reports.html">Project Reports</a></li><li class="none"><a href="http://jakarta.apache.org/commons/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://jakarta.apache.org/commons/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://jakarta.apache.org/commons/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://jakarta.apache.org/commons/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://jakarta.apache.org/commons/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="legend"><h5>Legend</h5><ul><li class="externalLink">External Link</li><li class="newWindow">Opens in a new window</li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="./images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Ant_Tasks"></a><h2>Ant Tasks</h2>
+            <p>
+                Commons VFS includes several Ant tasks that can be used
+                to create, delete, copy and move files of any supported type.
+                The tasks are:
+            </p>
+            <ul>
+                <li>
+                    <a href="#V-Copy">
+                        <code>&lt;v-copy&gt;</code>
+                    </a>
+                    .
+                    Copies a set of source folders and files to a destination
+                    folder.
+                </li>
+                <li>
+                    <a href="#V-Delete">
+                        <code>&lt;v-delete&gt;</code>
+                    </a>
+                    .
+                    Deletes a file or folder.
+                </li>
+                <li>
+                    <a href="#V-Mkdir">
+                        <code>&lt;v-mkdir&gt;</code>
+                    </a>
+                    .
+                    Creates a folder.
+                </li>
+                <li>
+                    <a href="#V-Move">
+                        <code>&lt;v-move&gt;</code>
+                    </a>
+                    .
+                    Moves a set of source folders and files to a destination
+                    folder.
+                </li>
+                <li>
+                    <a href="#V-Sync">
+                        <code>&lt;v-sync&gt;</code>
+                    </a>
+                    .
+                    Synchronises a destination folder with a set of source
+                    folder and files.
+                </li>
+            </ul>
+            <p>
+                All file name attributes support relative and absolute local
+                file names, and
+                <a href="filesystems.html">absolute URI</a>
+                .
+                File names are interpreted relative to the Ant project's base
+                directory.
+            </p>
+
+            <div class="subsection"><a name="Using_the_Tasks"></a><h3>Using the Tasks</h3>
+                <p>
+                    To use the Ant tasks, copy commons-vfs.jar and its
+                    dependencies into the
+                    <code>$ANT_HOME/lib</code>
+                    directory,
+                    and use the following in your Ant scipt to define the tasks:
+                </p>
+
+                
+    <div class="source"><pre>
+&lt;taskdef resource="org/apache/commons/vfs/tasks/tasks.properties"/&gt;
+                    </pre></div>
+  
+
+                <p>
+                    Alternatively, you can provide an explicit classpath when
+                    you define the tasks:
+                </p>
+
+                
+    <div class="source"><pre>
+&lt;taskdef resource="org/apache/commons/vfs/tasks/tasks.properties"&gt;
+    &lt;classpath&gt; ... &lt;/classpath&gt;
+&lt;/taskdef&gt;
+                    </pre></div>
+  
+
+                <p>
+                    You can also use antlib:
+                    <br></br>
+                    <b>Notice: VFS tasks registered that way do not have te "v-" prefix.</b>
+                    If you migrate to antlib simply replace "v-" by e.g. "vfs:" or whatever
+                    namespace you use.
+                </p>
+
+                
+    <div class="source"><pre>
+&lt;project ... xmlns:vfs="antlib:org.apache.commons.vfs.tasks"&gt;
+    &lt;target name="dosomething"&gt;
+	    &lt;vfs:copy .../&gt;
+    &lt;/target&gt;
+&lt;/project&gt;
+                    </pre></div>
+  
+
+            </div>
+        </div><div class="section"><a name="V-Copy"></a><h2>V-Copy</h2>
+            <p>Copies a set of files to a destination folder. Does not copy
+                source files where the destination file exists and is newer than
+                the source file. The copy task takes the following attributes:</p>
+
+            <table class="bodyTable">
+                <tr class="b">
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Required</th>
+                </tr>
+                <tr class="a">
+                    <td>destdir</td>
+                    <td>The destination folder. This folder is created if it
+                        does not exist.</td>
+                    <td rowspan="2">One only</td>
+                </tr>
+                <tr class="b">
+                    <td>destfile</td>
+                    <td>The destination file. Can only be used if there is a
+                        single source file.</td>
+                </tr>
+                <tr class="a">
+                    <td>srcdir</td>
+                    <td>The source folder. If used the includes and desdir
+                        attributes should be specified.</td>
+                    <td>No</td>
+                </tr>
+                <tr class="b">
+                    <td>includes</td>
+                    <td>A comma or space separated list of files. The files
+                        are resolved in combination with the specified
+                        srcdir attribute.</td>
+                    <td>Only if srcdir is specified.</td>
+                </tr>
+                <tr class="a">
+                    <td>overwrite</td>
+                    <td>Always copy files, ignoring the last-modified time of
+                        the destination file.</td>
+                    <td>No, default is
+                        <code>false</code>
+                        .
+                    </td>
+                </tr>
+                <tr class="b">
+                    <td>preservelastmodified</td>
+                    <td>Set the last-modified time of destination files to
+                        the same value as the source files. May not be supported
+                        by the destination file system.</td>
+                    <td>No, default is
+                        <code>true</code>
+                        .
+                    </td>
+                </tr>
+                <tr class="a">
+                    <td>srcdirisbase</td>
+                    <td>Set whether the source directory should be used as base directory.
+                        If set to true, the subdirectories of the specified directories will be copied as well.</td>
+                    <td>No, default is
+                        <code>false</code>
+                        .
+                    </td>
+                </tr>
+                <tr class="b">
+                    <td>src</td>
+                    <td>A source file or folder to copy. Copies all descendents
+                        of a folder.</td>
+                    <td>No</td>
+                </tr>
+            </table>
+
+            <div class="subsection"><a name="Nested_Elements"></a><h3>Nested Elements</h3>
+                <p>
+                    <b>
+                        <code>&lt;src&gt;</code>
+                    </b>
+                </p>
+
+                <p>Defines a source file or folder to copy. It takes the
+                    following attributes:</p>
+
+                <table class="bodyTable">
+                    <tr class="a">
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Required</th>
+                    </tr>
+                    <tr class="b">
+                        <td>file</td>
+                        <td>The source file.</td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div><div class="section"><a name="V-Move"></a><h2>V-Move</h2>
+            <p>Moves a set of files to a destination folder. Has the same
+                attributes and elements as the copy task and following attributes:</p>
+            <table class="bodyTable">
+                <tr class="a">
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Required</th>
+                </tr>
+                <tr class="b">
+                    <td>tryRename</td>
+                    <td>The destination folder. This folder is created if it
+                        does not exist.</td>
+                    <td>No, default is
+                        <code>false</code>
+                    </td>
+                </tr>
+            </table>
+        </div><div class="section"><a name="V-Sync"></a><h2>V-Sync</h2>
+            <p>Synchronises a destination folder with a set of source files.
+                Has the same attributes and elements as the copy task.</p>
+        </div><div class="section"><a name="V-Delete"></a><h2>V-Delete</h2>
+            <p>Deletes a file or folder. It takes the following attributes:</p>
+
+            <table class="bodyTable">
+                <tr class="a">
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Required</th>
+                </tr>
+                <tr class="b">
+                    <td>file</td>
+                    <td>The file or folder to delete. All descendents of
+                        the folder are deleted.</td>
+                    <td rowspan="2">One only</td>
+                </tr>
+                <tr class="a">
+                    <td>srcdir</td>
+                    <td>The source folder. If used the includes attribute
+                        should be specified.</td>
+                </tr>
+                <tr class="b">
+                    <td>includes</td>
+                    <td>A comma or space separated list of files. The files
+                        are resolved in combination with the specified
+                        srcdir attribute.</td>
+                    <td>Only if srcdir is specified.</td>
+                </tr>
+            </table>
+        </div><div class="section"><a name="V-Mkdir"></a><h2>V-Mkdir</h2>
+            <p>Creates a folder. It takes the following attributes:</p>
+
+            <table class="bodyTable">
+                <tr class="a">
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Required</th>
+                </tr>
+                <tr class="b">
+                    <td>dir</td>
+                    <td>The folder create.</td>
+                    <td>Yes</td>
+                </tr>
+            </table>
+
+        </div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2002-2006, The Apache Software Foundation© -Last published: 19 December 2006
+            </div><div class="clear"><hr></hr></div></div></body></html>

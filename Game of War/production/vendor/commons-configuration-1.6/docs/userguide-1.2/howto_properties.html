@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Commons Configuration - Properties files</title><style type="text/css" media="all">
+          @import url("../style/maven-base.css");
+          
+			    @import url("../style/maven-theme.css");@import url("../style/project.css");</style><link rel="stylesheet" href="../style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Emmanuel Bourg"></meta><meta name="email" content="smanux@lfjr.net"></meta><meta name="author" content="Oliver Heger"></meta><meta name="email" content="oliver.heger@t-online.de"></meta></head><body class="composite"><div id="banner"><a href="http://commons.apache.org/" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://commons.apache.org/images/logo.png"></img></a><a href="http://commons.apache.org/configuration/" id="projectLogo"><img alt="Commons Configuration" src="../images/logo.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft">
+                	Last published: 19 December 2008
+                  | Doc for 1.6</div><div class="xright">
+        
+        <a href="http://commons.apache.org/" class="externalLink" title="External Link">Apache Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuConfiguration"><h5>Configuration</h5><ul><li class="none"><a href="../index.html">Home</a></li><li class="none"><a href="http://commons.apache.org/downloads/download_configuration.cgi" class="externalLink" title="External Link">Download</a></li><li class="none"><a href="../changes-report.html">Release History</a></li><li class="none"><a href="../userguide/user_guide.html">User's Guide</a></li><li class="none"><a href="../userguide-1.2/index.html">Howtos (1.2 release)</a></li><li class="none"><a href="../dependencies.html">Runtime Dependencies</a></li><li class="none"><a href="../apidocs/index.html">Javadoc (current release)</a></li><li class="none"><a href="../javadocarchive.html">Javadoc (old releases)</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="../building.html">Building</a></li><li class="none"><a href="../tasks-report.html">Roadmap</a></li><li class="none"><a href="../issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="http://svn.apache.org/repos/asf/commons/proper/configuration/" class="externalLink" title="External Link">SVN</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="../index.html">About Commons Configuration</a></li><li class="none"><a href="../downloads.html">Downloads</a></li><li class="collapsed"><a href="../project-info.html">Project Info</a></li><li class="collapsed"><a href="../maven-reports.html">Project Reports</a></li><li class="none"><a href="http://commons.apache.org/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://commons.apache.org/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://commons.apache.org/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://commons.apache.org/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://commons.apache.org/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://commons.apache.org/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://commons.apache.org/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://commons.apache.org/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://commons.apache.org/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="../images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Properties_files"></a><h2>Properties files</h2><p>
+        Properties files are a popular mean of configuring applications. Of course Commons Configuration
+        supports this format and enhance significantly the basic <code>java.util.Properties</code> class.
+        This section introduces the features of the  <code>PropertiesConfiguration</code> class.
+      </p><div class="subsection"><a name="Loading"></a><h3>Loading</h3><p>
+          At first lets consider that the whole configuration data of an application consists in
+          a single properties file named <code>usergui.properties</code> with the following content:
+        </p>
+    <div class="source"><pre>
+# Properties definining the GUI
+colors.background = #FFFFFF
+</pre></div>
+  <p>
+          To load this file, you'll write:
+        </p>
+    <div class="source"><pre>
+Configuration config = new PropertiesConfiguration("usergui.properties");
+</pre></div>
+  <p>
+          If you do not specify an absolute path, the file will be searched automatically
+          in the following locations:
+          <ul>
+            <li>in the current directory</li>
+            <li>in the user home directory</li>
+            <li>in the classpath</li>
+          </ul>
+        </p><p>
+          Instead of using a constructor that takes a file name you can also
+          invoke one of the <code>load()</code> methods. There are several
+          overloaded variants that allow to load properties from
+          <ul>
+            <li>a file, specified by either a path or a <code>java.io.File</code>
+            object</li>
+            <li>a URL</li>
+            <li>an input stream or a reader.</li>
+          </ul>
+        </p><p>
+          Note that the <code>load()</code> methods do not empty the
+          configuration before new data is loaded. This makes it easy to
+          construct union configurations by simply calling <code>load()</code>
+          multiple times. But if you want to reuse a <code>Configuration</code>
+          object and load a different file, remember to call the
+          <code>clear()</code> method first to ensure that old properties are
+          wiped out.
+        </p></div><div class="subsection"><a name="Includes"></a><h3>Includes</h3><p>
+          If a property is named "<code>include</code>" and the value of that property is the
+          name of a file on the disk, that file will be included into the configuration. Here is
+          an example:
+        </p>
+    <div class="source"><pre>
+# usergui.properties
+
+include = colors.properties
+include = sizes.properties
+</pre></div>
+  
+    <div class="source"><pre>
+# colors.properties
+
+colors.background = #FFFFFF
+</pre></div>
+  </div><div class="subsection"><a name="Automatic_Reloading"></a><h3>Automatic Reloading</h3><p>
+          A common issue with properties file is to handle the reloading of the file when it
+          changes. Typically you would use a thread monitoring the date of the file and reloading
+          the <code>Properties</code> when a more recent date is detected. Commons Configuration
+          integrates this mechanism out of the box, to enable it, just specify a reloading strategy
+          on your configuration:
+        </p>
+    <div class="source"><pre>
+PropertiesConfiguration config = new PropertiesConfiguration("usergui.properties");
+config.setReloadingStrategy(new FileChangedReloadingStrategy());
+</pre></div>
+  <p>
+          Now everytime you edit manually the <code>usergui.properties</code> file, the
+          configuration is automatically refreshed and the modified values are immediately
+          available to your application.
+        </p></div><div class="subsection"><a name="Saving"></a><h3>Saving</h3><p>
+          To save your configuration, just call the <code>save()</code> method:
+        </p>
+    <div class="source"><pre>
+PropertiesConfiguration config = new PropertiesConfiguration("usergui.properties");
+config.setProperty("colors.background", "#000000);
+config.save();
+</pre></div>
+  <p>
+          You can also save a copy of the configuration to another file:
+        </p>
+    <div class="source"><pre>
+PropertiesConfiguration config = new PropertiesConfiguration("usergui.properties");
+config.setProperty("colors.background", "#000000);
+config.save("usergui.backup.properties);
+</pre></div>
+  <p>
+          And if you don't want to bother saving your configuration everytime it changes,
+          you can enable the automatic saving mode:
+        </p>
+    <div class="source"><pre>
+PropertiesConfiguration config = new PropertiesConfiguration("usergui.properties");
+config.setAutoSave(true);
+config.setProperty("colors.background", "#000000); // the configuration is saved after this call
+</pre></div>
+  </div><div class="subsection"><a name="Lists_and_arrays"></a><h3>Lists and arrays</h3><p>
+          Commons Configuration has the ability to return easily a list of values,
+          for example if your file contains a list of comma separated values:
+        </p>
+    <div class="source"><pre>
+# chart colors
+colors.pie = #FF0000, #00FF00, #0000FF
+</pre></div>
+  <p>
+          You don't have to split the value manually, you can retrieve an array directly with:
+        </p>
+    <div class="source"><pre>
+String[] colors = config.getStringArray("colors.pie");
+</pre></div>
+  <p>
+          Alternatively, you can specify a list of values in your properties file by using
+          the same key on several lines:
+        </p>
+    <div class="source"><pre>
+# chart colors
+colors.pie = #FF0000;
+colors.pie = #00FF00;
+colors.pie = #0000FF;
+</pre></div>
+  </div><div class="subsection"><a name="Variable_Interpolation"></a><h3>Variable Interpolation</h3><p>
+          If you are familiar with Ant or Maven, you have most certainly already encountered
+          the variables (like <code>${token}</code>) that are automatically expanded when the
+          configuration file is loaded. Commons Configuration supports this feature as well,
+          here is an example:
+        </p>
+    <div class="source"><pre>
+application.name = Killer App
+application.version = 1.6.2
+
+application.title = ${application.name} ${application.version}
+</pre></div>
+  </div><div class="subsection"><a name="Special_Characters"></a><h3>Special Characters</h3><p>
+          If you need a special character in a property like a line feed, a tabulation or
+          an unicode character, you can specify it with the same escaped notation used for
+          Java Strings. The list separator ("," by default), can also be escaped:
+        </p>
+    <div class="source"><pre>
+key = This \n string \t contains \, escaped \\ characters \u0020
+</pre></div>
+  </div></div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2001-2008, The Apache Software Foundation</div><div class="clear"><hr></hr></div></div></body></html>

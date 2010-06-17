@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>Checkstyle report</title>
+    <link>http://commons.apache.org/configuration//multiproject//commons-configuration/index.html</link>
+    <description>Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>Copyright 2008 The Apache Software Foundation</copyright>
+    <item>
+      <title>File: 201 , Errors: 1 , Warnings: 0 , Infos: 0</title>
+      <link>http://commons.apache.org/configuration//multiproject//commons-configuration/all.html</link>
+      <description>
+        <p>Click
+          <a href="http://commons.apache.org/configuration//multiproject//commons-configuration/index.html">here</a>for the full Checkstyle report.</p>
+        <table border="1" summary="Files">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px">I</th>
+              <th style="width:30px">W</th>
+              <th style="width:30px">E</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <a href="http://commons.apache.org/configuration//multiproject//commons-configuration/all.html#org_apache_commons_configuration_beanutils_BeanHelper_java">org_apache_commons_configuration_beanutils_BeanHelper_java</a>
+              </td>
+              <td>0</td>
+              <td>0</td>
+              <td>1</td>
+            </tr>
+          </tbody>
+        </table>
+      </description>
+    </item>
+  </channel>
+</rss>

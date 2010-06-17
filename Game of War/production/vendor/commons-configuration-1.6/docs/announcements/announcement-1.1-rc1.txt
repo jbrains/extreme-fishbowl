@@ -1,0 +1,106 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.1-rc1 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  New Features:
+
+o ConfigurationFactory now always configures digester to use the context 
+  classloader. This avoids problems in application server environments, which 
+  use their own version of digester. Thanks to Mike Colbert for the patch! 
+  Issue: CONFIGURATION-88. 
+o Added a new configuration, XMLPropertiesConfiguration, supporting the new 
+  XML format for java.util.Properties introduced in Java 1.5. A 1.5 runtime 
+  is not required to use this class. Issue: CONFIGURATION-148. 
+o Added a comment header to PropertiesConfiguration. The header is not parsed 
+  when the file is loaded yet. Issue: CONFIGURATION-190. 
+o Added the setEncoding(String) and the getEncoding() methods to the 
+  FileConfiguration interface to control the encoding of the configuration 
+  file. 
+o Access to the top level element of the XML document is now provided. For 
+  newly created configurations this element can be changed before the 
+  document is written. Issue: CONFIGURATION-210. 
+o Added implementation of a save() method for HierarchicalXMLConfiguration. 
+  Issue: CONFIGURATION-187. 
+o Saving a configuration now creates the path to the file if it doesn't 
+  exist. 
+o Added support for optional configuration sources in definition files for 
+  ConfigurationFactory. A new optional attribute allows to specify whether a 
+  configuration source is mandatory or optional. Issue: CONFIGURATION-162. 
+o Added two methods copy(Configuration, Configuration) and 
+  append(Configuration, Configuration) in ConfigurationUtils to copy 
+  properties between configurations. 
+o File based configurations can now be automatically reloaded when the 
+  underlying file is modified. Issue: CONFIGURATION-147. 
+o Added a clear() method to the Configuration interface to remove all 
+  properties. Issue: CONFIGURATION-156. 
+o Added a SystemConfiguration wrapping the system properties. 
+  ConfigurationFactory recognizes the corresponding &amp;lt;system/&amp;gt; element. 
+  Issue: CONFIGURATION-208. 
+o Added a MapConfiguration to turn any Map into a Configuration. The 
+  getConfiguration() methods in ConfigurationConverter now use 
+  MapConfiguration, as a result the Configuration returned is always 
+  synchronized with the underlying Properties or ExtendedProperties, changes 
+  made to the Configuration are available in the Properties, and 
+  reciprocally. 
+o The "autoSave" feature of XMLConfiguration has been generalized to all file 
+  based configurations. Issue: CONFIGURATION-146. 
+o Numeric properties can now be specified in hexadecimal format, for example 
+  "number = 0xC5F0". Issue: CONFIGURATION-191. 
+o Added a DataConfiguration decorator providing getters for all useful types 
+  found in a configuration (URL, Locale, Date, Calendar, Color, lists and 
+  arrays) 
+o Added 5 new configurations to be used in a web environment: 
+  AppletConfiguration, ServletConfiguration, ServletContextConfiguration, 
+  ServletRequestConfiguration, ServletFilterConfiguration. 
+
+  Fixed bugs:
+
+o Some cleanup of the handling of the base path in file based configurations. 
+  The base path is now always taken into account. Issue: CONFIGURATION-15. 
+o Calling getProperties on a JNDIConfiguration no longer throws an 
+  UnsupportedOperationException. 
+o ConfigurationUtils.locate() now checks if the URL based resources exist. 
+  This fixes a bug preventing configuration files from being found if the 
+  configuration descriptor is in a JAR file (reported by Grant Ingersoll). 
+o Fixed NPE that were caused in the constructors of file based configurations 
+  if an invalid file name was specified. Issue: CONFIGURATION-96. 
+o JNDIConfiguration.getKeys() now returns an empty iterator instead of 
+  throwing a ConfigurationRuntimeException when a NamingException occurs. The 
+  NamingExceptions are now logged. 
+o DatabaseConfiguration.isEmpty() now returns true if an SQLException occurs. 
+o Fixed HierarchicalConfiguration.getKeys(String), it returned an empty 
+  iterator if the prefix string contained indices. Issue: CONFIGURATION-36. 
+
+  Changes:
+
+o Merged the two XML related configuration classes into one new class 
+  XMLConfiguration. This new class should provide the best of its ancestors. 
+  Issue: CONFIGURATION-168. 
+o Replaced the PropertyTokenizer inner class in AbstractConfiguration with 
+  the split method in PropertyConverter. Also moved the method building an 
+  iterator on the elements of a composite value in PropertyConverter as 
+  toIterator(). 
+o Constructing a file based configuration with a File no longer throws an 
+  exception when the file doesn't exist. 
+o AbstractFileConfiguration.save(File) no longer fails silently when an error 
+  occurs, a ConfigurationException is thrown instead. Issue: 
+  CONFIGURATION-45. 
+o Moved the constructors implementations from PropertiesConfiguration and 
+  XMLConfiguration to AbstractFileConfiguration. 
+
+  Removed features:
+
+o Removed the getPropertyDirect method from AbstractConfiguration, concrete 
+  configurations now implement directly the getProperty method from the 
+  Configuration interface. 
+o Remove deprecated getVector() implementations.  
+
+Have fun!
+-The commons-configuration team
+      

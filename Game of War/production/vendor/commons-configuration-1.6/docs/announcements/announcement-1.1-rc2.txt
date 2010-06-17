@@ -1,0 +1,26 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.1-rc2 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  Changes:
+
+o Updated documentation for FileConfiguration's load() methods. Fixed a 
+  problem in XMLConfiguration with the output of the save() method when 
+  multiple files were loaded. Issue: CONFIGURATION-118. 
+o Fixed a bug in FileChangedReloadingStrategy preventing the detection of a 
+  file change in some cases. 
+o Changed getXXXArray() and getXXXList() in DataConfiguration to return an 
+  empty array/list for empty values. 
+o Fixed getLongArray(), getFloatArray() and getDoubleArray() in 
+  DataConfiguration, the values were cast into integers. Issue: 
+  CONFIGURATION-58.  
+
+Have fun!
+-The commons-configuration team
+      

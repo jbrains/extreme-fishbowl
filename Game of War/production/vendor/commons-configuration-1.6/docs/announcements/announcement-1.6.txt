@@ -1,0 +1,144 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.6 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  New Features:
+
+o Allow system properties to be set from a configuration file. Issue: 
+  CONFIGURATION-353. 
+o Allow variable resolvers to be defined configured in 
+  DefaultConfigurationBuilder. Issue: CONFIGURATION-351. 
+o Added MultiFileHierarchicalConfiguration, DynamicCombinedConfiguration and 
+  PatternSubtreeConfigurationWrapper. Issue: CONFIGURATION-350. 
+o The visibility of DefaultConfigurationBuilder.XMLConfigurationProvider was 
+  changed from package local to public. This makes it easier to implement 
+  providers that create configuration classes derived from XMLConfiguration. 
+  Issue: CONFIGURATION-349. Thanks to Ralph Goers. 
+o PropertiesConfiguration now also performs interpolation when searching for 
+  include files. This means that the name of a file to include can be 
+  determined by another property. Issue: CONFIGURATION-338. Thanks to David 
+  Donn. 
+o DefaultConfigurationBuilder now supports defining new configuration 
+  providers in the configuration definition file. Issue: CONFIGURATION-337. 
+  Thanks to Ralph Goers. 
+o When converting a flat configuration to a hierarchical one it is now 
+  possible to specify the expression engine to be used for this purpose. This 
+  may be necessary if the flat configuration contains keys with special 
+  characters interpreted by the expression engine. CombinedConfiguration 
+  defines the new setConversionExpressionEngine() method. The expression 
+  engine passed to this method will be used when converting flat child 
+  configurations to hierarchical ones. Issue: CONFIGURATION-336. 
+o XMLConfiguration now allows disabling the attribute splitting mechanism 
+  introduced in the 1.5 release (as part of the fix for CONFIGURATION-268). 
+  This may be necessary for correctly processing attributes containing both 
+  the list delimiter and the attribute delimiter character. The new property 
+  "disableAttributeSplitting" was added for this purpose. Issue: 
+  CONFIGURATION-335. 
+o XMLBeanDeclaration now defines a factory method createBeanDeclaration() for 
+  creating the declarations for complex nested properties. This method can be 
+  overridden by derived classes for injecting custom BeanDeclaration 
+  implementations. Issue: CONFIGURATION-331. 
+o INIConfiguration does not support obtaining a subset for the global 
+  section. HierarchicalINIConfiguration provides the getSection() method that 
+  returns the content of the global section if null is passed in as section 
+  name. Issue: CONFIGURATION-326. 
+o HierarchicalINIConfiguration adds support for line continuation. Issue: 
+  CONFIGURATION-324. 
+o With HierarchicalINIConfiguration a complete new Configuration 
+  implementation for parsing Windows INI files is available. This new class 
+  is a full replacement of INIConfiguration and addresses some of its 
+  shortcomings. Being derived from HierarchicalConfiguration it offers the 
+  enhanced functionality of hierarchical configurations. 
+
+  Fixed bugs:
+
+o AbstractHierarchicalFileConfiguration.getKeys() now also checks whether a 
+  reload is required. Issue: CONFIGURATION-348. 
+o AbstractFileConfiguration.getKeys() now returns an iterator that points to 
+  a snapshot of the keys of the configuration. This prevents 
+  ConcurrentModificationExceptions during iteration when a reload is 
+  performed. Issue: CONFIGURATION-347. 
+o ConfigurationUtils.convertToHierarchical() now creates multiple 
+  configuration nodes for properties with multiple values. This improves 
+  compatibility with queries. Issue: CONFIGURATION-346. 
+o PropertiesConfiguration now per default uses the encoding "ISO-8859-1" for 
+  loading properties files. Issue: CONFIGURATION-345. 
+o CombinedConfiguration could cause a deadlock when it was accessed while 
+  concurrently a reload of one of its child configuration happened. This was 
+  fixed by reducing synchronization where it is not strictly necessary. 
+  Issue: CONFIGURATION-344. 
+o The "force reload check" mechanism of CombinedConfiguration now also works 
+  with sub configurations created by configurationAt(). Issue: 
+  CONFIGURATION-341. 
+o When performing interpolation the methods getList() and getStringArray() of 
+  CompositeConfiguration did not take the order of child configurations into 
+  account. This could lead to wrong interpolated values when the key was 
+  contained in multiple child configuration. Interpolation is now always done 
+  in the correct order. Issue: CONFIGURATION-339. 
+o Made handling of parent nodes more consistent when setRoot() or 
+  setRootNode() of HierarchicalConfiguration are involved. Issue: 
+  CONFIGURATION-334. 
+o Properties written through a DataConfiguration to a wrapped 
+  PropertiesConfiguration got lost when the PropertiesConfiguration was 
+  saved. This has been fixed. Issue: CONFIGURATION-332. 
+o A bug in XMLConfiguration.addNodes() made it impossible to add attribute 
+  nodes using this method. This has been fixed. Issue: CONFIGURATION-328. 
+o INIConfiguration misinterpreted variables in the global section with a dot 
+  in their name as section names. HierarchicalINIConfiguration fixes this 
+  problem. Issue: CONFIGURATION-327. 
+o INIConfiguration does not return the global section in its getSections() 
+  method. HierarchicalINIConfiguration fixes this problem. Issue: 
+  CONFIGURATION-325. 
+o ConfigurationDynaBean now works properly with indexed properties stored 
+  internally in the underlying configuration as arrays. Issue: 
+  CONFIGURATION-322. 
+o The iterator returned by HierarchicalConfiguration.getKeys(String prefix) 
+  now also contains the prefix if this key is contained in the configuration. 
+  Issue: CONFIGURATION-321. 
+o XMLPropertyListConfiguration is no longer limited to 32 bits integers. 
+  Issue: CONFIGURATION-320. 
+o When an XMLConfiguration is created using the copy constructor, the name of 
+  the root element is now preserved. Issue: CONFIGURATION-318. 
+o Changing the text of the root element of an XMLConfiguration had no effect 
+  when the configuration was saved. This has been fixed. Issue: 
+  CONFIGURATION-316. 
+o CombinedConfiguration used to send two EVENT_COMBINED_INVALIDATE events for 
+  each modified child configuration. Now this event is sent only once after 
+  the affected child configuration was updated. Issue: CONFIGURATION-315. 
+o XMLConfiguration now supports the xml:space attribute. This attribute can 
+  be used to preserve whitespace in the content of XML elements. Issue: 
+  CONFIGURATION-307. 
+o INIConfiguration now preserves whitespace in quoted values. Issue: 
+  CONFIGURATION-306. 
+o If a change has been detected by FileChangedReloadingStrategy, the 
+  reloadingRequired() method will now return true until reloadingPerformed() 
+  has been called. Issue: CONFIGURATION-302. 
+o Fixed a NullPointerException that could be thrown under certain 
+  circumstances when saving an XMLConfiguration that was created using the 
+  constructor that takes a HierarchicalConfiguration. Issue: 
+  CONFIGURATION-301. 
+o Instantiating an XMLPropertyListConfiguration no longer fails if the DTD is 
+  missing from the classpath. Issue: CONFIGURATION-309. 
+o It's now possible to read a configuration file containing a '#' in its name 
+  (requires Java 1.4 or above). Issue: CONFIGURATION-300. 
+o Fixed the date format for XMLPropertyListConfiguration. Issue: 
+  CONFIGURATION-260. 
+
+  Changes:
+
+o Some dependencies to other Commons components have been updated to the 
+  recent versions. Affected are Commons Lang, Commons Collections, Commons 
+  Logging, Commons BeanUtils, and Commons JXPath. The older versions should 
+  still work. 
+o INIConfiguration has been deprecated. Its functionality is now available 
+  through the new HierarchicalINIConfiguration class.  
+
+Have fun!
+-The commons-configuration team
+      

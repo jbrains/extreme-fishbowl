@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Commons Configuration - Mutli-tenant Configurations</title><style type="text/css" media="all">
+          @import url("../style/maven-base.css");
+          
+			    @import url("../style/maven-theme.css");@import url("../style/project.css");</style><link rel="stylesheet" href="../style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Ralph Goers"></meta><meta name="email" content="rgoers@apache.org"></meta></head><body class="composite"><div id="banner"><a href="http://commons.apache.org/" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://commons.apache.org/images/logo.png"></img></a><a href="http://commons.apache.org/configuration/" id="projectLogo"><img alt="Commons Configuration" src="../images/logo.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft">
+                	Last published: 19 December 2008
+                  | Doc for 1.6</div><div class="xright">
+        
+        <a href="http://commons.apache.org/" class="externalLink" title="External Link">Apache Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuConfiguration"><h5>Configuration</h5><ul><li class="none"><a href="../index.html">Home</a></li><li class="none"><a href="http://commons.apache.org/downloads/download_configuration.cgi" class="externalLink" title="External Link">Download</a></li><li class="none"><a href="../changes-report.html">Release History</a></li><li class="none"><a href="../userguide/user_guide.html">User's Guide</a></li><li class="none"><a href="../userguide-1.2/index.html">Howtos (1.2 release)</a></li><li class="none"><a href="../dependencies.html">Runtime Dependencies</a></li><li class="none"><a href="../apidocs/index.html">Javadoc (current release)</a></li><li class="none"><a href="../javadocarchive.html">Javadoc (old releases)</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="../building.html">Building</a></li><li class="none"><a href="../tasks-report.html">Roadmap</a></li><li class="none"><a href="../issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="http://svn.apache.org/repos/asf/commons/proper/configuration/" class="externalLink" title="External Link">SVN</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="../index.html">About Commons Configuration</a></li><li class="none"><a href="../downloads.html">Downloads</a></li><li class="collapsed"><a href="../project-info.html">Project Info</a></li><li class="collapsed"><a href="../maven-reports.html">Project Reports</a></li><li class="none"><a href="http://commons.apache.org/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://commons.apache.org/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://commons.apache.org/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://commons.apache.org/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://commons.apache.org/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://commons.apache.org/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://commons.apache.org/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://commons.apache.org/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://commons.apache.org/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="../images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Multi-tenant_Configurations"></a><h2>Multi-tenant Configurations</h2><p>
+        In a multi-tenant environment a single instance of the application
+        while run on behalf of many clients. Typically, this will require
+        that each client have its own unique configuration. The simplest
+        approach to enable an application to be multi-tenant is for it
+        to not really be aware of it at all. This requires that the
+        configuration framework take on some of the responsility for
+        making the application work correctly.
+      </p><p>
+        One approach to enable this support in a web application might be
+        to use a Servlet Filter and then use the Log4j or SLF4J MDC to
+        save the attributes needed to identify the client. These attributes
+        can then be used to identify the specific client configuration to
+        be used. The classes described below use this technique to allow
+        configurations to transparently provide the configuration appropriate
+        for the clients.
+      </p><div class="subsection"><a name="MultiFileHierarchicalConfiguration"></a><h3>MultiFileHierarchicalConfiguration</h3><p>
+          The constructor for this class accepts a pattern. The pattern can
+          contain keys that will be resolved using the ConfigurationInterpolator
+          on each call to a method in the class. The configuration file will then
+          be located using the resolved pattern and a new XMLConfiguration
+          will be created and cached for subsequent requests. The ExpressionEngine,
+          ReloadingStrategy and listeners will be propogated to each of the
+          created configurations.
+        </p></div><div class="subsection"><a name="DynamicCombinedConfiguration"></a><h3>DynamicCombinedConfiguration</h3><p>
+          The CombinedConfiguration class allows multiple configuration files to be
+          merged together. However, it will not merge a MultiFileHierarchicalConfiguration
+          properly since the underlying configuration file will be different depending
+          on the resolution of the location pattern. DynamicCombinedConfiguration
+          solves this by creating a new CombinedConfiguration for each pattern.
+        </p></div><div class="subsection"><a name="Sample_Configuration"></a><h3>Sample Configuration</h3><p>
+           This sample configuration illustrates how to use DynamicCombinedConfiguration
+           in combination with MultiFileHierarchicalConfiguration to create a multi-tenant
+           configuration.
+        </p>
+    <div class="source"><pre>
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+&lt;!-- Test configuration definition file that demonstrates complex initialization --&gt;
+&lt;configuration&gt;
+  &lt;header&gt;
+    &lt;result delimiterParsingDisabled="true" forceReloadCheck="true"
+            config-class="org.apache.commons.configuration.DynamicCombinedConfiguration"
+            keyPattern="${sys:Id}"&gt;
+      &lt;expressionEngine
+          config-class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine"/&gt;
+    &lt;/result&gt;
+    &lt;providers&gt;
+      &lt;provider config-tag="multifile"
+         config-class="org.apache.commons.configuration.DefaultConfigurationBuilder$FileConfigurationProvider"
+         configurationClass="org.apache.commons.configuration.MultiFileHierarchicalConfiguration"/&gt;
+    &lt;/providers&gt;
+  &lt;/header&gt;
+  &lt;override&gt;
+    &lt;multifile filePattern="/opt/configs/${sys:Id}/config.xml" config-name="clientConfig"/&gt;
+    &lt;xml fileName="/opt/configs/default/config.xml" config-name="defaultConfig"/&gt;
+  &lt;/override&gt;
+&lt;/configuration&gt;
+</pre></div>
+  </div><div class="subsection"><a name="PatternSubtreeConfigurationWrapper"></a><h3>PatternSubtreeConfigurationWrapper</h3><p>
+          Applications are often composed of many components each of which need their
+          own configuration. This can be accomodated by having a configuration file
+          per component, but this can make things hard to manage when there are many
+          clients and many components. A second approach is to combine them into
+          a single configuration file. However, this either means the subcomponent
+          has to be aware of the surrounding configuration and navigate past it or the
+          application must be provided just the portion of the configuration it
+          can process. PatternSubtreeConfigurationWrapper can be used for this purpose.
+        </p><p>
+          Normal practice when using dependency injection frameworks is to have the
+          attributes needed to make components work correctly injected into them.
+          When working with Commons Configuration this works very well. Components
+          simply need to have a HierarchicalConfiguration attribute along with
+          a corresponding setter and getter. The injection framework can then be
+          used to provide the component with the correct configuration using
+          PatternSubtreeConfigurationWrapper as shown in the next example.
+        </p><p>
+        
+    <div class="source"><pre>
+  &lt;bean id="configurationBuilder"
+        class="org.apache.commons.configuration.DefaultConfigurationBuilder"&gt;
+    &lt;property name="fileName"&gt;
+      &lt;value&gt;configuration.xml&lt;/value&gt;
+    &lt;/property&gt;
+  &lt;/bean&gt;
+  &lt;bean id="applicationConfig" factory-bean="configurationBuilder"
+        factory-method="getConfiguration"&gt;
+  &lt;/bean&gt;
+  &lt;bean id="subcomponentConfig"
+        class="org.apache.commons.configuration.PatternSubtreeConfigurationWrapper"
+        autowire='autodetect'&gt;
+    &lt;constructor-arg index="0"&gt;
+      &lt;ref bean="applicationConfig"/&gt;
+    &lt;/constructor-arg&gt;
+    &lt;constructor-arg index="1" value="/Components/MyComponent"
+  &lt;/bean&gt;
+  &lt;bean id='MyComponent' class='org.test.MyComponent' autowire='autodetect'&gt;
+    &lt;property name="configuration"&gt;
+      &lt;ref bean="subcomponentConfig"/&gt;
+    &lt;/property&gt;
+  &lt;/bean&gt;
+</pre></div>
+  
+        </p></div></div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2001-2008, The Apache Software Foundation</div><div class="clear"><hr></hr></div></div></body></html>

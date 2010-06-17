@@ -1,0 +1,24 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.1 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  Changes:
+
+o Fixed a ConcurrentModificationException thrown when calling clear() on a 
+  SubsetConfiguration applied to a BaseConfiguration. Issue: 
+  CONFIGURATION-134. 
+o The resolveContainerStore() method in AbstractConfiguration now works 
+  properly with arrays of objects and arrays of primitives. This means it is 
+  possible to store an array of value in the configuration and retrieve the 
+  first element with the getString(), getInt()... methods. Issue: 
+  CONFIGURATION-81.  
+
+Have fun!
+-The commons-configuration team
+      

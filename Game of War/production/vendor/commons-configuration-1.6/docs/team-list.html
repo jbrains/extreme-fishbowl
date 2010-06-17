@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Commons Configuration - Project Team</title><style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          
+			    @import url("./style/maven-theme.css");@import url("./style/project.css");</style><link rel="stylesheet" href="./style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><script type="text/javascript">
+  	  function offsetDate(id, offset) {
+
+            var now = new Date() ;
+            var nowTime = now.getTime() ;
+            var localOffset = now.getTimezoneOffset() ;
+            var developerTime = nowTime + (offset * 60 * 60 * 1000) + (localOffset * 60 * 1000) ;
+            var developerDate = new Date(developerTime) ;
+
+            document.getElementById(id).innerHTML = developerDate;
+          }
+  	
+  	  function init() {
+	    	       	         	               	       	         	               	       	         	               	       	         	               	       	         	           offsetDate("developer-henning", "2");
+	         	               	       	         	               	       	         	               	       	         	           offsetDate("developer-ebourg", "+1");
+	         	               	       	         	           offsetDate("developer-oheger", "+1");
+	         	               	       	         	           offsetDate("developer-joehni", "+1");
+	         	                     }
+    </script></head><body class="composite" onload="init();"><div id="banner"><a href="http://commons.apache.org/" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://commons.apache.org/images/logo.png"></img></a><a href="http://commons.apache.org/configuration/" id="projectLogo"><img alt="Commons Configuration" src="./images/logo.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft">
+                	Last published: 19 December 2008
+                  | Doc for 1.6</div><div class="xright">
+        
+        <a href="http://commons.apache.org/" class="externalLink" title="External Link">Apache Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuConfiguration"><h5>Configuration</h5><ul><li class="none"><a href="index.html">Home</a></li><li class="none"><a href="http://commons.apache.org/downloads/download_configuration.cgi" class="externalLink" title="External Link">Download</a></li><li class="none"><a href="changes-report.html">Release History</a></li><li class="none"><a href="userguide/user_guide.html">User's Guide</a></li><li class="none"><a href="userguide-1.2/index.html">Howtos (1.2 release)</a></li><li class="none"><a href="dependencies.html">Runtime Dependencies</a></li><li class="none"><a href="apidocs/index.html">Javadoc (current release)</a></li><li class="none"><a href="javadocarchive.html">Javadoc (old releases)</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="building.html">Building</a></li><li class="none"><a href="tasks-report.html">Roadmap</a></li><li class="none"><a href="issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="http://svn.apache.org/repos/asf/commons/proper/configuration/" class="externalLink" title="External Link">SVN</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="index.html">About Commons Configuration</a></li><li class="none"><a href="downloads.html">Downloads</a></li><li class="expanded"><a href="project-info.html">Project Info</a><ul><li class="none"><a href="mail-lists.html">Mailing Lists</a></li><li class="none"><strong><a href="team-list.html">Project Team</a></strong></li><li class="none"><a href="dependencies.html">Dependencies</a></li><li class="none"><a href="cvs-usage.html">Source Repository</a></li><li class="none"><a href="issue-tracking.html">Issue Tracking</a></li></ul></li><li class="collapsed"><a href="maven-reports.html">Project Reports</a></li><li class="none"><a href="http://commons.apache.org/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://commons.apache.org/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://commons.apache.org/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://commons.apache.org/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://commons.apache.org/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://commons.apache.org/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://commons.apache.org/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://commons.apache.org/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://commons.apache.org/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="./images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="The_Team"></a><h2>The Team</h2><p>
+        A successful project requires many people to play many roles.
+        Some members write code or documentation, while others are
+        valuable as testers, submitting patches and suggestions.
+      </p><p>
+        The team is comprised of <a href="#Members">Members</a>
+        and <a href="#Contributors">Contributors</a>.  Members 
+        have direct access to the source of a project and actively
+        evolve the code-base.  Contributors improve the project
+        through submission of patches and suggestions to the Members.
+        The number of Contributors to the project is unbounded.
+        Get involved today.  All contributions to the project are
+        greatly appreciated.
+      </p><div class="subsection"><a name="Members"></a><h3>Members</h3><p>
+        The following is a list of developers with commit privileges that have 
+        directly contributed to the project in one way or another.  
+      </p><table class="bodyTable"><thead>
+        <tr class="a"><th>Name</th><th>Id</th><th>Email</th><th>Organization</th><th>Roles</th><th>TZ Offset</th><th>Time</th></tr>
+        </thead><tbody>
+                <tr class="b"><td>Daniel Rall</td><td><a name="dlr"></a>dlr</td><td><a href="mailto:dlr@finemaltcoding.com">dlr@finemaltcoding.com</a></td><td>CollabNet, Inc.</td><td>
+                    </td><td></td><td><span id="developer-dlr">Unknown</span></td></tr>
+                <tr class="a"><td>Jason van Zyl</td><td><a name="jvanzyl"></a>jvanzyl</td><td><a href="mailto:jason@zenplex.com">jason@zenplex.com</a></td><td>Zenplex</td><td>
+                    </td><td></td><td><span id="developer-jvanzyl">Unknown</span></td></tr>
+                <tr class="b"><td>Martin Poeschl</td><td><a name="mpoeschl"></a>mpoeschl</td><td><a href="mailto:mpoeschl@marmot.at">mpoeschl@marmot.at</a></td><td>tucana.at</td><td>
+                    </td><td></td><td><span id="developer-mpoeschl">Unknown</span></td></tr>
+                <tr class="a"><td>dIon Gillard</td><td><a name="dion"></a>dion</td><td><a href="mailto:dion@multitask.com.au">dion@multitask.com.au</a></td><td>Multitask Consulting</td><td>
+                    </td><td></td><td><span id="developer-dion">Unknown</span></td></tr>
+                <tr class="b"><td>Henning P. Schmiedehausen</td><td><a name="henning"></a>henning</td><td><a href="mailto:hps@intermeta.de">hps@intermeta.de</a></td><td>INTERMETA - Gesellschaft fuer Mehrwertdienste mbH</td><td>
+                    </td><td>2</td><td><span id="developer-henning">Unknown</span></td></tr>
+                <tr class="a"><td>Eric Pugh</td><td><a name="epugh"></a>epugh</td><td><a href="mailto:epugh@upstate.com">epugh@upstate.com</a></td><td>upstate.com</td><td>
+                    </td><td></td><td><span id="developer-epugh">Unknown</span></td></tr>
+                <tr class="b"><td>Brian E. Dunbar</td><td><a name="bdunbar"></a>bdunbar</td><td><a href="mailto:bdunbar@dunbarconsulting.org">bdunbar@dunbarconsulting.org</a></td><td>dunbarconsulting.org</td><td>
+                    </td><td></td><td><span id="developer-bdunbar">Unknown</span></td></tr>
+                <tr class="a"><td>Emmanuel Bourg</td><td><a name="ebourg"></a>ebourg</td><td><a href="mailto:ebourg@apache.org">ebourg@apache.org</a></td><td>Ariane Software</td><td>
+                    </td><td>+1</td><td><span id="developer-ebourg">Unknown</span></td></tr>
+                <tr class="b"><td>Oliver Heger</td><td><a name="oheger"></a>oheger</td><td><a href="mailto:oheger@apache.org">oheger@apache.org</a></td><td>Agfa HealthCare</td><td>
+                    </td><td>+1</td><td><span id="developer-oheger">Unknown</span></td></tr>
+                <tr class="a"><td>Jörg Schaible</td><td><a name="joehni"></a>joehni</td><td><a href="mailto:joerg.schaible@gmx.de">joerg.schaible@gmx.de</a></td><td></td><td>
+                    </td><td>+1</td><td><span id="developer-joehni">Unknown</span></td></tr>
+                </tbody></table></div><div class="subsection"><a name="Contributors"></a><h3>Contributors</h3><p>
+        The following additional people have contributed to this project
+        through the way of suggestions, patches or documentation.
+      </p><table class="bodyTable"><thead>
+        <tr class="b"><th>Name</th><th>Email</th><th>Organization</th><th>Roles</th></tr>
+        </thead><tbody>
+                <tr class="a"><td>Konstantin Shaposhnikov</td><td><a href="mailto:ksh@scand.com">ksh@scand.com</a></td><td>scand.com</td><td>
+                    </td></tr>
+                <tr class="b"><td>Jamie M. Guillemette</td><td><a href="mailto:JMGuillemette@gmail.com">JMGuillemette@gmail.com</a></td><td>TD Bank</td><td>
+                    </td></tr>
+                <tr class="a"><td>Jorge Ferrer</td><td><a href="mailto:jorge.ferrer@gmail.com">jorge.ferrer@gmail.com</a></td><td></td><td>
+                    </td></tr>
+                <tr class="b"><td>Gabriele Garuglieri</td><td><a href="mailto:gabriele.garuglieri@infoblu.it">gabriele.garuglieri@infoblu.it</a></td><td>Infoblu S.p.A</td><td>
+                    </td></tr>
+                <tr class="a"><td>Nicolas De Loof</td><td><a href="mailto:nicolas.deloof@gmail.com">nicolas.deloof@gmail.com</a></td><td>Cap Gemini</td><td>
+                    </td></tr>
+                </tbody></table></div></div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2001-2008, The Apache Software Foundation</div><div class="clear"><hr></hr></div></div></body></html>

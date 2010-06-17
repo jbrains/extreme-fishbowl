@@ -1,0 +1,19 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.2-rc2 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  Changes:
+
+o ConfigurationDynaBean now implements the java.util.Map interface (as was 
+  stated in the javadocs). This was done by deriving the class from 
+  ConfigurationMap. Issue: CONFIGURATION-2.  
+
+Have fun!
+-The commons-configuration team
+      

@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Commons Virtual File System - Commons VFS</title><style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          
+          @import url("./style/maven-theme.css");@import url("./style/project.css");</style><link rel="stylesheet" href="./style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="James Strachan"></meta><meta name="email" content="jstrachan@apache.org"></meta></head><body class="composite"><div id="banner"><a href="http://jakarta.apache.org" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://jakarta.apache.org/images/original-jakarta-logo.gif"></img></a><a href="http://jakarta.apache.org/commons/vfs/" id="projectLogo"><img alt="Commons VFS" src="./images/vfs-logo-white.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft"></div><div class="xright">
+        
+        <a href="http://www.apache.org" class="externalLink" title="External Link">Apache</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org" class="externalLink" title="External Link">Jakarta</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuCommons VFS"><h5>Commons VFS</h5><ul><li class="none"><strong><a href="index.html">Overview</a></strong></li><li class="none"><a href="download.html">Download and Build</a></li><li class="none"><a href="3rdparty.html">3rd party plugins</a></li><li class="none"><a href="api.html">Using the API</a></li><li class="none"><a href="apidocs/index.html">API JavaDocs</a></li><li class="none"><a href="filesystems.html">File Systems</a></li><li class="none"><a href="anttasks.html">Ant Tasks</a></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/VFS" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="testserver.html">Test Server</a></li><li class="none"><a href="mail-lists.html">Mailing Lists</a></li><li class="none"><a href="issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="cvs-usage.html">Source Repository</a></li><li class="none"><a href="todo.html">To Do List</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><strong><a href="index.html">About</a></strong></li><li class="collapsed"><a href="project-info.html">Project Info</a></li><li class="collapsed"><a href="maven-reports.html">Project Reports</a></li><li class="none"><a href="http://jakarta.apache.org/commons/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://jakarta.apache.org/commons/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://jakarta.apache.org/commons/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://jakarta.apache.org/commons/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://jakarta.apache.org/commons/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="legend"><h5>Legend</h5><ul><li class="externalLink">External Link</li><li class="newWindow">Opens in a new window</li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="./images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Commons_Virtual_File_System"></a><h2>Commons Virtual File System</h2>
+
+            <p>
+                Commons VFS provides a single API for accessing
+                various different file systems. It presents a uniform view of
+                the files from various different sources, such as the files on
+                local disk, on an HTTP server, or inside a Zip archive.
+            </p>
+
+            <p>Some of the features of Commons VFS are:</p>
+            <ul>
+                <li>
+                    A single consistent API for accessing files of different
+                    types.
+                </li>
+                <li>Support for numerous
+                    <a href="filesystems.html">file system types</a>
+                    .
+                </li>
+                <li>
+                    Caching of file information. Caches information in-JVM,
+                    and optionally can cache remote file information on the
+                    local file system.
+                </li>
+                <li>Event delivery.</li>
+                <li>
+                    Support for logical file systems made up of files from
+                    various different file systems.
+                </li>
+                <li>
+                    Utilities for integrating Commons VFS into applications,
+                    such as a VFS-aware ClassLoader and URLStreamHandlerFactory.
+                </li>
+                <li>A set of VFS-enabled
+                    <a href="anttasks.html">Ant tasks</a>
+                    .
+                </li>
+            </ul>
+
+        </div><div class="section"><a name="News"></a><h2>News</h2>
+			<p>
+				VFS is splitted into core, examples and sandbox now.
+			</p>
+			<p>
+				Due to some technical reasons we had to move the webdav and jcifs (smb) filesystem to
+				the sandbox. So if you need one of these filesystems you have to build VFS manually.
+			</p>
+			<p>
+				To build VFS, it will be best to check-it-out from svn and use maven 2 to
+				build all at once - Notice: the ant and maven 1 build will just build the core.
+			</p>
+			<p>
+				And - we have a new filesystem: mime (read only for sure)<br></br>
+				This filesystem allows you to read e-mails like archives, e.g. the attachments are the
+				children of the mail itself.<br></br>
+				You'll find it in our sandbox.
+			</p>
+			<p>
+				Also notice that we now have a "3rd party plugins" page. It will list all external
+				plugins available for VFS.<br></br>
+				You have such a beast - and will get listed? Just drop me a mail: imario -at- apache.org
+			</p>
+		</div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2002-2006, The Apache Software Foundation© -Last published: 19 December 2006
+            </div><div class="clear"><hr></hr></div></div></body></html>

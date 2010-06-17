@@ -1,0 +1,524 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" /><title>TestSubnodeConfiguration xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<pre>
+
+<a name="1" href="#1">1</a>   <em class="comment">/*</em>
+<a name="2" href="#2">2</a>   <em class="comment"> * Licensed to the Apache Software Foundation (ASF) under one or more</em>
+<a name="3" href="#3">3</a>   <em class="comment"> * contributor license agreements.  See the NOTICE file distributed with</em>
+<a name="4" href="#4">4</a>   <em class="comment"> * this work for additional information regarding copyright ownership.</em>
+<a name="5" href="#5">5</a>   <em class="comment"> * The ASF licenses this file to You under the Apache License, Version 2.0</em>
+<a name="6" href="#6">6</a>   <em class="comment"> * (the "License"); you may not use this file except in compliance with</em>
+<a name="7" href="#7">7</a>   <em class="comment"> * the License.  You may obtain a copy of the License at</em>
+<a name="8" href="#8">8</a>   <em class="comment"> *</em>
+<a name="9" href="#9">9</a>   <em class="comment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a name="10" href="#10">10</a>  <em class="comment"> *</em>
+<a name="11" href="#11">11</a>  <em class="comment"> * Unless required by applicable law or agreed to in writing, software</em>
+<a name="12" href="#12">12</a>  <em class="comment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a name="13" href="#13">13</a>  <em class="comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a name="14" href="#14">14</a>  <em class="comment"> * See the License for the specific language governing permissions and</em>
+<a name="15" href="#15">15</a>  <em class="comment"> * limitations under the License.</em>
+<a name="16" href="#16">16</a>  <em class="comment"> */</em>
+<a name="17" href="#17">17</a>  <strong>package</strong> <a href="../../../../org/apache/commons/configuration/package-summary.html">org.apache.commons.configuration</a>;
+<a name="18" href="#18">18</a>  
+<a name="19" href="#19">19</a>  <strong>import</strong> java.io.File;
+<a name="20" href="#20">20</a>  <strong>import</strong> java.util.HashSet;
+<a name="21" href="#21">21</a>  <strong>import</strong> java.util.List;
+<a name="22" href="#22">22</a>  <strong>import</strong> java.util.NoSuchElementException;
+<a name="23" href="#23">23</a>  <strong>import</strong> java.util.Set;
+<a name="24" href="#24">24</a>  
+<a name="25" href="#25">25</a>  <strong>import</strong> org.apache.commons.collections.CollectionUtils;
+<a name="26" href="#26">26</a>  <strong>import</strong> org.apache.commons.configuration.reloading.FileAlwaysReloadingStrategy;
+<a name="27" href="#27">27</a>  <strong>import</strong> org.apache.commons.configuration.tree.ConfigurationNode;
+<a name="28" href="#28">28</a>  <strong>import</strong> org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+<a name="29" href="#29">29</a>  
+<a name="30" href="#30">30</a>  <strong>import</strong> junit.framework.TestCase;
+<a name="31" href="#31">31</a>  
+<a name="32" href="#32">32</a>  <em>/**<em>*</em></em>
+<a name="33" href="#33">33</a>  <em> * Test case for SubnodeConfiguration.</em>
+<a name="34" href="#34">34</a>  <em> *</em>
+<a name="35" href="#35">35</a>  <em> * @author Oliver Heger</em>
+<a name="36" href="#36">36</a>  <em> * @version $Id: TestSubnodeConfiguration.java 531038 2007-04-21 14:31:58Z oheger $</em>
+<a name="37" href="#37">37</a>  <em> */</em>
+<a name="38" href="#38">38</a>  <strong>public</strong> <strong>class</strong> <a href="../../../../org/apache/commons/configuration/TestSubnodeConfiguration.html">TestSubnodeConfiguration</a> <strong>extends</strong> TestCase
+<a name="39" href="#39">39</a>  {
+<a name="40" href="#40">40</a>      <em>/**<em>* An array with names of tables (test data). */</em></em>
+<a name="41" href="#41">41</a>      <strong>private</strong> <strong>static</strong> <strong>final</strong> String[] TABLE_NAMES =
+<a name="42" href="#42">42</a>      { <span class="string">"documents"</span>, <span class="string">"users"</span> };
+<a name="43" href="#43">43</a>  
+<a name="44" href="#44">44</a>      <em>/**<em>* An array with the fields of the test tables (test data). */</em></em>
+<a name="45" href="#45">45</a>      <strong>private</strong> <strong>static</strong> <strong>final</strong> String[][] TABLE_FIELDS =
+<a name="46" href="#46">46</a>      {
+<a name="47" href="#47">47</a>      { <span class="string">"docid"</span>, <span class="string">"docname"</span>, <span class="string">"author"</span>, <span class="string">"dateOfCreation"</span>, <span class="string">"version"</span>, <span class="string">"size"</span> },
+<a name="48" href="#48">48</a>      { <span class="string">"userid"</span>, <span class="string">"uname"</span>, <span class="string">"firstName"</span>, <span class="string">"lastName"</span> } };
+<a name="49" href="#49">49</a>  
+<a name="50" href="#50">50</a>      <em>/**<em>* Constant for a test output file.*/</em></em>
+<a name="51" href="#51">51</a>      <strong>private</strong> <strong>static</strong> <strong>final</strong> File TEST_FILE = <strong>new</strong> File(<span class="string">"target/test.xml"</span>);
+<a name="52" href="#52">52</a>  
+<a name="53" href="#53">53</a>      <em>/**<em>* Constant for an updated table name.*/</em></em>
+<a name="54" href="#54">54</a>      <strong>private</strong> <strong>static</strong> <strong>final</strong> String NEW_TABLE_NAME = <span class="string">"newTable"</span>;
+<a name="55" href="#55">55</a>  
+<a name="56" href="#56">56</a>      <em>/**<em>* The parent configuration. */</em></em>
+<a name="57" href="#57">57</a>      HierarchicalConfiguration parent;
+<a name="58" href="#58">58</a>  
+<a name="59" href="#59">59</a>      <em>/**<em>* The subnode configuration to be tested. */</em></em>
+<a name="60" href="#60">60</a>      SubnodeConfiguration config;
+<a name="61" href="#61">61</a>  
+<a name="62" href="#62">62</a>      <em>/**<em>* Stores the root node of the subnode config. */</em></em>
+<a name="63" href="#63">63</a>      ConfigurationNode subnode;
+<a name="64" href="#64">64</a>  
+<a name="65" href="#65">65</a>      <em>/**<em>* Stores a counter for the created nodes. */</em></em>
+<a name="66" href="#66">66</a>      <strong>int</strong> nodeCounter;
+<a name="67" href="#67">67</a>  
+<a name="68" href="#68">68</a>      <strong>protected</strong> <strong>void</strong> setUp() throws Exception
+<a name="69" href="#69">69</a>      {
+<a name="70" href="#70">70</a>          <strong>super</strong>.setUp();
+<a name="71" href="#71">71</a>          parent = setUpParentConfig();
+<a name="72" href="#72">72</a>          nodeCounter = 0;
+<a name="73" href="#73">73</a>      }
+<a name="74" href="#74">74</a>  
+<a name="75" href="#75">75</a>      <strong>protected</strong> <strong>void</strong> tearDown() throws Exception
+<a name="76" href="#76">76</a>      {
+<a name="77" href="#77">77</a>          <em class="comment">// remove the test output file if necessary</em>
+<a name="78" href="#78">78</a>          <strong>if</strong> (TEST_FILE.exists())
+<a name="79" href="#79">79</a>          {
+<a name="80" href="#80">80</a>              TEST_FILE.delete();
+<a name="81" href="#81">81</a>          }
+<a name="82" href="#82">82</a>      }
+<a name="83" href="#83">83</a>  
+<a name="84" href="#84">84</a>      <em>/**<em>*</em></em>
+<a name="85" href="#85">85</a>  <em>     * Tests creation of a subnode config.</em>
+<a name="86" href="#86">86</a>  <em>     */</em>
+<a name="87" href="#87">87</a>      <strong>public</strong> <strong>void</strong> testInitSubNodeConfig()
+<a name="88" href="#88">88</a>      {
+<a name="89" href="#89">89</a>          setUpSubnodeConfig();
+<a name="90" href="#90">90</a>          assertSame(<span class="string">"Wrong root node in subnode"</span>, getSubnodeRoot(parent), config
+<a name="91" href="#91">91</a>                  .getRoot());
+<a name="92" href="#92">92</a>          assertSame(<span class="string">"Wrong parent config"</span>, parent, config.getParent());
+<a name="93" href="#93">93</a>      }
+<a name="94" href="#94">94</a>  
+<a name="95" href="#95">95</a>      <em>/**<em>*</em></em>
+<a name="96" href="#96">96</a>  <em>     * Tests constructing a subnode configuration with a null parent. This</em>
+<a name="97" href="#97">97</a>  <em>     * should cause an exception.</em>
+<a name="98" href="#98">98</a>  <em>     */</em>
+<a name="99" href="#99">99</a>      <strong>public</strong> <strong>void</strong> testInitSubNodeConfigWithNullParent()
+<a name="100" href="#100">100</a>     {
+<a name="101" href="#101">101</a>         <strong>try</strong>
+<a name="102" href="#102">102</a>         {
+<a name="103" href="#103">103</a>             config = <strong>new</strong> SubnodeConfiguration(<strong>null</strong>, getSubnodeRoot(parent));
+<a name="104" href="#104">104</a>             fail(<span class="string">"Could set a null parent config!"</span>);
+<a name="105" href="#105">105</a>         }
+<a name="106" href="#106">106</a>         <strong>catch</strong> (IllegalArgumentException iex)
+<a name="107" href="#107">107</a>         {
+<a name="108" href="#108">108</a>             <em class="comment">// ok</em>
+<a name="109" href="#109">109</a>         }
+<a name="110" href="#110">110</a>     }
+<a name="111" href="#111">111</a> 
+<a name="112" href="#112">112</a>     <em>/**<em>*</em></em>
+<a name="113" href="#113">113</a> <em>     * Tests constructing a subnode configuration with a null root node. This</em>
+<a name="114" href="#114">114</a> <em>     * should cause an exception.</em>
+<a name="115" href="#115">115</a> <em>     */</em>
+<a name="116" href="#116">116</a>     <strong>public</strong> <strong>void</strong> testInitSubNodeConfigWithNullNode()
+<a name="117" href="#117">117</a>     {
+<a name="118" href="#118">118</a>         <strong>try</strong>
+<a name="119" href="#119">119</a>         {
+<a name="120" href="#120">120</a>             config = <strong>new</strong> SubnodeConfiguration(parent, <strong>null</strong>);
+<a name="121" href="#121">121</a>             fail(<span class="string">"Could set a null root node!"</span>);
+<a name="122" href="#122">122</a>         }
+<a name="123" href="#123">123</a>         <strong>catch</strong> (IllegalArgumentException iex)
+<a name="124" href="#124">124</a>         {
+<a name="125" href="#125">125</a>             <em class="comment">// ok</em>
+<a name="126" href="#126">126</a>         }
+<a name="127" href="#127">127</a>     }
+<a name="128" href="#128">128</a> 
+<a name="129" href="#129">129</a>     <em>/**<em>*</em></em>
+<a name="130" href="#130">130</a> <em>     * Tests if properties of the sub node can be accessed.</em>
+<a name="131" href="#131">131</a> <em>     */</em>
+<a name="132" href="#132">132</a>     <strong>public</strong> <strong>void</strong> testGetProperties()
+<a name="133" href="#133">133</a>     {
+<a name="134" href="#134">134</a>         setUpSubnodeConfig();
+<a name="135" href="#135">135</a>         assertEquals(<span class="string">"Wrong table name"</span>, TABLE_NAMES[0], config
+<a name="136" href="#136">136</a>                 .getString(<span class="string">"name"</span>));
+<a name="137" href="#137">137</a>         List fields = config.getList(<span class="string">"fields.field.name"</span>);
+<a name="138" href="#138">138</a>         assertEquals(<span class="string">"Wrong number of fields"</span>, TABLE_FIELDS[0].length, fields
+<a name="139" href="#139">139</a>                 .size());
+<a name="140" href="#140">140</a>         <strong>for</strong> (<strong>int</strong> i = 0; i &lt; TABLE_FIELDS[0].length; i++)
+<a name="141" href="#141">141</a>         {
+<a name="142" href="#142">142</a>             assertEquals(<span class="string">"Wrong field at position "</span> + i, TABLE_FIELDS[0][i],
+<a name="143" href="#143">143</a>                     fields.get(i));
+<a name="144" href="#144">144</a>         }
+<a name="145" href="#145">145</a>     }
+<a name="146" href="#146">146</a> 
+<a name="147" href="#147">147</a>     <em>/**<em>*</em></em>
+<a name="148" href="#148">148</a> <em>     * Tests setting of properties in both the parent and the subnode</em>
+<a name="149" href="#149">149</a> <em>     * configuration and whether the changes are visible to each other.</em>
+<a name="150" href="#150">150</a> <em>     */</em>
+<a name="151" href="#151">151</a>     <strong>public</strong> <strong>void</strong> testSetProperty()
+<a name="152" href="#152">152</a>     {
+<a name="153" href="#153">153</a>         setUpSubnodeConfig();
+<a name="154" href="#154">154</a>         config.setProperty(<strong>null</strong>, <span class="string">"testTable"</span>);
+<a name="155" href="#155">155</a>         config.setProperty(<span class="string">"name"</span>, TABLE_NAMES[0] + <span class="string">"_tested"</span>);
+<a name="156" href="#156">156</a>         assertEquals(<span class="string">"Root value was not set"</span>, <span class="string">"testTable"</span>, parent
+<a name="157" href="#157">157</a>                 .getString(<span class="string">"tables.table(0)"</span>));
+<a name="158" href="#158">158</a>         assertEquals(<span class="string">"Table name was not changed"</span>, TABLE_NAMES[0] + <span class="string">"_tested"</span>,
+<a name="159" href="#159">159</a>                 parent.getString(<span class="string">"tables.table(0).name"</span>));
+<a name="160" href="#160">160</a> 
+<a name="161" href="#161">161</a>         parent.setProperty(<span class="string">"tables.table(0).fields.field(1).name"</span>, <span class="string">"testField"</span>);
+<a name="162" href="#162">162</a>         assertEquals(<span class="string">"Field name was not changed"</span>, <span class="string">"testField"</span>, config
+<a name="163" href="#163">163</a>                 .getString(<span class="string">"fields.field(1).name"</span>));
+<a name="164" href="#164">164</a>     }
+<a name="165" href="#165">165</a> 
+<a name="166" href="#166">166</a>     <em>/**<em>*</em></em>
+<a name="167" href="#167">167</a> <em>     * Tests adding of properties.</em>
+<a name="168" href="#168">168</a> <em>     */</em>
+<a name="169" href="#169">169</a>     <strong>public</strong> <strong>void</strong> testAddProperty()
+<a name="170" href="#170">170</a>     {
+<a name="171" href="#171">171</a>         setUpSubnodeConfig();
+<a name="172" href="#172">172</a>         config.addProperty(<span class="string">"[@table-type]"</span>, <span class="string">"test"</span>);
+<a name="173" href="#173">173</a>         assertEquals(<span class="string">"parent.createNode() was not called"</span>, 1, nodeCounter);
+<a name="174" href="#174">174</a>         assertEquals(<span class="string">"Attribute not set"</span>, <span class="string">"test"</span>, parent
+<a name="175" href="#175">175</a>                 .getString(<span class="string">"tables.table(0)[@table-type]"</span>));
+<a name="176" href="#176">176</a> 
+<a name="177" href="#177">177</a>         parent.addProperty(<span class="string">"tables.table(0).fields.field(-1).name"</span>, <span class="string">"newField"</span>);
+<a name="178" href="#178">178</a>         List fields = config.getList(<span class="string">"fields.field.name"</span>);
+<a name="179" href="#179">179</a>         assertEquals(<span class="string">"New field was not added"</span>, TABLE_FIELDS[0].length + 1,
+<a name="180" href="#180">180</a>                 fields.size());
+<a name="181" href="#181">181</a>         assertEquals(<span class="string">"Wrong last field"</span>, <span class="string">"newField"</span>, fields
+<a name="182" href="#182">182</a>                 .get(fields.size() - 1));
+<a name="183" href="#183">183</a>     }
+<a name="184" href="#184">184</a> 
+<a name="185" href="#185">185</a>     <em>/**<em>*</em></em>
+<a name="186" href="#186">186</a> <em>     * Tests listing the defined keys.</em>
+<a name="187" href="#187">187</a> <em>     */</em>
+<a name="188" href="#188">188</a>     <strong>public</strong> <strong>void</strong> testGetKeys()
+<a name="189" href="#189">189</a>     {
+<a name="190" href="#190">190</a>         setUpSubnodeConfig();
+<a name="191" href="#191">191</a>         Set keys = <strong>new</strong> HashSet();
+<a name="192" href="#192">192</a>         CollectionUtils.addAll(keys, config.getKeys());
+<a name="193" href="#193">193</a>         assertEquals(<span class="string">"Incorrect number of keys"</span>, 2, keys.size());
+<a name="194" href="#194">194</a>         assertTrue(<span class="string">"Key 1 not contained"</span>, keys.contains(<span class="string">"name"</span>));
+<a name="195" href="#195">195</a>         assertTrue(<span class="string">"Key 2 not contained"</span>, keys.contains(<span class="string">"fields.field.name"</span>));
+<a name="196" href="#196">196</a>     }
+<a name="197" href="#197">197</a> 
+<a name="198" href="#198">198</a>     <em>/**<em>*</em></em>
+<a name="199" href="#199">199</a> <em>     * Tests setting the exception on missing flag. The subnode config obtains</em>
+<a name="200" href="#200">200</a> <em>     * this flag from its parent.</em>
+<a name="201" href="#201">201</a> <em>     */</em>
+<a name="202" href="#202">202</a>     <strong>public</strong> <strong>void</strong> testSetThrowExceptionOnMissing()
+<a name="203" href="#203">203</a>     {
+<a name="204" href="#204">204</a>         parent.setThrowExceptionOnMissing(<strong>true</strong>);
+<a name="205" href="#205">205</a>         setUpSubnodeConfig();
+<a name="206" href="#206">206</a>         assertTrue(<span class="string">"Exception flag not fetchted from parent"</span>, config
+<a name="207" href="#207">207</a>                 .isThrowExceptionOnMissing());
+<a name="208" href="#208">208</a>         <strong>try</strong>
+<a name="209" href="#209">209</a>         {
+<a name="210" href="#210">210</a>             config.getString(<span class="string">"non existing key"</span>);
+<a name="211" href="#211">211</a>             fail(<span class="string">"Could fetch non existing key!"</span>);
+<a name="212" href="#212">212</a>         }
+<a name="213" href="#213">213</a>         <strong>catch</strong> (NoSuchElementException nex)
+<a name="214" href="#214">214</a>         {
+<a name="215" href="#215">215</a>             <em class="comment">// ok</em>
+<a name="216" href="#216">216</a>         }
+<a name="217" href="#217">217</a> 
+<a name="218" href="#218">218</a>         config.setThrowExceptionOnMissing(false);
+<a name="219" href="#219">219</a>         assertTrue(<span class="string">"Exception flag reset on parent"</span>, parent
+<a name="220" href="#220">220</a>                 .isThrowExceptionOnMissing());
+<a name="221" href="#221">221</a>     }
+<a name="222" href="#222">222</a> 
+<a name="223" href="#223">223</a>     <em>/**<em>*</em></em>
+<a name="224" href="#224">224</a> <em>     * Tests handling of the delimiter parsing disabled flag. This is shared</em>
+<a name="225" href="#225">225</a> <em>     * with the parent, too.</em>
+<a name="226" href="#226">226</a> <em>     */</em>
+<a name="227" href="#227">227</a>     <strong>public</strong> <strong>void</strong> testSetDelimiterParsingDisabled()
+<a name="228" href="#228">228</a>     {
+<a name="229" href="#229">229</a>         parent.setDelimiterParsingDisabled(<strong>true</strong>);
+<a name="230" href="#230">230</a>         setUpSubnodeConfig();
+<a name="231" href="#231">231</a>         parent.setDelimiterParsingDisabled(false);
+<a name="232" href="#232">232</a>         assertTrue(<span class="string">"Delimiter parsing flag was not received from parent"</span>,
+<a name="233" href="#233">233</a>                 config.isDelimiterParsingDisabled());
+<a name="234" href="#234">234</a>         config.addProperty(<span class="string">"newProp"</span>, <span class="string">"test1,test2,test3"</span>);
+<a name="235" href="#235">235</a>         assertEquals(<span class="string">"New property was splitted"</span>, <span class="string">"test1,test2,test3"</span>, parent
+<a name="236" href="#236">236</a>                 .getString(<span class="string">"tables.table(0).newProp"</span>));
+<a name="237" href="#237">237</a>         parent.setDelimiterParsingDisabled(<strong>true</strong>);
+<a name="238" href="#238">238</a>         config.setDelimiterParsingDisabled(false);
+<a name="239" href="#239">239</a>         assertTrue(<span class="string">"Delimiter parsing flag was reset on parent"</span>, parent
+<a name="240" href="#240">240</a>                 .isDelimiterParsingDisabled());
+<a name="241" href="#241">241</a>     }
+<a name="242" href="#242">242</a> 
+<a name="243" href="#243">243</a>     <em>/**<em>*</em></em>
+<a name="244" href="#244">244</a> <em>     * Tests manipulating the list delimiter. This piece of data is derived from</em>
+<a name="245" href="#245">245</a> <em>     * the parent.</em>
+<a name="246" href="#246">246</a> <em>     */</em>
+<a name="247" href="#247">247</a>     <strong>public</strong> <strong>void</strong> testSetListDelimiter()
+<a name="248" href="#248">248</a>     {
+<a name="249" href="#249">249</a>         parent.setListDelimiter('/');
+<a name="250" href="#250">250</a>         setUpSubnodeConfig();
+<a name="251" href="#251">251</a>         parent.setListDelimiter(';');
+<a name="252" href="#252">252</a>         assertEquals(<span class="string">"List delimiter not obtained from parent"</span>, '/', config
+<a name="253" href="#253">253</a>                 .getListDelimiter());
+<a name="254" href="#254">254</a>         config.addProperty(<span class="string">"newProp"</span>, <span class="string">"test1,test2/test3"</span>);
+<a name="255" href="#255">255</a>         assertEquals(<span class="string">"List was incorrectly splitted"</span>, <span class="string">"test1,test2"</span>, parent
+<a name="256" href="#256">256</a>                 .getString(<span class="string">"tables.table(0).newProp"</span>));
+<a name="257" href="#257">257</a>         config.setListDelimiter(',');
+<a name="258" href="#258">258</a>         assertEquals(<span class="string">"List delimiter changed on parent"</span>, ';', parent
+<a name="259" href="#259">259</a>                 .getListDelimiter());
+<a name="260" href="#260">260</a>     }
+<a name="261" href="#261">261</a> 
+<a name="262" href="#262">262</a>     <em>/**<em>*</em></em>
+<a name="263" href="#263">263</a> <em>     * Tests changing the expression engine.</em>
+<a name="264" href="#264">264</a> <em>     */</em>
+<a name="265" href="#265">265</a>     <strong>public</strong> <strong>void</strong> testSetExpressionEngine()
+<a name="266" href="#266">266</a>     {
+<a name="267" href="#267">267</a>         parent.setExpressionEngine(<strong>new</strong> XPathExpressionEngine());
+<a name="268" href="#268">268</a>         setUpSubnodeConfig();
+<a name="269" href="#269">269</a>         assertEquals(<span class="string">"Wrong field name"</span>, TABLE_FIELDS[0][1], config
+<a name="270" href="#270">270</a>                 .getString(<span class="string">"fields/field[2]/name"</span>));
+<a name="271" href="#271">271</a>         Set keys = <strong>new</strong> HashSet();
+<a name="272" href="#272">272</a>         CollectionUtils.addAll(keys, config.getKeys());
+<a name="273" href="#273">273</a>         assertEquals(<span class="string">"Wrong number of keys"</span>, 2, keys.size());
+<a name="274" href="#274">274</a>         assertTrue(<span class="string">"Key 1 not contained"</span>, keys.contains(<span class="string">"name"</span>));
+<a name="275" href="#275">275</a>         assertTrue(<span class="string">"Key 2 not contained"</span>, keys.contains(<span class="string">"fields/field/name"</span>));
+<a name="276" href="#276">276</a>         config.setExpressionEngine(<strong>null</strong>);
+<a name="277" href="#277">277</a>         assertTrue(<span class="string">"Expression engine reset on parent"</span>, parent
+<a name="278" href="#278">278</a>                 .getExpressionEngine() instanceof XPathExpressionEngine);
+<a name="279" href="#279">279</a>     }
+<a name="280" href="#280">280</a> 
+<a name="281" href="#281">281</a>     <em>/**<em>*</em></em>
+<a name="282" href="#282">282</a> <em>     * Tests the configurationAt() method.</em>
+<a name="283" href="#283">283</a> <em>     */</em>
+<a name="284" href="#284">284</a>     <strong>public</strong> <strong>void</strong> testConfiguarationAt()
+<a name="285" href="#285">285</a>     {
+<a name="286" href="#286">286</a>         setUpSubnodeConfig();
+<a name="287" href="#287">287</a>         SubnodeConfiguration sub2 = (SubnodeConfiguration) config
+<a name="288" href="#288">288</a>                 .configurationAt(<span class="string">"fields.field(1)"</span>);
+<a name="289" href="#289">289</a>         assertEquals(<span class="string">"Wrong value of property"</span>, TABLE_FIELDS[0][1], sub2
+<a name="290" href="#290">290</a>                 .getString(<span class="string">"name"</span>));
+<a name="291" href="#291">291</a>         assertEquals(<span class="string">"Wrong parent"</span>, config.getParent(), sub2.getParent());
+<a name="292" href="#292">292</a>     }
+<a name="293" href="#293">293</a> 
+<a name="294" href="#294">294</a>     <em>/**<em>*</em></em>
+<a name="295" href="#295">295</a> <em>     * Tests interpolation features. The subnode config should use its parent</em>
+<a name="296" href="#296">296</a> <em>     * for interpolation.</em>
+<a name="297" href="#297">297</a> <em>     */</em>
+<a name="298" href="#298">298</a>     <strong>public</strong> <strong>void</strong> testInterpolation()
+<a name="299" href="#299">299</a>     {
+<a name="300" href="#300">300</a>         parent.addProperty(<span class="string">"tablespaces.tablespace.name"</span>, <span class="string">"default"</span>);
+<a name="301" href="#301">301</a>         parent.addProperty(<span class="string">"tablespaces.tablespace(-1).name"</span>, <span class="string">"test"</span>);
+<a name="302" href="#302">302</a>         parent.addProperty(<span class="string">"tables.table(0).tablespace"</span>,
+<a name="303" href="#303">303</a>                 <span class="string">"${tablespaces.tablespace(0).name}"</span>);
+<a name="304" href="#304">304</a>         assertEquals(<span class="string">"Wrong interpolated tablespace"</span>, <span class="string">"default"</span>, parent
+<a name="305" href="#305">305</a>                 .getString(<span class="string">"tables.table(0).tablespace"</span>));
+<a name="306" href="#306">306</a> 
+<a name="307" href="#307">307</a>         setUpSubnodeConfig();
+<a name="308" href="#308">308</a>         assertEquals(<span class="string">"Wrong interpolated tablespace in subnode"</span>, <span class="string">"default"</span>,
+<a name="309" href="#309">309</a>                 config.getString(<span class="string">"tablespace"</span>));
+<a name="310" href="#310">310</a>     }
+<a name="311" href="#311">311</a> 
+<a name="312" href="#312">312</a>     <em>/**<em>*</em></em>
+<a name="313" href="#313">313</a> <em>     * An additional test for interpolation when the configurationAt() method is</em>
+<a name="314" href="#314">314</a> <em>     * involved.</em>
+<a name="315" href="#315">315</a> <em>     */</em>
+<a name="316" href="#316">316</a>     <strong>public</strong> <strong>void</strong> testInterpolationFromConfigurationAt()
+<a name="317" href="#317">317</a>     {
+<a name="318" href="#318">318</a>         parent.addProperty(<span class="string">"base.dir"</span>, <span class="string">"/home/foo"</span>);
+<a name="319" href="#319">319</a>         parent.addProperty(<span class="string">"test.absolute.dir.dir1"</span>, <span class="string">"${base.dir}/path1"</span>);
+<a name="320" href="#320">320</a>         parent.addProperty(<span class="string">"test.absolute.dir.dir2"</span>, <span class="string">"${base.dir}/path2"</span>);
+<a name="321" href="#321">321</a>         parent.addProperty(<span class="string">"test.absolute.dir.dir3"</span>, <span class="string">"${base.dir}/path3"</span>);
+<a name="322" href="#322">322</a> 
+<a name="323" href="#323">323</a>         Configuration sub = parent.configurationAt(<span class="string">"test.absolute.dir"</span>);
+<a name="324" href="#324">324</a>         <strong>for</strong> (<strong>int</strong> i = 1; i &lt; 4; i++)
+<a name="325" href="#325">325</a>         {
+<a name="326" href="#326">326</a>             assertEquals(<span class="string">"Wrong interpolation in parent"</span>, <span class="string">"/home/foo/path"</span> + i,
+<a name="327" href="#327">327</a>                     parent.getString(<span class="string">"test.absolute.dir.dir"</span> + i));
+<a name="328" href="#328">328</a>             assertEquals(<span class="string">"Wrong interpolation in subnode"</span>,
+<a name="329" href="#329">329</a>                     <span class="string">"/home/foo/path"</span> + i, sub.getString(<span class="string">"dir"</span> + i));
+<a name="330" href="#330">330</a>         }
+<a name="331" href="#331">331</a>     }
+<a name="332" href="#332">332</a> 
+<a name="333" href="#333">333</a>     <em>/**<em>*</em></em>
+<a name="334" href="#334">334</a> <em>     * Tests a reload operation for the parent configuration when the subnode</em>
+<a name="335" href="#335">335</a> <em>     * configuration does not support reloads. Then the new value should not be</em>
+<a name="336" href="#336">336</a> <em>     * detected.</em>
+<a name="337" href="#337">337</a> <em>     */</em>
+<a name="338" href="#338">338</a>     <strong>public</strong> <strong>void</strong> testParentReloadNotSupported() throws ConfigurationException
+<a name="339" href="#339">339</a>     {
+<a name="340" href="#340">340</a>         Configuration c = setUpReloadTest(false);
+<a name="341" href="#341">341</a>         assertEquals(<span class="string">"Name changed in sub config"</span>, TABLE_NAMES[1], config
+<a name="342" href="#342">342</a>                 .getString(<span class="string">"name"</span>));
+<a name="343" href="#343">343</a>         assertEquals(<span class="string">"Name not changed in parent"</span>, NEW_TABLE_NAME, c
+<a name="344" href="#344">344</a>                 .getString(<span class="string">"tables.table(1).name"</span>));
+<a name="345" href="#345">345</a>     }
+<a name="346" href="#346">346</a> 
+<a name="347" href="#347">347</a>     <em>/**<em>*</em></em>
+<a name="348" href="#348">348</a> <em>     * Tests a reload operation for the parent configuration when the subnode</em>
+<a name="349" href="#349">349</a> <em>     * configuration does support reloads. The new value should be returned.</em>
+<a name="350" href="#350">350</a> <em>     */</em>
+<a name="351" href="#351">351</a>     <strong>public</strong> <strong>void</strong> testParentReloadSupported() throws ConfigurationException
+<a name="352" href="#352">352</a>     {
+<a name="353" href="#353">353</a>         Configuration c = setUpReloadTest(<strong>true</strong>);
+<a name="354" href="#354">354</a>         assertEquals(<span class="string">"Name not changed in sub config"</span>, NEW_TABLE_NAME, config
+<a name="355" href="#355">355</a>                 .getString(<span class="string">"name"</span>));
+<a name="356" href="#356">356</a>         assertEquals(<span class="string">"Name not changed in parent"</span>, NEW_TABLE_NAME, c
+<a name="357" href="#357">357</a>                 .getString(<span class="string">"tables.table(1).name"</span>));
+<a name="358" href="#358">358</a>     }
+<a name="359" href="#359">359</a> 
+<a name="360" href="#360">360</a>     <em>/**<em>*</em></em>
+<a name="361" href="#361">361</a> <em>     * Tests a reload operation for the parent configuration when the subnode</em>
+<a name="362" href="#362">362</a> <em>     * configuration is aware of reloads, and the parent configuration is</em>
+<a name="363" href="#363">363</a> <em>     * accessed first. The new value should be returned.</em>
+<a name="364" href="#364">364</a> <em>     */</em>
+<a name="365" href="#365">365</a>     <strong>public</strong> <strong>void</strong> testParentReloadSupportAccessParent()
+<a name="366" href="#366">366</a>             throws ConfigurationException
+<a name="367" href="#367">367</a>     {
+<a name="368" href="#368">368</a>         Configuration c = setUpReloadTest(<strong>true</strong>);
+<a name="369" href="#369">369</a>         assertEquals(<span class="string">"Name not changed in parent"</span>, NEW_TABLE_NAME, c
+<a name="370" href="#370">370</a>                 .getString(<span class="string">"tables.table(1).name"</span>));
+<a name="371" href="#371">371</a>         assertEquals(<span class="string">"Name not changed in sub config"</span>, NEW_TABLE_NAME, config
+<a name="372" href="#372">372</a>                 .getString(<span class="string">"name"</span>));
+<a name="373" href="#373">373</a>     }
+<a name="374" href="#374">374</a> 
+<a name="375" href="#375">375</a>     <em>/**<em>*</em></em>
+<a name="376" href="#376">376</a> <em>     * Tests whether reloads work with sub subnode configurations.</em>
+<a name="377" href="#377">377</a> <em>     */</em>
+<a name="378" href="#378">378</a>     <strong>public</strong> <strong>void</strong> testParentReloadSubSubnode() throws ConfigurationException
+<a name="379" href="#379">379</a>     {
+<a name="380" href="#380">380</a>         setUpReloadTest(<strong>true</strong>);
+<a name="381" href="#381">381</a>         SubnodeConfiguration sub = config.configurationAt(<span class="string">"fields"</span>, <strong>true</strong>);
+<a name="382" href="#382">382</a>         assertEquals(<span class="string">"Wrong subnode key"</span>, <span class="string">"tables.table(1).fields"</span>, sub
+<a name="383" href="#383">383</a>                 .getSubnodeKey());
+<a name="384" href="#384">384</a>         assertEquals(<span class="string">"Changed field not detected"</span>, <span class="string">"newField"</span>, sub
+<a name="385" href="#385">385</a>                 .getString(<span class="string">"field(0).name"</span>));
+<a name="386" href="#386">386</a>     }
+<a name="387" href="#387">387</a> 
+<a name="388" href="#388">388</a>     <em>/**<em>*</em></em>
+<a name="389" href="#389">389</a> <em>     * Tests creating a sub sub config when the sub config is not aware of</em>
+<a name="390" href="#390">390</a> <em>     * changes. Then the sub sub config shouldn't be either.</em>
+<a name="391" href="#391">391</a> <em>     */</em>
+<a name="392" href="#392">392</a>     <strong>public</strong> <strong>void</strong> testParentReloadSubSubnodeNoChangeSupport()
+<a name="393" href="#393">393</a>             throws ConfigurationException
+<a name="394" href="#394">394</a>     {
+<a name="395" href="#395">395</a>         setUpReloadTest(false);
+<a name="396" href="#396">396</a>         SubnodeConfiguration sub = config.configurationAt(<span class="string">"fields"</span>, <strong>true</strong>);
+<a name="397" href="#397">397</a>         assertNull(<span class="string">"Sub sub config is attached to parent"</span>, sub.getSubnodeKey());
+<a name="398" href="#398">398</a>         assertEquals(<span class="string">"Changed field name returned"</span>, TABLE_FIELDS[1][0], sub
+<a name="399" href="#399">399</a>                 .getString(<span class="string">"field(0).name"</span>));
+<a name="400" href="#400">400</a>     }
+<a name="401" href="#401">401</a> 
+<a name="402" href="#402">402</a>     <em>/**<em>*</em></em>
+<a name="403" href="#403">403</a> <em>     * Prepares a test for a reload operation.</em>
+<a name="404" href="#404">404</a> <em>     *</em>
+<a name="405" href="#405">405</a> <em>     * @param supportReload a flag whether the subnode configuration should</em>
+<a name="406" href="#406">406</a> <em>     * support reload operations</em>
+<a name="407" href="#407">407</a> <em>     * @return the parent configuration that can be used for testing</em>
+<a name="408" href="#408">408</a> <em>     * @throws ConfigurationException if an error occurs</em>
+<a name="409" href="#409">409</a> <em>     */</em>
+<a name="410" href="#410">410</a>     <strong>private</strong> XMLConfiguration setUpReloadTest(<strong>boolean</strong> supportReload)
+<a name="411" href="#411">411</a>             throws ConfigurationException
+<a name="412" href="#412">412</a>     {
+<a name="413" href="#413">413</a>         XMLConfiguration xmlConf = <strong>new</strong> XMLConfiguration(parent);
+<a name="414" href="#414">414</a>         xmlConf.setFile(TEST_FILE);
+<a name="415" href="#415">415</a>         xmlConf.save();
+<a name="416" href="#416">416</a>         config = xmlConf.configurationAt(<span class="string">"tables.table(1)"</span>, supportReload);
+<a name="417" href="#417">417</a>         assertEquals(<span class="string">"Wrong table name"</span>, TABLE_NAMES[1], config
+<a name="418" href="#418">418</a>                 .getString(<span class="string">"name"</span>));
+<a name="419" href="#419">419</a>         xmlConf.setReloadingStrategy(<strong>new</strong> <a href="../../../../org/apache/commons/configuration/reloading/FileAlwaysReloadingStrategy.html">FileAlwaysReloadingStrategy</a>());
+<a name="420" href="#420">420</a>         <em class="comment">// Now change the configuration file</em>
+<a name="421" href="#421">421</a>         XMLConfiguration confUpdate = <strong>new</strong> XMLConfiguration(TEST_FILE);
+<a name="422" href="#422">422</a>         confUpdate.setProperty(<span class="string">"tables.table(1).name"</span>, NEW_TABLE_NAME);
+<a name="423" href="#423">423</a>         confUpdate.setProperty(<span class="string">"tables.table(1).fields.field(0).name"</span>,
+<a name="424" href="#424">424</a>                 <span class="string">"newField"</span>);
+<a name="425" href="#425">425</a>         confUpdate.save();
+<a name="426" href="#426">426</a>         <strong>return</strong> xmlConf;
+<a name="427" href="#427">427</a>     }
+<a name="428" href="#428">428</a> 
+<a name="429" href="#429">429</a>     <em>/**<em>*</em></em>
+<a name="430" href="#430">430</a> <em>     * Tests a manipulation of the parent configuration that causes the subnode</em>
+<a name="431" href="#431">431</a> <em>     * configuration to become invalid. In this case the sub config should be</em>
+<a name="432" href="#432">432</a> <em>     * detached and keep its old values.</em>
+<a name="433" href="#433">433</a> <em>     */</em>
+<a name="434" href="#434">434</a>     <strong>public</strong> <strong>void</strong> testParentChangeDetach()
+<a name="435" href="#435">435</a>     {
+<a name="436" href="#436">436</a>         <strong>final</strong> String key = <span class="string">"tables.table(1)"</span>;
+<a name="437" href="#437">437</a>         config = parent.configurationAt(key, <strong>true</strong>);
+<a name="438" href="#438">438</a>         assertEquals(<span class="string">"Wrong subnode key"</span>, key, config.getSubnodeKey());
+<a name="439" href="#439">439</a>         assertEquals(<span class="string">"Wrong table name"</span>, TABLE_NAMES[1], config
+<a name="440" href="#440">440</a>                 .getString(<span class="string">"name"</span>));
+<a name="441" href="#441">441</a>         parent.clearTree(key);
+<a name="442" href="#442">442</a>         assertEquals(<span class="string">"Wrong table name after change"</span>, TABLE_NAMES[1], config
+<a name="443" href="#443">443</a>                 .getString(<span class="string">"name"</span>));
+<a name="444" href="#444">444</a>         assertNull(<span class="string">"Sub config was not detached"</span>, config.getSubnodeKey());
+<a name="445" href="#445">445</a>     }
+<a name="446" href="#446">446</a> 
+<a name="447" href="#447">447</a>     <em>/**<em>*</em></em>
+<a name="448" href="#448">448</a> <em>     * Tests detaching a subnode configuration when an exception is thrown</em>
+<a name="449" href="#449">449</a> <em>     * during reconstruction. This can happen e.g. if the expression engine is</em>
+<a name="450" href="#450">450</a> <em>     * changed for the parent.</em>
+<a name="451" href="#451">451</a> <em>     */</em>
+<a name="452" href="#452">452</a>     <strong>public</strong> <strong>void</strong> testParentChangeDetatchException()
+<a name="453" href="#453">453</a>     {
+<a name="454" href="#454">454</a>         config = parent.configurationAt(<span class="string">"tables.table(1)"</span>, <strong>true</strong>);
+<a name="455" href="#455">455</a>         parent.setExpressionEngine(<strong>new</strong> XPathExpressionEngine());
+<a name="456" href="#456">456</a>         assertEquals(<span class="string">"Wrong name of table"</span>, TABLE_NAMES[1], config
+<a name="457" href="#457">457</a>                 .getString(<span class="string">"name"</span>));
+<a name="458" href="#458">458</a>         assertNull(<span class="string">"Sub config was not detached"</span>, config.getSubnodeKey());
+<a name="459" href="#459">459</a>     }
+<a name="460" href="#460">460</a> 
+<a name="461" href="#461">461</a>     <em>/**<em>*</em></em>
+<a name="462" href="#462">462</a> <em>     * Initializes the parent configuration. This method creates the typical</em>
+<a name="463" href="#463">463</a> <em>     * structure of tables and fields nodes.</em>
+<a name="464" href="#464">464</a> <em>     *</em>
+<a name="465" href="#465">465</a> <em>     * @return the parent configuration</em>
+<a name="466" href="#466">466</a> <em>     */</em>
+<a name="467" href="#467">467</a>     <strong>protected</strong> HierarchicalConfiguration setUpParentConfig()
+<a name="468" href="#468">468</a>     {
+<a name="469" href="#469">469</a>         HierarchicalConfiguration conf = <strong>new</strong> HierarchicalConfiguration()
+<a name="470" href="#470">470</a>         {
+<a name="471" href="#471">471</a>             <em class="comment">// Provide a special implementation of createNode() to check</em>
+<a name="472" href="#472">472</a>             <em class="comment">// if it is called by the subnode config</em>
+<a name="473" href="#473">473</a>             <strong>protected</strong> Node createNode(String name)
+<a name="474" href="#474">474</a>             {
+<a name="475" href="#475">475</a>                 nodeCounter++;
+<a name="476" href="#476">476</a>                 <strong>return</strong> <strong>super</strong>.createNode(name);
+<a name="477" href="#477">477</a>             }
+<a name="478" href="#478">478</a>         };
+<a name="479" href="#479">479</a>         <strong>for</strong> (<strong>int</strong> i = 0; i &lt; TABLE_NAMES.length; i++)
+<a name="480" href="#480">480</a>         {
+<a name="481" href="#481">481</a>             conf.addProperty(<span class="string">"tables.table(-1).name"</span>, TABLE_NAMES[i]);
+<a name="482" href="#482">482</a>             <strong>for</strong> (<strong>int</strong> j = 0; j &lt; TABLE_FIELDS[i].length; j++)
+<a name="483" href="#483">483</a>             {
+<a name="484" href="#484">484</a>                 conf.addProperty(<span class="string">"tables.table.fields.field(-1).name"</span>,
+<a name="485" href="#485">485</a>                         TABLE_FIELDS[i][j]);
+<a name="486" href="#486">486</a>             }
+<a name="487" href="#487">487</a>         }
+<a name="488" href="#488">488</a>         <strong>return</strong> conf;
+<a name="489" href="#489">489</a>     }
+<a name="490" href="#490">490</a> 
+<a name="491" href="#491">491</a>     <em>/**<em>*</em></em>
+<a name="492" href="#492">492</a> <em>     * Returns the root node for the subnode config. This method returns the</em>
+<a name="493" href="#493">493</a> <em>     * first table node.</em>
+<a name="494" href="#494">494</a> <em>     *</em>
+<a name="495" href="#495">495</a> <em>     * @param conf the parent config</em>
+<a name="496" href="#496">496</a> <em>     * @return the root node for the subnode config</em>
+<a name="497" href="#497">497</a> <em>     */</em>
+<a name="498" href="#498">498</a>     <strong>protected</strong> ConfigurationNode getSubnodeRoot(HierarchicalConfiguration conf)
+<a name="499" href="#499">499</a>     {
+<a name="500" href="#500">500</a>         ConfigurationNode root = conf.getRoot();
+<a name="501" href="#501">501</a>         <strong>return</strong> root.getChild(0).getChild(0);
+<a name="502" href="#502">502</a>     }
+<a name="503" href="#503">503</a> 
+<a name="504" href="#504">504</a>     <em>/**<em>*</em></em>
+<a name="505" href="#505">505</a> <em>     * Performs a standard initialization of the subnode config to test.</em>
+<a name="506" href="#506">506</a> <em>     */</em>
+<a name="507" href="#507">507</a>     <strong>protected</strong> <strong>void</strong> setUpSubnodeConfig()
+<a name="508" href="#508">508</a>     {
+<a name="509" href="#509">509</a>         config = <strong>new</strong> SubnodeConfiguration(parent, getSubnodeRoot(parent));
+<a name="510" href="#510">510</a>     }
+<a name="511" href="#511">511</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

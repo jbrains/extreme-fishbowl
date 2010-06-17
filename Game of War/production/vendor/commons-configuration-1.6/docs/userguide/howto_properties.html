@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Commons Configuration - Properties files</title><style type="text/css" media="all">
+          @import url("../style/maven-base.css");
+          
+			    @import url("../style/maven-theme.css");@import url("../style/project.css");</style><link rel="stylesheet" href="../style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Emmanuel Bourg"></meta><meta name="email" content="smanux@lfjr.net"></meta><meta name="author" content="Oliver Heger"></meta><meta name="email" content="oheger@apache.org"></meta></head><body class="composite"><div id="banner"><a href="http://commons.apache.org/" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://commons.apache.org/images/logo.png"></img></a><a href="http://commons.apache.org/configuration/" id="projectLogo"><img alt="Commons Configuration" src="../images/logo.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft">
+                	Last published: 19 December 2008
+                  | Doc for 1.6</div><div class="xright">
+        
+        <a href="http://commons.apache.org/" class="externalLink" title="External Link">Apache Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuConfiguration"><h5>Configuration</h5><ul><li class="none"><a href="../index.html">Home</a></li><li class="none"><a href="http://commons.apache.org/downloads/download_configuration.cgi" class="externalLink" title="External Link">Download</a></li><li class="none"><a href="../changes-report.html">Release History</a></li><li class="none"><a href="../userguide/user_guide.html">User's Guide</a></li><li class="none"><a href="../userguide-1.2/index.html">Howtos (1.2 release)</a></li><li class="none"><a href="../dependencies.html">Runtime Dependencies</a></li><li class="none"><a href="../apidocs/index.html">Javadoc (current release)</a></li><li class="none"><a href="../javadocarchive.html">Javadoc (old releases)</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="../building.html">Building</a></li><li class="none"><a href="../tasks-report.html">Roadmap</a></li><li class="none"><a href="../issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="http://svn.apache.org/repos/asf/commons/proper/configuration/" class="externalLink" title="External Link">SVN</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="../index.html">About Commons Configuration</a></li><li class="none"><a href="../downloads.html">Downloads</a></li><li class="collapsed"><a href="../project-info.html">Project Info</a></li><li class="collapsed"><a href="../maven-reports.html">Project Reports</a></li><li class="none"><a href="http://commons.apache.org/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://commons.apache.org/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://commons.apache.org/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://commons.apache.org/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://commons.apache.org/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://commons.apache.org/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://commons.apache.org/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://commons.apache.org/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://commons.apache.org/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="../images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Properties_files"></a><h2>Properties files</h2><p>
+        Properties files are a popular mean of configuring applications. Of course Commons Configuration
+        supports this format and enhances significantly the basic <code>java.util.Properties</code> class.
+        This section introduces the features of the 
+        <code><a href="apidocs/org/apache/commons/configuration/PropertiesConfiguration.html">PropertiesConfiguration</a></code> class.
+        Note that <code>PropertiesConfiguration</code> is a very typical example
+        for an implementation of the <code>Configuration</code> interface and
+        many of the features described in this section (e.g. list handling or
+        interpolation) are supported by other configuration classes as well.
+        This is because most configuration implementations that ship with
+        Commons Configuration are derived from the common base class
+        <code><a href="apidocs/org/apache/commons/configuration/AbstractConfiguration.html">AbstractConfiguration</a></code>,
+        which implementes this features.
+      </p><div class="subsection"><a name="Using_PropertiesConfiguration"></a><h3>Using PropertiesConfiguration</h3><p>
+          Let's start with a simple properties file named
+          <code>usergui.properties</code> with the following content:
+        </p>
+    <div class="source"><pre>
+# Properties definining the GUI
+colors.background = #FFFFFF
+colors.foreground = #000080
+
+window.width = 500
+window.height = 300
+</pre></div>
+  <p>
+          To load this file, you'll write:
+        </p>
+    <div class="source"><pre>
+Configuration config = new PropertiesConfiguration("usergui.properties");
+</pre></div>
+  <p>
+          If you do not specify an absolute path, the file will be searched automatically
+          in the following locations:
+          <ul>
+            <li>in the current directory</li>
+            <li>in the user home directory</li>
+            <li>in the classpath</li>
+          </ul>
+        </p><p>
+          Instead of using a constructor that takes a file name you can also
+          invoke one of the <code>load()</code> methods. There are several
+          overloaded variants that allow you to load properties from various
+          sources. More information about loading properties files (and file-based
+          configurations in general) can be found in the section about
+          <a href="howto_filebased.html">File-based Configurations</a>.
+        </p><p>
+          After the properties file was loaded you can access its content through
+          the methods of the <code>Configuration</code> interface, e.g.
+        </p>
+    <div class="source"><pre>
+String backColor = config.getString("colors.background");
+Dimension size = new Dimension(config.getInt("window.width"),
+  config.getInt("window.height"));
+</pre></div>
+  </div><div class="subsection"><a name="Includes"></a><h3>Includes</h3><p>
+          If a property is named "<code>include</code>" and the value of that property is the
+          name of a file on the disk, that file will be included into the configuration. Here is
+          an example:
+        </p>
+    <div class="source"><pre>
+# usergui.properties
+
+include = colors.properties
+include = sizes.properties
+</pre></div>
+  
+    <div class="source"><pre>
+# colors.properties
+
+colors.background = #FFFFFF
+</pre></div>
+  </div><div class="subsection"><a name="Lists_and_arrays"></a><h3>Lists and arrays</h3><p>
+          As was already pointed out in the section
+          <a href="howto_basicfeatures.html#List_handling">List handling</a>
+          of <em>Basic features</em>, Commons Configuration has the ability to
+          return easily a list of values. For example a properties file can
+          contain a list of comma separated values:
+        </p>
+    <div class="source"><pre>
+# chart colors
+colors.pie = #FF0000, #00FF00, #0000FF
+</pre></div>
+  <p>
+          You don't have to split the value manually, you can retrieve an array
+          or a <code>java.util.List</code> directly with:
+        </p>
+    <div class="source"><pre>
+String[] colors = config.getStringArray("colors.pie");
+List colorList = config.getList("colors.pie");
+</pre></div>
+  <p>
+          Alternatively, you can specify a list of values in your properties file by using
+          the same key on several lines:
+        </p>
+    <div class="source"><pre>
+# chart colors
+colors.pie = #FF0000;
+colors.pie = #00FF00;
+colors.pie = #0000FF;
+</pre></div>
+  <p>
+          All of the features related to list handling described for
+          <code>AbstractConfiguration</code> also apply to properties files,
+          including changing the list delimiter or disabling list handling at
+          all.
+        </p></div><div class="subsection"><a name="Saving"></a><h3>Saving</h3><p>
+          To save your configuration, just call the <code>save()</code> method:
+        </p>
+    <div class="source"><pre>
+PropertiesConfiguration config = new PropertiesConfiguration("usergui.properties");
+config.setProperty("colors.background", "#000000);
+config.save();
+</pre></div>
+  <p>
+          You can also save a copy of the configuration to another file:
+        </p>
+    <div class="source"><pre>
+PropertiesConfiguration config = new PropertiesConfiguration("usergui.properties");
+config.setProperty("colors.background", "#000000);
+config.save("usergui.backup.properties);
+</pre></div>
+  <p>
+          More information about saving properties files (and file-based
+          configurations in general) can be found in the section about
+          <a href="howto_filebased.html">File-based Configurations</a>.
+        </p></div><div class="subsection"><a name="Special_Characters"></a><h3>Special Characters</h3><p>
+          If you need a special character in a property like a line feed, a tabulation or
+          an unicode character, you can specify it with the same escaped notation used for
+          Java Strings. The list separator ("," by default), can also be escaped:
+        </p>
+    <div class="source"><pre>
+key = This \n string \t contains \, escaped \\ characters \u0020
+</pre></div>
+  </div><div class="subsection"><a name="Layout_Objects"></a><h3>Layout Objects</h3><p>
+        Each <code>PropertiesConfiguration</code> object is associated with a
+        <em>Layout object</em>, an instance of the class
+        <code><a href="apidocs/org/apache/commons/configuration/PropertiesConfigurationLayout.html">
+        PropertiesConfigurationLayout</a></code>. This layout object is
+        responsible for preserving most of the structure of loaded configuration
+        files. This means that things like comments or blanc lines in a saved
+        properties file will closely resemble the original properties file
+        (the algorithm is not 100 percent perfect, but for most use cases it
+        should be sufficient).
+      </p><p>
+        Normally a developer does not have to deal with these layout objects.
+        However there are some methods that might be of interest in certain use
+        cases. For instance <code>PropertiesConfigurationLayout</code> defines
+        methods for obtaining and setting the comment for a property key. A
+        header comment for the whole properties file is also supported. If the
+        values of multi-valued properties should always be written on a
+        single line rather than adding a new property definition for each value
+        (which would be incompatible with <code>java.util.Properties</code>)
+        the <code>setForceSingleLine()</code> method can be used.
+      </p></div></div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2001-2008, The Apache Software Foundation</div><div class="clear"><hr></hr></div></div></body></html>

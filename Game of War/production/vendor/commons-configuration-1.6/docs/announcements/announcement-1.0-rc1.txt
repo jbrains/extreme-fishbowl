@@ -1,0 +1,123 @@
+The commons-configuration team is pleased to announce the Commons 
+Configuration 1.0-rc1 release! 
+
+http://commons.apache.org/configuration/
+
+Tools to assist in the reading of configuration/preferences files in various 
+formats 
+
+Changes in this version include:
+
+  New Features:
+
+o HierarchicalConfigurationXMLReader stores comments as text nodes. Issue: 
+  CONFIGURATION-132. Thanks to Oliver Heger. 
+o project.xml contains bad dependencies. Issue: CONFIGURATION-122. Thanks to 
+  Ricardo Gladwell. 
+o clearXmlProperty doesn't remove list properties completely. Issue: 
+  CONFIGURATION-64. Thanks to Brent Worden. 
+o new ConfigurationDynaBean. Issue: CONFIGURATION-183. Thanks to Ricardo 
+  Gladwell. 
+o new ConfigurationMap and ConfigurationSet. Issue: CONFIGURATION-185. Thanks 
+  to Ricardo Gladwell. 
+o Added save methods in XMLConfiguration similar to PropertiesConfiguration 
+  to save the configuration to another file. Issue: CONFIGURATION-114. 
+o Added a save() method to PropertiesConfiguration and save(Writer out), 
+  save(OutputStream out), save(OutputStream out, String encoding) to 
+  BasePropertiesConfiguration. 
+o Direct support of XML via DOM. New classes DOMConfiguration and 
+  HierarchicalDOMConfiguration. 
+o Changed CompositeConfiguration to extend from AbstractConfiuration. This 
+  means that the behavior of CompositeConfiguration is much similar to others 
+  like PropertiesConfiguration in handling of missing keys, interpolation, 
+  etc.. Previously CompositeConfiguration had quite a few differences. 
+o The Configuration interface now supports BigDecimal and BigInteger numbers. 
+o ConfigurationException is now thrown by public methods instead of Exception 
+  or IOException or whatnot. 
+o For configuration based on properties files, allow characters like \n etc 
+  to be escaped and unescaped. 
+o New DatabaseConfiguration that uses a database to store the properties. It 
+  supports 2 table structures : one table per configuration (2 colums 
+  key/value) one table for multiple configurations (2 columns key/value + 1 
+  column for the name of the configuration) 
+o ConfigurationFactory now supports the hierarchicalDom4j element in 
+  configuration definition file 
+o ConfigurationFactory now supports two types of properties files, additional 
+  and override. Additional properties add each other together. Override 
+  override each other. This allows you to have a single property that is 
+  either aggregated from a number of sources, or have a property that is 
+  overridden according to a specific order of sources. 
+o Added AbstractConfiguration to make it easier to create subclasses by only 
+  having to implement the methods required. 
+
+  Fixed bugs:
+
+o Problem adding property XMLConfiguration. Issue: CONFIGURATION-91. Thanks 
+  to Ricardo Gladwell. 
+o DatabaseConfiguration doesn't support List properties. Issue: 
+  CONFIGURATION-18. 
+o Fixed several bugs related to XMLConfiguration: Can't add a new property as 
+  an attribute in XMLConfiguration XMLConfiguration doesn't support attribute 
+  names with a dot XMLConfiguration doesn't ignore comments 
+  XMLConfiguration.save() doesn't escape reserved characters 
+o List values are now properly stored as comma separated values in the 
+  Properties object returned by ConfigurationConverter.getProperties() Issue: 
+  CONFIGURATION-98. 
+o Tokens like ${ref} in a PropertyConfiguration are now properly saved. 
+  Issue: CONFIGURATION-174. 
+o The getList() method of a CompositeConfiguration now returns the list 
+  composed of the elements in the first matching configuration and the 
+  additional elements found in the in memory configuration. Issue: 
+  CONFIGURATION-127. 
+o SubsetConfiguration returns a List on getList(). AbstractConfiguration 
+  wouldn't properly deal with a List, only with a Container for getList()! 
+  Thanks to jschaible for the unit test. 
+o Reapply the ConfigurationXMLDocument that went missing during migration out 
+  of sandbox. 
+o ClassPropertiesConfiguration Additions Use the classloader of class that is 
+  provided by the constructor. Add a constructor that indicates whether to 
+  use relative or absolute. Change getPropertyStream to utilize the relative 
+  or absolute flag. Add a test case that checks that absolute paths work. 
+o JNDIConfiguration.getKeys() Addition The JNDIConfiguration.getKeys() method 
+  was returning an unsupported operation error. However, this is an important 
+  method to have supported. 
+o CompositeConfiguration.getKeys() Fix The CompositeConfiguration.getKeys() 
+  method was returning an unordered list of configuration values. However, 
+  many apps expect the order that keys are returned to be the order they are 
+  added into the properties file. 
+
+  Changes:
+
+o Removed the DOM4J implementations in favor of the DOM ones. 
+  DOMConfiguration has been renamed to XMLConfiguration, and 
+  HierarchicalDOMConfiguration to HierarchicalXMLConfiguration. The elements 
+  parsed by the ConfigurationFactory have been changed accordingly. 
+o Introduced a ConversionException thrown when the value of a property is not 
+  compatible the type requested. It replaces the ClassCastException and the 
+  NumberFormatException thrown previously. 
+o Update build to not include test configuration files in resulting jar. 
+o Refactored JNDIConfiguration to use AbstractConfiguration. 
+o Fixed invalid subsets by refactoring out the subset logic into a 
+  SubsetConfiguration. Issue: CONFIGURATION-76. 
+o Apply ASL 2.0 license. Thanks to Jeff Painter for scripting the conversion! 
+o Removed "defaults" from BaseConfiguration. Defaults are now done via using 
+  a CompositeConfiguration, either directly or via a ConfigurationFactory. if 
+  you want to save changes made to a Configuration, then you use a 
+  CompositeConfiguration and get back the inMemoryConfiguration that has the 
+  delta of changes. Added a bit of documentation on this. 
+o Enhancement: Configuration Comparator. Issue: CONFIGURATION-154. 
+o BaseConfiguration: containsKey ignores default properties. I have changed 
+  it so that now the defaults are paid attention to. Issue: CONFIGURATION-54. 
+o Change all Vector objects to List objects. 
+o AbstractConfiguration addProperty now delegates to an abstract 
+  addPropertyDirect implemented by BaseConfiguration. 
+o Changed getString() method to throw a NoSuchElementException instead of "" 
+  if the configuration property doesn't exist. 
+
+  Removed features:
+
+o ConfigurationXMLDocument removed until post 1.0.  
+
+Have fun!
+-The commons-configuration team
+      

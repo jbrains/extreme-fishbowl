@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Using The API - Commons VFS</title><style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          
+          @import url("./style/maven-theme.css");@import url("./style/project.css");</style><link rel="stylesheet" href="./style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Adam Murdoch"></meta><meta name="email" content="adammurdoch@apache.org"></meta></head><body class="composite"><div id="banner"><a href="http://jakarta.apache.org" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://jakarta.apache.org/images/original-jakarta-logo.gif"></img></a><a href="http://jakarta.apache.org/commons/vfs/" id="projectLogo"><img alt="Commons VFS" src="./images/vfs-logo-white.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft"></div><div class="xright">
+        
+        <a href="http://www.apache.org" class="externalLink" title="External Link">Apache</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org" class="externalLink" title="External Link">Jakarta</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuCommons VFS"><h5>Commons VFS</h5><ul><li class="none"><a href="index.html">Overview</a></li><li class="none"><a href="download.html">Download and Build</a></li><li class="none"><a href="3rdparty.html">3rd party plugins</a></li><li class="none"><strong><a href="api.html">Using the API</a></strong></li><li class="none"><a href="apidocs/index.html">API JavaDocs</a></li><li class="none"><a href="filesystems.html">File Systems</a></li><li class="none"><a href="anttasks.html">Ant Tasks</a></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/VFS" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="testserver.html">Test Server</a></li><li class="none"><a href="mail-lists.html">Mailing Lists</a></li><li class="none"><a href="issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="cvs-usage.html">Source Repository</a></li><li class="none"><a href="todo.html">To Do List</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="index.html">About</a></li><li class="collapsed"><a href="project-info.html">Project Info</a></li><li class="collapsed"><a href="maven-reports.html">Project Reports</a></li><li class="none"><a href="http://jakarta.apache.org/commons/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://jakarta.apache.org/commons/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://jakarta.apache.org/commons/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://jakarta.apache.org/commons/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://jakarta.apache.org/commons/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="legend"><h5>Legend</h5><ul><li class="externalLink">External Link</li><li class="newWindow">Opens in a new window</li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="./images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Using_The_API"></a><h2>Using The API</h2>
+            <p>
+                The
+                <a href="apidocs/org/apache/commons/vfs/FileSystemManager.html">FileSystemManager</a>
+                interface provides access to Commons VFS.  Using this interface
+                you can locate files and create file systems.
+                There are a
+                <a href="#Configuring_Commons_VFS">number of ways</a>
+                to obtain a
+                <code>FileSystemManager</code> instance.
+                The simplest is to use the static
+                <a href="apidocs/org/apache/commons/vfs/VFS.html#getManager()">VFS.getManager()</a>
+                method, which returns the default Commons VFS implementation.
+            </p>
+
+            <p>
+                Once you have a
+                <code>FileSystemManager</code>, you can use its
+                <code>resolveFile()</code> methods to locate a file by name.
+                For example:
+            </p>
+
+            
+    <div class="source"><pre>
+FileSystemManager fsManager = VFS.getManager();
+FileObject jarFile = fsManager.resolveFile( "jar:lib/aJarFile.jar" );
+                </pre></div>
+  
+
+            <p>
+                Each file is represented by a
+                <a href="apidocs/org/apache/commons/vfs/FileObject.html">FileObject</a>
+                instance.  Using this interface you can create or delete the
+                file, list its children, read or write its content, and so on.
+                For example:
+            </p>
+
+            
+    <div class="source"><pre>
+// Locate the Jar file
+FileSystemManager fsManager = VFS.getManager();
+FileObject jarFile = fsManager.resolveFile( "jar:lib/aJarFile.jar" );
+
+// List the children of the Jar file
+FileObject[] children = jarFile.getChildren();
+System.out.println( "Children of " + jarFile.getName().getURI() );
+for ( int i = 0; i &lt; children.length; i++ )
+{
+    System.out.println( children[ i ].getName().getBaseName() );
+}
+                </pre></div>
+  
+
+			<p>
+				In some cases you might want to explicitely free resources allocated by the filesystem.
+				You can do this by calling
+				<a href="apidocs/org/apache/commons/vfs/FileSystemManager.html#closeFileSystem">VFS.getManager().closeFileSystem(fs)</a>.
+				If you use VFS as singleton (as described above) you should take care that this will close the filesystem for
+				all threads.<br></br>
+				In other words, do not close any globally used filesystem like the one for local files.  
+			</p>
+
+			<p>
+                See the
+                <a href="apidocs/org/apache/commons/vfs/FileObject.html">FileObject</a>
+                Javadocs for more detail.
+            </p>
+
+            <div class="subsection"><a name="Cache"></a><h3>Cache</h3>
+                <p>
+                    Commons VFS uses a <a href="apidocs/org/apache/commons/vfs/cache/SoftRefFilesCache.html">SoftRefFilesCache</a> to release memory if a file is no longer used by the application.
+                </p>
+                <p>
+                    This cache will return the same instance for a file as long as it is "strongly reachable" e.g. you
+                    hold a reference to this object. If the FileObject is no longer reachable, and the jvm needs some memory,
+                    it will be released.
+                </p>
+				<p>
+					There is also a internal cache of each file object avoid the need to access the network layer. Now its possible
+					to configure this behviour through the use of <a href="apidocs/org/apache/commons/vfs/CacheStrategy.html">CacheStrategy</a>.
+					<br></br>
+					Do this on the DefaultFileSystemManager. For example:
+					<code>
+						((DefaultFileSystemManager) VFS.getManager()).setCacheStrategy(CacheStrategy.ON_CALL)
+					</code>
+				</p>
+			</div>
+
+			<div class="subsection"><a name="User_Authentication"></a><h3>User Authentication</h3>
+				<p>
+					You cann put the credentials into th url, but the drawback here is, that it is easily possible to get access to the password.
+				</p>
+				<p>
+					To solve you can use the <a href="apidocs/org/apache/commons/vfs/UserAuthenticator.html">UserAuthenticator</a>
+				</p>
+				<p>
+					For example:
+					<code>
+						StaticUserAuthenticator auth = new StaticUserAuthenticator("username", "password", null);
+						FileSystemOptions opts = new FileSystemOptions();
+						DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
+
+						FileObject fo = VFS.getManager().resolveFile("smb://host/anyshare/dir", opts);
+					</code>
+				</p>
+				<p>
+					Internally the UserAuthenticator uses char arrays which will be zeroed before its freed for garbage collection.
+					Unhappily none of the current libraries use char arrays and so VFS has to create a string. Thus, the main advantage
+					of this solution - security - is lost, but hey, thats not VFS fault ;-)
+				</p>
+				<p>
+					VFS calls <code>UserAuthenticator.requestAuthentication</code> each time it requires credentials, it depends on the
+					filesystem implementation how often this might be. For example, with FTP this is on every connection, in SMB/JCIFS
+					this is for EVERY OBJECT. It is up to you how long you will cache credentials of if you would like to provide a
+					"save credentials" checkbox.
+				</p>
+			</div>
+
+			<div class="subsection"><a name="Examples"></a><h3>Examples</h3>
+                <p>
+                    For an example of using the API, take a look at the classes
+                    in the
+                    <a href="apidocs/org/apache/commons/vfs/example/package-summary.html">example</a>
+                    package.
+                </p>
+            </div>
+
+        </div><div class="section"><a name="Configuring_Commons_VFS"></a><h2>Configuring Commons VFS</h2>
+            <p>
+                Commons VFS is represented using the
+                <a href="apidocs/org/apache/commons/vfs/FileSystemManager.html">FileSystemManager</a>
+                interface.  There are a number of ways to create and configure a
+                <code>FileSystemManager</code> instance.
+            </p>
+            <p>
+                The simplest method is to use the static
+                <a href="apidocs/org/apache/commons/vfs/VFS.html#getManager()">VFS.getManager()</a>
+                method, which returns the default Commons VFS implementation.
+            </p>
+            <p>
+                This method will also automatically scan the classpath for a /META-INF/vfs-providers.xml file
+                (also in jar files).
+                If such a file is found Commons VFS uses it in <u>addition</u> to the default providers.xml.
+                This allows you to start using a new filesystem by simply drop its implementation into the classpath.
+                The configuration file format is described below.<br></br>
+                <b>Notice:</b> Currently it is not allowed to override a already configured filesystem. Commons VFS throws
+                an exception if there is already a filesystem for a scheme.
+            </p>
+
+            <p>
+                To configure Commons VFS programatically, you can create an
+                instance of
+                <a href="apidocs/org/apache/commons/vfs/impl/DefaultFileSystemManager.html">DefaultFileSystemManager</a>
+                and configure it manually.  The default constructor
+                <code>DefaultFileSystemManager</code> creates a manager that
+                is completely empty.  You will have to add file providers to it
+                to make it do anything useful.
+            </p>
+            <p>
+                Here are the steps for using
+                <code>DefaultFileSystemManager</code>:
+            </p>
+            <ol>
+                <li>Create a new instance.</li>
+                <li>
+                    Set the logger for the manager and all its components,
+                    using
+                    <code>setLogger()</code>.  This step is
+                    optional, and if skipped, the manager will use the default
+                    logger provided by Commons Logging.
+                </li>
+                <li>
+                    Add file providers, using
+                    <code>addProvider()</code>.
+                </li>
+                <li>
+                    Set the default provider, using
+                    <code>setDefaultProvider()</code>.  This step is optional.
+                    See
+                    <a href="apidocs/org/apache/commons/vfs/provider/url/UrlFileProvider.html">UrlFileProvider</a>
+                    for a useful default provider.
+                </li>
+                <li>
+                    Set the file replicator, using
+                    <code>setReplicator()</code>.
+                    This step is optional.
+                </li>
+                <li>
+                    Set the temporary file store, using
+                    <code>setTemporaryFileStore()</code>.
+                    This step is optional.
+                </li>
+                <li>
+                    Set the base file using
+                    <code>setBaseFile()</code>.  The
+                    base file is used to resolve relative URI passed to
+                    <code>resolveFile()</code>.  This step is optional.
+                </li>
+                <li>
+                    Initialise the manager using
+                    <code>init()</code>.
+                </li>
+            </ol>
+            <p>
+                You should make sure that you call
+                <code>close()</code> on the
+                manager when you are finished with it.
+            </p>
+
+            <p>
+                The third method for configuring Commons VFS, is to configure
+                it from a file.  Create an instance of
+                <a href="apidocs/org/apache/commons/vfs/impl/StandardFileSystemManager.html">StandardFileSystemManager</a>,
+                and use its
+                <code>setConfiguration()</code> method to set the
+                location of the configuration file to use.  The configuration
+                file format is described below.
+            </p>
+
+            <p>
+                <code>StandardFileSystemManager</code> is a subclass of
+                <code>DefaultFileSystemManager</code>, so you can also
+                configure it programmatically, as described above.
+            </p>
+            <div class="subsection"><a name="Configuration_File"></a><h3>Configuration File</h3>
+                <p>
+                    The configuration file is an XML file.  The root element
+                    of the configuration file should be a
+                    <code>&lt;providers&gt;</code> element.
+                    The
+                    <code>&lt;providers&gt;</code> element may contain:
+                </p>
+                <ul>
+                    <li>Zero or more
+                        <code>&lt;provider&gt;</code> elements.
+                    </li>
+                    <li>An optional
+                        <code>&lt;default-provider&gt;</code> element.
+                    </li>
+                    <li>Zero or more
+                        <code>&lt;extension-map&gt;</code> elements.
+                    </li>
+                    <li>Zero or more
+                        <code>&lt;mime-type-map&gt;</code> elements.
+                    </li>
+                </ul>
+
+                <p>
+                    <b>
+                        <code>&lt;provider&gt;</code>
+                    </b>
+                </p>
+                <p>
+                    The
+                    <code>&lt;provider&gt;</code> element defines a file
+                    provider.   It must have a
+                    <code>class-name</code> attribute,
+                    which specifies the fully-qualified name of the provider
+                    class.  The provider class must be public, and must have a
+                    public constructor with an FileSystemManager argument which
+                    allows the systems to pass the used filesystem manager.
+                </p>
+                <p>
+                    The
+                    <code>&lt;provider&gt;</code> element may contain
+                    zero or more
+                    <code>&lt;scheme&gt;</code> elements,
+                    and zero or more
+                    <code>&lt;if-available&gt;</code> elements.
+                </p>
+                <p>
+                    The
+                    <code>&lt;scheme&gt;</code> element defines a URI scheme
+                    that the provider will handle.  It must have a
+                    <code>name</code> attribute, which specifies the URI scheme.
+                </p>
+                <p>
+                    The
+                    <code>&lt;if-available&gt;</code> elements is used to
+                    disable the provider if certain classes are not present in
+                    the class-path.
+                    It must have a
+                    <code>class-name</code> attribute, which
+                    specifies the fully qualified name of a class to test for.
+                    If the class cannot be found, the provider is not registered.
+                </p>
+
+                <p>
+                    <b>
+                        <code>&lt;default-provider&gt;</code>
+                    </b>
+                </p>
+                <p>
+                    The
+                    <code>&lt;default-provider&gt;</code> element defines
+                    the default provider.  It has the same format as the
+                    <code>&lt;provider&gt;</code> element.
+                </p>
+
+                <p>
+                    <b>
+                        <code>&lt;extension-map&gt;</code>
+                    </b>
+                </p>
+                <p>
+                    The
+                    <code>&lt;extension-map&gt;</code> element defines
+                    a mapping from a file's extension to the provider that
+                    should handle files with that extension.
+                    It must have an
+                    <code>extension</code> attribute, which
+                    specifies the extension, and a
+                    <code>scheme</code> attribute,
+                    which specifies the URI scheme of the provider.
+                </p>
+
+                <p>
+                    <b>
+                        <code>&lt;mime-type-map&gt;</code>
+                    </b>
+                </p>
+                <p>
+                    The
+                    <code>&lt;mime-type-map&gt;</code> element defines
+                    a mapping from a file's MIME type to the provider that
+                    should handle files with that MIME type.
+                    It must have an
+                    <code>mime-type</code> attribute, which
+                    specifies the MIME type, and a
+                    <code>scheme</code> attribute,
+                    which specified the URI scheme of the provider.
+                </p>
+
+                <p>
+                    Below is an example configuration file:
+                </p>
+                
+    <div class="source"><pre>
+&lt;providers&gt;
+    &lt;provider class-name="org.apache.commons.vfs.provider.zip.ZipFileProvider"&gt;
+        &lt;scheme name="zip"/&gt;
+    &lt;/provider&gt;
+    &lt;extension-map extension="zip" scheme="zip"/&gt;
+    &lt;mime-type-map mime-type="application/zip" scheme="zip"/&gt;
+    &lt;provider class-name="org.apache.commons.vfs.provider.ftp.FtpFileProvider"&gt;
+        &lt;scheme name="ftp"/&gt;
+        &lt;if-available class-name="org.apache.commons.net.ftp.FTPFile"/&gt;
+    &lt;/provider&gt;
+    &lt;default-provider class-name="org.apache.commons.vfs.provider.url.UrlFileProvider"/&gt;
+&lt;/providers&gt;
+                    </pre></div>
+  
+            </div>
+        </div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2002-2006, The Apache Software Foundation© -Last published: 19 December 2006
+            </div><div class="clear"><hr></hr></div></div></body></html>

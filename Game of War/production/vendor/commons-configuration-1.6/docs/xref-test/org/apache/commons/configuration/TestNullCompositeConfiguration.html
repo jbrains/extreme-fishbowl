@@ -1,0 +1,444 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" /><title>TestNullCompositeConfiguration xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<pre>
+
+<a name="1" href="#1">1</a>   <em class="comment">/*</em>
+<a name="2" href="#2">2</a>   <em class="comment"> * Licensed to the Apache Software Foundation (ASF) under one or more</em>
+<a name="3" href="#3">3</a>   <em class="comment"> * contributor license agreements.  See the NOTICE file distributed with</em>
+<a name="4" href="#4">4</a>   <em class="comment"> * this work for additional information regarding copyright ownership.</em>
+<a name="5" href="#5">5</a>   <em class="comment"> * The ASF licenses this file to You under the Apache License, Version 2.0</em>
+<a name="6" href="#6">6</a>   <em class="comment"> * (the "License"); you may not use this file except in compliance with</em>
+<a name="7" href="#7">7</a>   <em class="comment"> * the License.  You may obtain a copy of the License at</em>
+<a name="8" href="#8">8</a>   <em class="comment"> *</em>
+<a name="9" href="#9">9</a>   <em class="comment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a name="10" href="#10">10</a>  <em class="comment"> *</em>
+<a name="11" href="#11">11</a>  <em class="comment"> * Unless required by applicable law or agreed to in writing, software</em>
+<a name="12" href="#12">12</a>  <em class="comment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a name="13" href="#13">13</a>  <em class="comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a name="14" href="#14">14</a>  <em class="comment"> * See the License for the specific language governing permissions and</em>
+<a name="15" href="#15">15</a>  <em class="comment"> * limitations under the License.</em>
+<a name="16" href="#16">16</a>  <em class="comment"> */</em>
+<a name="17" href="#17">17</a>  
+<a name="18" href="#18">18</a>  <strong>package</strong> <a href="../../../../org/apache/commons/configuration/package-summary.html">org.apache.commons.configuration</a>;
+<a name="19" href="#19">19</a>  
+<a name="20" href="#20">20</a>  <strong>import</strong> java.io.File;
+<a name="21" href="#21">21</a>  <strong>import</strong> java.util.ArrayList;
+<a name="22" href="#22">22</a>  <strong>import</strong> java.util.Iterator;
+<a name="23" href="#23">23</a>  <strong>import</strong> java.util.List;
+<a name="24" href="#24">24</a>  
+<a name="25" href="#25">25</a>  <strong>import</strong> junit.framework.TestCase;
+<a name="26" href="#26">26</a>  
+<a name="27" href="#27">27</a>  <em>/**<em>*</em></em>
+<a name="28" href="#28">28</a>  <em> * Test loading multiple configurations.</em>
+<a name="29" href="#29">29</a>  <em> *</em>
+<a name="30" href="#30">30</a>  <em> * @version $Id: TestNullCompositeConfiguration.java 439648 2006-09-02 20:42:10Z oheger $</em>
+<a name="31" href="#31">31</a>  <em> */</em>
+<a name="32" href="#32">32</a>  <strong>public</strong> <strong>class</strong> <a href="../../../../org/apache/commons/configuration/TestNullCompositeConfiguration.html">TestNullCompositeConfiguration</a> <strong>extends</strong> TestCase
+<a name="33" href="#33">33</a>  {
+<a name="34" href="#34">34</a>      <strong>protected</strong> PropertiesConfiguration conf1;
+<a name="35" href="#35">35</a>      <strong>protected</strong> PropertiesConfiguration conf2;
+<a name="36" href="#36">36</a>      <strong>protected</strong> XMLConfiguration xmlConf;
+<a name="37" href="#37">37</a>      <strong>protected</strong> CompositeConfiguration cc;
+<a name="38" href="#38">38</a>  
+<a name="39" href="#39">39</a>      <em>/**<em>* The File that we test with */</em></em>
+<a name="40" href="#40">40</a>      <strong>private</strong> String testProperties = <strong>new</strong> File(<span class="string">"conf/test.properties"</span>).getAbsolutePath();
+<a name="41" href="#41">41</a>      <strong>private</strong> String testProperties2 = <strong>new</strong> File(<span class="string">"conf/test2.properties"</span>).getAbsolutePath();
+<a name="42" href="#42">42</a>      <strong>private</strong> String testPropertiesXML = <strong>new</strong> File(<span class="string">"conf/test.xml"</span>).getAbsolutePath();
+<a name="43" href="#43">43</a>  
+<a name="44" href="#44">44</a>      <strong>protected</strong> <strong>void</strong> setUp() throws Exception
+<a name="45" href="#45">45</a>      {
+<a name="46" href="#46">46</a>          cc = <strong>new</strong> CompositeConfiguration();
+<a name="47" href="#47">47</a>          conf1 = <strong>new</strong> PropertiesConfiguration(testProperties);
+<a name="48" href="#48">48</a>          conf2 = <strong>new</strong> PropertiesConfiguration(testProperties2);
+<a name="49" href="#49">49</a>          xmlConf = <strong>new</strong> XMLConfiguration(<strong>new</strong> File(testPropertiesXML));
+<a name="50" href="#50">50</a>  
+<a name="51" href="#51">51</a>          cc.setThrowExceptionOnMissing(false);
+<a name="52" href="#52">52</a>      }
+<a name="53" href="#53">53</a>  
+<a name="54" href="#54">54</a>      <strong>public</strong> <strong>void</strong> testThrowExceptionOnMissing()
+<a name="55" href="#55">55</a>      {
+<a name="56" href="#56">56</a>          assertFalse(<span class="string">"Throw Exception Property is set!"</span>, cc.isThrowExceptionOnMissing());
+<a name="57" href="#57">57</a>      }
+<a name="58" href="#58">58</a>  
+<a name="59" href="#59">59</a>      <strong>public</strong> <strong>void</strong> testAddRemoveConfigurations() throws Exception
+<a name="60" href="#60">60</a>      {
+<a name="61" href="#61">61</a>          cc.addConfiguration(conf1);
+<a name="62" href="#62">62</a>          assertEquals(2, cc.getNumberOfConfigurations());
+<a name="63" href="#63">63</a>          cc.addConfiguration(conf1);
+<a name="64" href="#64">64</a>          assertEquals(2, cc.getNumberOfConfigurations());
+<a name="65" href="#65">65</a>          cc.addConfiguration(conf2);
+<a name="66" href="#66">66</a>          assertEquals(3, cc.getNumberOfConfigurations());
+<a name="67" href="#67">67</a>          cc.removeConfiguration(conf1);
+<a name="68" href="#68">68</a>          assertEquals(2, cc.getNumberOfConfigurations());
+<a name="69" href="#69">69</a>          cc.clear();
+<a name="70" href="#70">70</a>          assertEquals(1, cc.getNumberOfConfigurations());
+<a name="71" href="#71">71</a>      }
+<a name="72" href="#72">72</a>  
+<a name="73" href="#73">73</a>      <strong>public</strong> <strong>void</strong> testGetPropertyWIncludes() throws Exception
+<a name="74" href="#74">74</a>      {
+<a name="75" href="#75">75</a>          cc.addConfiguration(conf1);
+<a name="76" href="#76">76</a>          cc.addConfiguration(conf2);
+<a name="77" href="#77">77</a>          List l = cc.getList(<span class="string">"packages"</span>);
+<a name="78" href="#78">78</a>          assertTrue(l.contains(<span class="string">"packagea"</span>));
+<a name="79" href="#79">79</a>  
+<a name="80" href="#80">80</a>      }
+<a name="81" href="#81">81</a>      
+<a name="82" href="#82">82</a>      <strong>public</strong> <strong>void</strong> testGetProperty() throws Exception
+<a name="83" href="#83">83</a>      {
+<a name="84" href="#84">84</a>          cc.addConfiguration(conf1);
+<a name="85" href="#85">85</a>          cc.addConfiguration(conf2);
+<a name="86" href="#86">86</a>          assertEquals(<span class="string">"Make sure we get the property from conf1 first"</span>, <span class="string">"test.properties"</span>, cc.getString(<span class="string">"propertyInOrder"</span>));
+<a name="87" href="#87">87</a>          cc.clear();
+<a name="88" href="#88">88</a>  
+<a name="89" href="#89">89</a>          cc.addConfiguration(conf2);
+<a name="90" href="#90">90</a>          cc.addConfiguration(conf1);
+<a name="91" href="#91">91</a>          assertEquals(<span class="string">"Make sure we get the property from conf2 first"</span>, <span class="string">"test2.properties"</span>, cc.getString(<span class="string">"propertyInOrder"</span>));
+<a name="92" href="#92">92</a>      }
+<a name="93" href="#93">93</a>  
+<a name="94" href="#94">94</a>      <strong>public</strong> <strong>void</strong> testCantRemoveMemoryConfig() throws Exception
+<a name="95" href="#95">95</a>      {
+<a name="96" href="#96">96</a>          cc.clear();
+<a name="97" href="#97">97</a>          assertEquals(1, cc.getNumberOfConfigurations());
+<a name="98" href="#98">98</a>  
+<a name="99" href="#99">99</a>          Configuration internal = cc.getConfiguration(0);
+<a name="100" href="#100">100</a>         cc.removeConfiguration(internal);
+<a name="101" href="#101">101</a> 
+<a name="102" href="#102">102</a>         assertEquals(1, cc.getNumberOfConfigurations());
+<a name="103" href="#103">103</a> 
+<a name="104" href="#104">104</a>     }
+<a name="105" href="#105">105</a> 
+<a name="106" href="#106">106</a>     <strong>public</strong> <strong>void</strong> testGetPropertyMissing() throws Exception
+<a name="107" href="#107">107</a>     {
+<a name="108" href="#108">108</a>         cc.addConfiguration(conf1);
+<a name="109" href="#109">109</a>         cc.addConfiguration(conf2);
+<a name="110" href="#110">110</a> 
+<a name="111" href="#111">111</a>         assertNull(<span class="string">"Bogus property is not null!"</span>, cc.getString(<span class="string">"bogus.property"</span>));
+<a name="112" href="#112">112</a> 
+<a name="113" href="#113">113</a>         assertTrue(<span class="string">"Should be false"</span>, !cc.getBoolean(<span class="string">"test.missing.boolean"</span>, false));
+<a name="114" href="#114">114</a>         assertTrue(<span class="string">"Should be true"</span>, cc.getBoolean(<span class="string">"test.missing.boolean.true"</span>, <strong>true</strong>));
+<a name="115" href="#115">115</a> 
+<a name="116" href="#116">116</a>     }
+<a name="117" href="#117">117</a> 
+<a name="118" href="#118">118</a>     <em>/**<em>*</em></em>
+<a name="119" href="#119">119</a> <em>     * Tests &lt;code>List&lt;/code> parsing.</em>
+<a name="120" href="#120">120</a> <em>     */</em>
+<a name="121" href="#121">121</a>     <strong>public</strong> <strong>void</strong> testMultipleTypesOfConfigs() throws Exception
+<a name="122" href="#122">122</a>     {
+<a name="123" href="#123">123</a>         cc.addConfiguration(conf1);
+<a name="124" href="#124">124</a>         cc.addConfiguration(xmlConf);
+<a name="125" href="#125">125</a>         assertEquals(<span class="string">"Make sure we get the property from conf1 first"</span>, 1, cc.getInt(<span class="string">"test.short"</span>));
+<a name="126" href="#126">126</a>         cc.clear();
+<a name="127" href="#127">127</a> 
+<a name="128" href="#128">128</a>         cc.addConfiguration(xmlConf);
+<a name="129" href="#129">129</a>         cc.addConfiguration(conf1);
+<a name="130" href="#130">130</a>         assertEquals(<span class="string">"Make sure we get the property from xml"</span>, 8, cc.getInt(<span class="string">"test.short"</span>));
+<a name="131" href="#131">131</a>     }
+<a name="132" href="#132">132</a> 
+<a name="133" href="#133">133</a>     <em>/**<em>*</em></em>
+<a name="134" href="#134">134</a> <em>     * Tests &lt;code>List&lt;/code> parsing.</em>
+<a name="135" href="#135">135</a> <em>     */</em>
+<a name="136" href="#136">136</a>     <strong>public</strong> <strong>void</strong> testPropertyExistsInOnlyOneConfig() throws Exception
+<a name="137" href="#137">137</a>     {
+<a name="138" href="#138">138</a>         cc.addConfiguration(conf1);
+<a name="139" href="#139">139</a>         cc.addConfiguration(xmlConf);
+<a name="140" href="#140">140</a>         assertEquals(<span class="string">"value"</span>, cc.getString(<span class="string">"element"</span>));
+<a name="141" href="#141">141</a>     }
+<a name="142" href="#142">142</a> 
+<a name="143" href="#143">143</a>     <em>/**<em>*</em></em>
+<a name="144" href="#144">144</a> <em>     * Tests getting a default when the key doesn't exist</em>
+<a name="145" href="#145">145</a> <em>     */</em>
+<a name="146" href="#146">146</a>     <strong>public</strong> <strong>void</strong> testDefaultValueWhenKeyMissing() throws Exception
+<a name="147" href="#147">147</a>     {
+<a name="148" href="#148">148</a>         cc.addConfiguration(conf1);
+<a name="149" href="#149">149</a>         cc.addConfiguration(xmlConf);
+<a name="150" href="#150">150</a>         assertEquals(<span class="string">"default"</span>, cc.getString(<span class="string">"bogus"</span>, <span class="string">"default"</span>));
+<a name="151" href="#151">151</a>         assertTrue(1.4 == cc.getDouble(<span class="string">"bogus"</span>, 1.4));
+<a name="152" href="#152">152</a>         assertTrue(1.4 == cc.getDouble(<span class="string">"bogus"</span>, 1.4));
+<a name="153" href="#153">153</a>     }
+<a name="154" href="#154">154</a> 
+<a name="155" href="#155">155</a>     <em>/**<em>*</em></em>
+<a name="156" href="#156">156</a> <em>     * Tests &lt;code>List&lt;/code> parsing.</em>
+<a name="157" href="#157">157</a> <em>     */</em>
+<a name="158" href="#158">158</a>     <strong>public</strong> <strong>void</strong> testGettingConfiguration() throws Exception
+<a name="159" href="#159">159</a>     {
+<a name="160" href="#160">160</a>         cc.addConfiguration(conf1);
+<a name="161" href="#161">161</a>         cc.addConfiguration(xmlConf);
+<a name="162" href="#162">162</a>         assertEquals(PropertiesConfiguration.<strong>class</strong>, cc.getConfiguration(0).getClass());
+<a name="163" href="#163">163</a>         assertEquals(XMLConfiguration.<strong>class</strong>, cc.getConfiguration(1).getClass());
+<a name="164" href="#164">164</a>     }
+<a name="165" href="#165">165</a> 
+<a name="166" href="#166">166</a>     <em>/**<em>*</em></em>
+<a name="167" href="#167">167</a> <em>     * Tests setting values.  These are set in memory mode only!</em>
+<a name="168" href="#168">168</a> <em>     */</em>
+<a name="169" href="#169">169</a>     <strong>public</strong> <strong>void</strong> testClearingProperty() throws Exception
+<a name="170" href="#170">170</a>     {
+<a name="171" href="#171">171</a>         cc.addConfiguration(conf1);
+<a name="172" href="#172">172</a>         cc.addConfiguration(xmlConf);
+<a name="173" href="#173">173</a>         cc.clearProperty(<span class="string">"test.short"</span>);
+<a name="174" href="#174">174</a>         assertTrue(<span class="string">"Make sure test.short is gone!"</span>, !cc.containsKey(<span class="string">"test.short"</span>));
+<a name="175" href="#175">175</a>     }
+<a name="176" href="#176">176</a> 
+<a name="177" href="#177">177</a>     <em>/**<em>*</em></em>
+<a name="178" href="#178">178</a> <em>     * Tests adding values.  Make sure they _DON'T_ override any other properties but add to the</em>
+<a name="179" href="#179">179</a> <em>     * existing properties  and keep sequence</em>
+<a name="180" href="#180">180</a> <em>     */</em>
+<a name="181" href="#181">181</a>     <strong>public</strong> <strong>void</strong> testAddingProperty() throws Exception
+<a name="182" href="#182">182</a>     {
+<a name="183" href="#183">183</a>         cc.addConfiguration(conf1);
+<a name="184" href="#184">184</a>         cc.addConfiguration(xmlConf);
+<a name="185" href="#185">185</a> 
+<a name="186" href="#186">186</a>         String[] values = cc.getStringArray(<span class="string">"test.short"</span>);
+<a name="187" href="#187">187</a> 
+<a name="188" href="#188">188</a>         assertEquals(<span class="string">"Number of values before add is wrong!"</span>, 1, values.length);
+<a name="189" href="#189">189</a>         assertEquals(<span class="string">"First Value before add is wrong"</span>, <span class="string">"1"</span>, values[0]);
+<a name="190" href="#190">190</a> 
+<a name="191" href="#191">191</a>         cc.addProperty(<span class="string">"test.short"</span>, <span class="string">"88"</span>);
+<a name="192" href="#192">192</a> 
+<a name="193" href="#193">193</a>         values = cc.getStringArray(<span class="string">"test.short"</span>);
+<a name="194" href="#194">194</a> 
+<a name="195" href="#195">195</a>         assertEquals(<span class="string">"Number of values is wrong!"</span>, 2, values.length);
+<a name="196" href="#196">196</a>         assertEquals(<span class="string">"First Value is wrong"</span>, <span class="string">"1"</span>, values[0]);
+<a name="197" href="#197">197</a>         assertEquals(<span class="string">"Third Value is wrong"</span>, <span class="string">"88"</span>, values[1]);
+<a name="198" href="#198">198</a>     }
+<a name="199" href="#199">199</a> 
+<a name="200" href="#200">200</a>     <em>/**<em>*</em></em>
+<a name="201" href="#201">201</a> <em>     * Tests setting values.  These are set in memory mode only!</em>
+<a name="202" href="#202">202</a> <em>     */</em>
+<a name="203" href="#203">203</a>     <strong>public</strong> <strong>void</strong> testSettingMissingProperty() throws Exception
+<a name="204" href="#204">204</a>     {
+<a name="205" href="#205">205</a>         cc.addConfiguration(conf1);
+<a name="206" href="#206">206</a>         cc.addConfiguration(xmlConf);
+<a name="207" href="#207">207</a>         cc.setProperty(<span class="string">"my.new.property"</span>, <span class="string">"supernew"</span>);
+<a name="208" href="#208">208</a>         assertEquals(<span class="string">"supernew"</span>, cc.getString(<span class="string">"my.new.property"</span>));
+<a name="209" href="#209">209</a>     }
+<a name="210" href="#210">210</a> 
+<a name="211" href="#211">211</a>     <em>/**<em>*</em></em>
+<a name="212" href="#212">212</a> <em>     * Tests retrieving subsets of configurations</em>
+<a name="213" href="#213">213</a> <em>     */</em>
+<a name="214" href="#214">214</a>     <strong>public</strong> <strong>void</strong> testGettingSubset() throws Exception
+<a name="215" href="#215">215</a>     {
+<a name="216" href="#216">216</a>         cc.addConfiguration(conf1);
+<a name="217" href="#217">217</a>         cc.addConfiguration(xmlConf);
+<a name="218" href="#218">218</a> 
+<a name="219" href="#219">219</a>         Configuration subset = <strong>null</strong>;
+<a name="220" href="#220">220</a>         subset = cc.subset(<span class="string">"test"</span>);
+<a name="221" href="#221">221</a>         assertNotNull(subset);
+<a name="222" href="#222">222</a>         assertFalse(<span class="string">"Shouldn't be empty"</span>, subset.isEmpty());
+<a name="223" href="#223">223</a>         assertEquals(<span class="string">"Make sure the initial loaded configs subset overrides any later add configs subset"</span>, <span class="string">"1"</span>, subset.getString(<span class="string">"short"</span>));
+<a name="224" href="#224">224</a> 
+<a name="225" href="#225">225</a>         cc.setProperty(<span class="string">"test.short"</span>, <span class="string">"43"</span>);
+<a name="226" href="#226">226</a>         subset = cc.subset(<span class="string">"test"</span>);
+<a name="227" href="#227">227</a>         assertEquals(<span class="string">"Make sure the initial loaded configs subset overrides any later add configs subset"</span>, <span class="string">"43"</span>, subset.getString(<span class="string">"short"</span>));
+<a name="228" href="#228">228</a>     }
+<a name="229" href="#229">229</a> 
+<a name="230" href="#230">230</a>     <em>/**<em>*</em></em>
+<a name="231" href="#231">231</a> <em>     * Tests subsets and still can resolve elements</em>
+<a name="232" href="#232">232</a> <em>     */</em>
+<a name="233" href="#233">233</a>     <strong>public</strong> <strong>void</strong> testSubsetCanResolve() throws Exception
+<a name="234" href="#234">234</a>     {
+<a name="235" href="#235">235</a>         cc = <strong>new</strong> CompositeConfiguration();
+<a name="236" href="#236">236</a>         <strong>final</strong> BaseConfiguration config = <strong>new</strong> BaseConfiguration();
+<a name="237" href="#237">237</a>         config.addProperty(<span class="string">"subset.tempfile"</span>, <span class="string">"${java.io.tmpdir}/file.tmp"</span>);
+<a name="238" href="#238">238</a>         cc.addConfiguration(config);
+<a name="239" href="#239">239</a>         cc.addConfiguration(ConfigurationConverter.getConfiguration(System.getProperties()));
+<a name="240" href="#240">240</a> 
+<a name="241" href="#241">241</a>         Configuration subset = cc.subset(<span class="string">"subset"</span>);
+<a name="242" href="#242">242</a>         assertEquals(System.getProperty(<span class="string">"java.io.tmpdir"</span>) + <span class="string">"/file.tmp"</span>, subset.getString(<span class="string">"tempfile"</span>));
+<a name="243" href="#243">243</a>     }
+<a name="244" href="#244">244</a> 
+<a name="245" href="#245">245</a>     <em>/**<em>*</em></em>
+<a name="246" href="#246">246</a> <em>      * Tests &lt;code>List&lt;/code> parsing.</em>
+<a name="247" href="#247">247</a> <em>      */</em>
+<a name="248" href="#248">248</a>     <strong>public</strong> <strong>void</strong> testList() throws Exception
+<a name="249" href="#249">249</a>     {
+<a name="250" href="#250">250</a>         cc.addConfiguration(conf1);
+<a name="251" href="#251">251</a>         cc.addConfiguration(xmlConf);
+<a name="252" href="#252">252</a> 
+<a name="253" href="#253">253</a>         <a href="../../../../List packages = cc/getList(/package-summary.html">List packages = cc.getList(</a><span class="string">"packages"</span>);
+<a name="254" href="#254">254</a>         <em class="comment">// we should get 3 packages here</em>
+<a name="255" href="#255">255</a>         assertE<a href="../../../../quals(3, packages/size())/package-summary.html">quals(3, packages.size())</a>;
+<a name="256" href="#256">256</a> 
+<a name="257" href="#257">257</a>         List defaultList = <strong>new</strong> ArrayList();
+<a name="258" href="#258">258</a>         defaultList.add(<span class="string">"1"</span>);
+<a name="259" href="#259">259</a>         defaultList.add(<span class="string">"2"</span>);
+<a name="260" href="#260">260</a> 
+<a name="261" href="#261">261</a>         <a href="../../../../packages = cc/getList(/package-summary.html">packages = cc.getList(</a><span class="string">"packages.which.dont.exist"</span>, defaultList);
+<a name="262" href="#262">262</a>         <em class="comment">// we should get 2 packages here</em>
+<a name="263" href="#263">263</a>         assertE<a href="../../../../quals(2, packages/size())/package-summary.html">quals(2, packages.size())</a>;
+<a name="264" href="#264">264</a> 
+<a name="265" href="#265">265</a>     }
+<a name="266" href="#266">266</a> 
+<a name="267" href="#267">267</a>     <em>/**<em>*</em></em>
+<a name="268" href="#268">268</a> <em>      * Tests &lt;code>String&lt;/code> array parsing.</em>
+<a name="269" href="#269">269</a> <em>      */</em>
+<a name="270" href="#270">270</a>     <strong>public</strong> <strong>void</strong> testStringArray() throws Exception
+<a name="271" href="#271">271</a>     {
+<a name="272" href="#272">272</a>         cc.addConfiguration(conf1);
+<a name="273" href="#273">273</a>         cc.addConfiguration(xmlConf);
+<a name="274" href="#274">274</a> 
+<a name="275" href="#275">275</a>         <a href="../../../../String[] packages = cc/getStringArray(/package-summary.html">String[] packages = cc.getStringArray(</a><span class="string">"packages"</span>);
+<a name="276" href="#276">276</a>         <em class="comment">// we should get 3 packages here</em>
+<a name="277" href="#277">277</a>         assertE<a href="../../../../quals(3, packages/length)/package-summary.html">quals(3, packages.length)</a>;
+<a name="278" href="#278">278</a> 
+<a name="279" href="#279">279</a>         <a href="../../../../packages = cc/getStringArray(/package-summary.html">packages = cc.getStringArray(</a><span class="string">"packages.which.dont.exist"</span>);
+<a name="280" href="#280">280</a>         <em class="comment">// we should get 0 packages here</em>
+<a name="281" href="#281">281</a>         assertE<a href="../../../../quals(0, packages/length)/package-summary.html">quals(0, packages.length)</a>;
+<a name="282" href="#282">282</a>     }
+<a name="283" href="#283">283</a> 
+<a name="284" href="#284">284</a>     <strong>public</strong> <strong>void</strong> testGetList()
+<a name="285" href="#285">285</a>     {
+<a name="286" href="#286">286</a>         Configuration conf1 = <strong>new</strong> BaseConfiguration();
+<a name="287" href="#287">287</a>         conf1.addProperty(<span class="string">"array"</span>, <span class="string">"value1"</span>);
+<a name="288" href="#288">288</a>         conf1.addProperty(<span class="string">"array"</span>, <span class="string">"value2"</span>);
+<a name="289" href="#289">289</a> 
+<a name="290" href="#290">290</a>         Configuration conf2 = <strong>new</strong> BaseConfiguration();
+<a name="291" href="#291">291</a>         conf2.addProperty(<span class="string">"array"</span>, <span class="string">"value3"</span>);
+<a name="292" href="#292">292</a>         conf2.addProperty(<span class="string">"array"</span>, <span class="string">"value4"</span>);
+<a name="293" href="#293">293</a> 
+<a name="294" href="#294">294</a>         cc.addConfiguration(conf1);
+<a name="295" href="#295">295</a>         cc.addConfiguration(conf2);
+<a name="296" href="#296">296</a> 
+<a name="297" href="#297">297</a>         <em class="comment">// check the composite 'array' property</em>
+<a name="298" href="#298">298</a>         List list = cc.getList(<span class="string">"array"</span>);
+<a name="299" href="#299">299</a>         assertNotNull(<span class="string">"null list"</span>, list);
+<a name="300" href="#300">300</a>         assertEquals(<span class="string">"list size"</span>, 2, list.size());
+<a name="301" href="#301">301</a>         assertTrue(<span class="string">"'value1' not found in the list"</span>, list.contains(<span class="string">"value1"</span>));
+<a name="302" href="#302">302</a>         assertTrue(<span class="string">"'value2' not found in the list"</span>, list.contains(<span class="string">"value2"</span>));
+<a name="303" href="#303">303</a> 
+<a name="304" href="#304">304</a>         <em class="comment">// add an element to the list in the composite configuration</em>
+<a name="305" href="#305">305</a>         cc.addProperty(<span class="string">"array"</span>, <span class="string">"value5"</span>);
+<a name="306" href="#306">306</a> 
+<a name="307" href="#307">307</a>         <em class="comment">// test the new list</em>
+<a name="308" href="#308">308</a>         list = cc.getList(<span class="string">"array"</span>);
+<a name="309" href="#309">309</a>         assertNotNull(<span class="string">"null list"</span>, list);
+<a name="310" href="#310">310</a>         assertEquals(<span class="string">"list size"</span>, 3, list.size());
+<a name="311" href="#311">311</a>         assertTrue(<span class="string">"'value1' not found in the list"</span>, list.contains(<span class="string">"value1"</span>));
+<a name="312" href="#312">312</a>         assertTrue(<span class="string">"'value2' not found in the list"</span>, list.contains(<span class="string">"value2"</span>));
+<a name="313" href="#313">313</a>         assertTrue(<span class="string">"'value5' not found in the list"</span>, list.contains(<span class="string">"value5"</span>));
+<a name="314" href="#314">314</a>     }
+<a name="315" href="#315">315</a> 
+<a name="316" href="#316">316</a>     <strong>public</strong> <strong>void</strong> testGetVector()
+<a name="317" href="#317">317</a>     {
+<a name="318" href="#318">318</a>         Configuration conf1 = <strong>new</strong> BaseConfiguration();
+<a name="319" href="#319">319</a>         conf1.addProperty(<span class="string">"array"</span>, <span class="string">"value1"</span>);
+<a name="320" href="#320">320</a>         conf1.addProperty(<span class="string">"array"</span>, <span class="string">"value2"</span>);
+<a name="321" href="#321">321</a> 
+<a name="322" href="#322">322</a>         Configuration conf2 = <strong>new</strong> BaseConfiguration();
+<a name="323" href="#323">323</a>         conf2.addProperty(<span class="string">"array"</span>, <span class="string">"value3"</span>);
+<a name="324" href="#324">324</a>         conf2.addProperty(<span class="string">"array"</span>, <span class="string">"value4"</span>);
+<a name="325" href="#325">325</a> 
+<a name="326" href="#326">326</a>         cc.addConfiguration(conf1);
+<a name="327" href="#327">327</a>         cc.addConfiguration(conf2);
+<a name="328" href="#328">328</a> 
+<a name="329" href="#329">329</a>         <em class="comment">// add an element to the vector in the composite configuration</em>
+<a name="330" href="#330">330</a>         cc.addProperty(<span class="string">"array"</span>, <span class="string">"value5"</span>);
+<a name="331" href="#331">331</a> 
+<a name="332" href="#332">332</a>         List list = cc.getList(<span class="string">"array"</span>);
+<a name="333" href="#333">333</a>         
+<a name="334" href="#334">334</a>         <strong>for</strong> (Iterator it = list.iterator(); it.hasNext(); )
+<a name="335" href="#335">335</a>         {
+<a name="336" href="#336">336</a>             Object value = it.next();
+<a name="337" href="#337">337</a>             System.out.println(value.getClass().getName() + <span class="string">" -> "</span> + value);
+<a name="338" href="#338">338</a>         }
+<a name="339" href="#339">339</a> 
+<a name="340" href="#340">340</a>     }
+<a name="341" href="#341">341</a> 
+<a name="342" href="#342">342</a>     <em>/**<em>*</em></em>
+<a name="343" href="#343">343</a> <em>      * Tests &lt;code>getKeys&lt;/code> preserves the order</em>
+<a name="344" href="#344">344</a> <em>      */</em>
+<a name="345" href="#345">345</a>     <strong>public</strong> <strong>void</strong> testGetKeysPreservesOrder() throws Exception
+<a name="346" href="#346">346</a>     {
+<a name="347" href="#347">347</a>         cc.addConfiguration(conf1);
+<a name="348" href="#348">348</a>         List orderedList = <strong>new</strong> ArrayList();
+<a name="349" href="#349">349</a>         <strong>for</strong> (Iterator keys = conf1.getKeys();keys.hasNext();){
+<a name="350" href="#350">350</a>             orderedList.add(keys.next());
+<a name="351" href="#351">351</a>         }
+<a name="352" href="#352">352</a>         List iteratedList = <strong>new</strong> ArrayList();
+<a name="353" href="#353">353</a>         <strong>for</strong> (Iterator keys = cc.getKeys();keys.hasNext();){
+<a name="354" href="#354">354</a>             iteratedList.add(keys.next());
+<a name="355" href="#355">355</a>         }
+<a name="356" href="#356">356</a>         assertEquals(orderedList.size(),iteratedList.size());
+<a name="357" href="#357">357</a>         <strong>for</strong> (<strong>int</strong> i =0;i&lt;orderedList.size();i++){
+<a name="358" href="#358">358</a>             assertEquals(orderedList.get(i),iteratedList.get(i));
+<a name="359" href="#359">359</a>         }        
+<a name="360" href="#360">360</a>     }    
+<a name="361" href="#361">361</a> 
+<a name="362" href="#362">362</a>     <em>/**<em>*</em></em>
+<a name="363" href="#363">363</a> <em>      * Tests &lt;code>getKeys(String key)&lt;/code> preserves the order</em>
+<a name="364" href="#364">364</a> <em>      */</em>
+<a name="365" href="#365">365</a>     <strong>public</strong> <strong>void</strong> testGetKeys2PreservesOrder() throws Exception
+<a name="366" href="#366">366</a>     {
+<a name="367" href="#367">367</a>         cc.addConfiguration(conf1);
+<a name="368" href="#368">368</a>         List orderedList = <strong>new</strong> ArrayList();
+<a name="369" href="#369">369</a>         <strong>for</strong> (Iterator keys = conf1.getKeys(<span class="string">"test"</span>);keys.hasNext();){
+<a name="370" href="#370">370</a>             orderedList.add(keys.next());
+<a name="371" href="#371">371</a>         }
+<a name="372" href="#372">372</a>         List iteratedList = <strong>new</strong> ArrayList();
+<a name="373" href="#373">373</a>         <strong>for</strong> (Iterator keys = cc.getKeys(<span class="string">"test"</span>);keys.hasNext();){
+<a name="374" href="#374">374</a>             iteratedList.add(keys.next());
+<a name="375" href="#375">375</a>         }
+<a name="376" href="#376">376</a>         assertEquals(orderedList.size(),iteratedList.size());
+<a name="377" href="#377">377</a>         <strong>for</strong> (<strong>int</strong> i =0;i&lt;orderedList.size();i++){
+<a name="378" href="#378">378</a>             assertEquals(orderedList.get(i),iteratedList.get(i));
+<a name="379" href="#379">379</a>         }        
+<a name="380" href="#380">380</a>     }        
+<a name="381" href="#381">381</a>     
+<a name="382" href="#382">382</a>     <strong>public</strong> <strong>void</strong> testGetStringWithDefaults()
+<a name="383" href="#383">383</a>     {
+<a name="384" href="#384">384</a>         BaseConfiguration defaults = <strong>new</strong> BaseConfiguration();
+<a name="385" href="#385">385</a>         defaults.addProperty(<span class="string">"default"</span>, <span class="string">"default string"</span>);
+<a name="386" href="#386">386</a> 
+<a name="387" href="#387">387</a>         Configuration c = <strong>new</strong> CompositeConfiguration(defaults);
+<a name="388" href="#388">388</a>         
+<a name="389" href="#389">389</a>         c.addProperty(<span class="string">"string"</span>, <span class="string">"test string"</span>);
+<a name="390" href="#390">390</a> 
+<a name="391" href="#391">391</a>         assertEquals(<span class="string">"test string"</span>, c.getString(<span class="string">"string"</span>));
+<a name="392" href="#392">392</a> 
+<a name="393" href="#393">393</a>         assertNull(<span class="string">"XXX should have been null!"</span>, c.getString(<span class="string">"XXX"</span>));
+<a name="394" href="#394">394</a> 
+<a name="395" href="#395">395</a>         <em class="comment">//test defaults</em>
+<a name="396" href="#396">396</a>         assertEquals(
+<a name="397" href="#397">397</a>             <span class="string">"test string"</span>,
+<a name="398" href="#398">398</a>             c.getString(<span class="string">"string"</span>, <span class="string">"some default value"</span>));
+<a name="399" href="#399">399</a>         assertEquals(<span class="string">"default string"</span>, c.getString(<span class="string">"default"</span>));
+<a name="400" href="#400">400</a>         assertEquals(
+<a name="401" href="#401">401</a>             <span class="string">"default string"</span>,
+<a name="402" href="#402">402</a>             c.getString(<span class="string">"default"</span>, <span class="string">"some default value"</span>));
+<a name="403" href="#403">403</a>         assertEquals(
+<a name="404" href="#404">404</a>             <span class="string">"some default value"</span>,
+<a name="405" href="#405">405</a>             c.getString(<span class="string">"XXX"</span>, <span class="string">"some default value"</span>));
+<a name="406" href="#406">406</a>     }
+<a name="407" href="#407">407</a>     
+<a name="408" href="#408">408</a>     <strong>public</strong> <strong>void</strong> testCheckingInMemoryConfiguration() throws Exception
+<a name="409" href="#409">409</a>     {
+<a name="410" href="#410">410</a>         String TEST_KEY = <span class="string">"testKey"</span>;
+<a name="411" href="#411">411</a>         Configuration defaults = <strong>new</strong> PropertiesConfiguration();
+<a name="412" href="#412">412</a>         defaults.setProperty(TEST_KEY,<span class="string">"testValue"</span>);
+<a name="413" href="#413">413</a>         Configuration testConfiguration = <strong>new</strong> CompositeConfiguration(defaults);
+<a name="414" href="#414">414</a>         assertTrue(testConfiguration.containsKey(TEST_KEY));
+<a name="415" href="#415">415</a>         assertFalse(testConfiguration.isEmpty());
+<a name="416" href="#416">416</a>         <strong>boolean</strong> foundTestKey = false;
+<a name="417" href="#417">417</a>         Iterator i = testConfiguration.getKeys();
+<a name="418" href="#418">418</a>         <em class="comment">//assertTrue(i instanceof IteratorChain);</em>
+<a name="419" href="#419">419</a>         <em class="comment">//IteratorChain ic = (IteratorChain)i;</em>
+<a name="420" href="#420">420</a>         <em class="comment">//assertEquals(2,i.size());</em>
+<a name="421" href="#421">421</a>         <strong>for</strong> (;i.hasNext();){
+<a name="422" href="#422">422</a>             String key = (String)i.next();
+<a name="423" href="#423">423</a>             <strong>if</strong>(key.equals(TEST_KEY)){
+<a name="424" href="#424">424</a>                 foundTestKey = <strong>true</strong>;
+<a name="425" href="#425">425</a>             }
+<a name="426" href="#426">426</a>         }
+<a name="427" href="#427">427</a>         assertTrue(foundTestKey);
+<a name="428" href="#428">428</a>         testConfiguration.clearProperty(TEST_KEY);
+<a name="429" href="#429">429</a>         assertFalse(testConfiguration.containsKey(TEST_KEY));
+<a name="430" href="#430">430</a>     }    
+<a name="431" href="#431">431</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

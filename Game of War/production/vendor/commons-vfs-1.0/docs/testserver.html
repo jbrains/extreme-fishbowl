@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Setup a Testserver - Commons VFS</title><style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          
+          @import url("./style/maven-theme.css");@import url("./style/project.css");</style><link rel="stylesheet" href="./style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Mario Ivankovits"></meta><meta name="email" content="imario@apache.org"></meta></head><body class="composite"><div id="banner"><a href="http://jakarta.apache.org" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://jakarta.apache.org/images/original-jakarta-logo.gif"></img></a><a href="http://jakarta.apache.org/commons/vfs/" id="projectLogo"><img alt="Commons VFS" src="./images/vfs-logo-white.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft"></div><div class="xright">
+        
+        <a href="http://www.apache.org" class="externalLink" title="External Link">Apache</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org" class="externalLink" title="External Link">Jakarta</a>
+      
+        
+          
+            <span class="separator">|</span>
+          
+        
+        <a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuCommons VFS"><h5>Commons VFS</h5><ul><li class="none"><a href="index.html">Overview</a></li><li class="none"><a href="download.html">Download and Build</a></li><li class="none"><a href="3rdparty.html">3rd party plugins</a></li><li class="none"><a href="api.html">Using the API</a></li><li class="none"><a href="apidocs/index.html">API JavaDocs</a></li><li class="none"><a href="filesystems.html">File Systems</a></li><li class="none"><a href="anttasks.html">Ant Tasks</a></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/VFS" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><strong><a href="testserver.html">Test Server</a></strong></li><li class="none"><a href="mail-lists.html">Mailing Lists</a></li><li class="none"><a href="issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="cvs-usage.html">Source Repository</a></li><li class="none"><a href="todo.html">To Do List</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="index.html">About</a></li><li class="collapsed"><a href="project-info.html">Project Info</a></li><li class="collapsed"><a href="maven-reports.html">Project Reports</a></li><li class="none"><a href="http://jakarta.apache.org/commons/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://jakarta.apache.org/commons/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://jakarta.apache.org/commons/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://jakarta.apache.org/commons/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://jakarta.apache.org/commons/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://jakarta.apache.org/commons/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://jakarta.apache.org/commons/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/jakarta-commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><div id="legend"><h5>Legend</h5><ul><li class="externalLink">External Link</li><li class="newWindow">Opens in a new window</li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="./images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Testserver"></a><h2>Testserver</h2>
+            <p>
+                This documentation describes how to setup a VFS testserver needed during development for the junit
+                tests.
+            </p>
+            <p>
+                I tried to simplify things as good as I can, e.g. this setup uses for all server the same vfs work
+                directory.
+                Thus it is needed to setup apache to use user 'vfsusr' instead of 'wwwrun'.
+                <br></br>
+                Based on this description it should be possible for you to avoid this "insecurity" if needed.
+            </p>
+            <p>
+                I created it during setup a fresh server based on the following components:
+
+                <ol>
+                    <li>SuSE Linux 9.3 Minimal Installation</li>
+                    <li>Apache 2 Webserver (apache2-2.0.53)</li>
+                    <li>Samba 3 (samba-3.0.12)</li>
+                    <li>ssh (openssh-3.9p1)</li>
+                    <li>vsftp (vsftpd-2.0.2-3)</li>
+                </ol>
+            </p>
+
+
+            <div class="subsection"><a name="System_setup"></a><h3>System setup</h3>
+                <ol>
+                    <li>You need maven to build the local test-data structure. This is done automatically during build of VFS.</li>
+                    <li>Create a user 'vfsusr' with password 'vfs/%\te:st' and home directory '/home/vfsusr'
+                        <br></br>
+                        
+    <div class="source"><pre>
+useradd -p vfsusr -m vfsusr
+                    </pre></div>
+  
+                    </li>
+                    <li>Create the directories
+                        <ol>
+                            <li>/vfstest</li>
+                            <li>/vfstest/write-tests</li>
+                        </ol>
+                        and copy from your local 'target/test-data' the directories
+                        
+    <div class="source"><pre>code,read-tests</pre></div>
+   into it.<br></br>
+                        Now your structure looks like this:<br></br>
+                        
+    <div class="source"><pre>
+/vfstest
+/vfstest/write-tests
+/vfstest/read-tests
+/vfstest/read-tests/emptydir
+/vfstest/read-tests/file1.txt
+/vfstest/read-tests/dir1
+/vfstest/read-tests/dir1/file1.txt
+/vfstest/read-tests/dir1/file2.txt
+/vfstest/read-tests/dir1/file3.txt
+/vfstest/read-tests/dir1/subdir1
+/vfstest/read-tests/dir1/subdir1/file1.txt
+/vfstest/read-tests/dir1/subdir1/file2.txt
+/vfstest/read-tests/dir1/subdir1/file3.txt
+/vfstest/read-tests/dir1/subdir2
+/vfstest/read-tests/dir1/subdir2/file1.txt
+/vfstest/read-tests/dir1/subdir2/file2.txt
+/vfstest/read-tests/dir1/subdir2/file3.txt
+/vfstest/read-tests/dir1/subdir3
+/vfstest/read-tests/dir1/subdir3/file1.txt
+/vfstest/read-tests/dir1/subdir3/file2.txt
+/vfstest/read-tests/dir1/subdir3/file3.txt
+/vfstest/read-tests/empty.txt
+/vfstest/read-tests/file%.txt
+/vfstest/code
+/vfstest/code/sealed
+/vfstest/code/sealed/AnotherClass.class
+/vfstest/code/ClassToLoad.class
+                    </pre></div>
+  
+                    </li>
+                    <li>Setup a symbolic link to '/vfstest'<br></br>
+                        
+    <div class="source"><pre>
+ln -s /vfstest /home/vfsusr/vfstest
+                    </pre></div>
+  
+                    </li>
+                    <li>Set permissions
+                        <br></br>
+                        
+    <div class="source"><pre>
+find /vfstest -print0 | xargs -0 chown vfsusr.users
+                    </pre></div>
+  
+                    </li>
+                    <li>After you followed the steps below and setup the server ensure they
+                        are activated and running.<br></br>
+                        This is only needed if you installed a fresh system. Otherwise simply restart them.
+                        <br></br>
+                        
+    <div class="source"><pre>
+insserv xinetd
+insserv apache2
+insserv smb
+insserv nmb
+/etc/rc.d/xinetd restart
+/etc/rc.d/apache2 restart
+/etc/rc.d/smb restart
+/etc/rc.d/nmb restart
+                        </pre></div>
+  
+                        </li>
+                </ol>
+            </div>
+
+            <div class="subsection"><a name="Apache_2_Webserver"></a><h3>Apache 2 Webserver</h3>
+                <ol>
+                    <li>Create a file named '/etc/apache2/conf.d/vfstest.conf' with this content<br></br>
+                        
+    <div class="source"><pre>
+#
+# VFSTEST
+#
+Alias /vfstest /vfstest/
+
+DAVLockDB /var/lib/apache2/dav.lockDB
+DAVMinTimeout 600
+
+&lt;Directory /vfstest&gt;
+    Options None
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+&lt;/Directory&gt;
+
+&lt;Location /&gt;
+        DAV On
+        Options Indexes MultiViews
+        AllowOverride None
+
+        AuthType Basic
+        AuthName vfstest_zone
+        AuthUserFile /etc/apache2/passwd
+        &lt;Limit PUT POST DELETE PROPFIND PROPPATCH MKCOL COPY MOVE LOCK UNLOCK&gt;
+                Require user vfsusr
+        &lt;/Limit&gt;
+&lt;/Location&gt;
+                            </pre></div>
+  
+                    </li>
+                    <li>change the permission on
+                        
+    <div class="source"><pre>
+chown vfsusr.users /var/lib/apache2
+                        </pre></div>
+  
+                    </li>
+                    <li>Activate the WebDAV module by adding 'dav' and 'dav_fs' to the list of modules in '/etc/sysconfig/apache2'. e.g <br></br>
+                        
+    <div class="source"><pre>
+APACHE_MODULES="access actions alias auth auth_dbm autoindex cgi dir env expires include log_config
+mime negotiation setenvif ssl suexec userdir php4 php5 dav dav_fs"
+                            </pre></div>
+  
+                    </li>
+                    <li>Setup the webserver to use user-id 'vfsusr' and group 'users'. This can be done by changing the file '/etc/apache2/uid.conf'<br></br>
+                        
+    <div class="source"><pre>
+User vfsusr
+Group users
+                        </pre></div>
+  
+                    </li>
+                    <li>Create the VFS user to access the Webdav resource<br></br>
+                        
+    <div class="source"><pre>
+htpasswd2 -cmb /etc/apache2/passwd  vfsusr 'vfs/%\te:st'
+                        </pre></div>
+  
+                    </li>
+                </ol>
+            </div>
+
+            <div class="subsection"><a name="Samba_3"></a><h3>Samba 3</h3>
+                <ol>
+                    <li>Create a share 'vfsusr'<br></br>
+                        
+    <div class="source"><pre>
+[vfsusr]
+   comment = VFS Test Directory
+   path = /home/vfsusr
+   guest ok = yes
+   writable = yes
+                        </pre></div>
+  
+                    </li>
+                    <li>Setup a 'vfsusr' with password 'vfs/%\te:st'<br></br>
+                        
+    <div class="source"><pre>
+smbpasswd -a vfsusr
+                        </pre></div>
+  
+                    </li>
+                </ol>
+            </div>
+
+            <div class="subsection"><a name="ssh"></a><h3>ssh</h3>
+                <ol>
+                    <li>In '/etc/ssh/sshd_config' ensure<br></br>
+                        
+    <div class="source"><pre>
+PasswordAuthentication yes
+                        </pre></div>
+  
+                    </li>
+                </ol>
+            </div>
+
+            <div class="subsection"><a name="vsftp"></a><h3>vsftp</h3>
+                <ol>
+                    <li>Ensure the server is not disabled in the xinetd configuration<br></br>
+                        Set 
+    <div class="source"><pre>disable=no</pre></div>
+   in '/etc/xinetd.d/vsftpd'
+                    </li>
+
+                    <li>Setup the server config: '/etc/vsftpd.conf'<br></br>
+                        
+    <div class="source"><pre>
+write_enable=YES
+local_enable=YES
+                        </pre></div>
+  
+
+                    </li>
+                </ol>
+            </div>
+
+            <div class="subsection"><a name="Tests"></a><h3>Tests</h3>
+                Now we are finished and you can try to activate the tests by
+                <ol>
+                    <li>reactivate the tests in 'build.xml'.<br></br>
+                    Search for <code>&lt;!-- tests disabled --&gt;</code> and comment the exclude.</li>
+                    
+    <div class="source"><pre>
+&lt;!-- tests disabled
+&lt;exclude name="**/*.java"&gt;
+&lt;/exclude&gt;
+ --&gt;
+                    </pre></div>
+  
+                    <li>or use the class org.apache.commons.vfs.RunTest where you have
+                        to adapt some properties at the top of the file and choose which test
+                        you would like to run by comment the others.<br></br>
+                        This is the way how I debug a failed testcase.
+                    </li>
+                </ol>
+            </div>
+        </div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2002-2006, The Apache Software Foundation© -Last published: 19 December 2006
+            </div><div class="clear"><hr></hr></div></div></body></html>

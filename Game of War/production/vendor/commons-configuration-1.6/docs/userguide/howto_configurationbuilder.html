@@ -1,0 +1,466 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Commons Configuration - Configuration Builder Howto</title><style type="text/css" media="all">
+          @import url("../style/maven-base.css");
+          
+			    @import url("../style/maven-theme.css");@import url("../style/project.css");</style><link rel="stylesheet" href="../style/print.css" type="text/css" media="print"></link><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"></meta><meta name="author" content="Oliver Heger"></meta><meta name="email" content="oheger@apache.org"></meta></head><body class="composite"><div id="banner"><a href="http://commons.apache.org/" id="organizationLogo"><img alt="The Apache Software Foundation" src="http://commons.apache.org/images/logo.png"></img></a><a href="http://commons.apache.org/configuration/" id="projectLogo"><img alt="Commons Configuration" src="../images/logo.png"></img></a><div class="clear"><hr></hr></div></div><div id="breadcrumbs"><div class="xleft">
+                	Last published: 19 December 2008
+                  | Doc for 1.6</div><div class="xright">
+        
+        <a href="http://commons.apache.org/" class="externalLink" title="External Link">Apache Commons</a>
+      </div><div class="clear"><hr></hr></div></div><div id="leftColumn"><div id="navcolumn"><div id="menuConfiguration"><h5>Configuration</h5><ul><li class="none"><a href="../index.html">Home</a></li><li class="none"><a href="http://commons.apache.org/downloads/download_configuration.cgi" class="externalLink" title="External Link">Download</a></li><li class="none"><a href="../changes-report.html">Release History</a></li><li class="none"><a href="../userguide/user_guide.html">User's Guide</a></li><li class="none"><a href="../userguide-1.2/index.html">Howtos (1.2 release)</a></li><li class="none"><a href="../dependencies.html">Runtime Dependencies</a></li><li class="none"><a href="../apidocs/index.html">Javadoc (current release)</a></li><li class="none"><a href="../javadocarchive.html">Javadoc (old releases)</a></li></ul></div><div id="menuDevelopment"><h5>Development</h5><ul><li class="none"><a href="../building.html">Building</a></li><li class="none"><a href="../tasks-report.html">Roadmap</a></li><li class="none"><a href="../issue-tracking.html">Issue Tracking</a></li><li class="none"><a href="http://svn.apache.org/repos/asf/commons/proper/configuration/" class="externalLink" title="External Link">SVN</a></li></ul></div><div id="menuProject_Documentation"><h5>Project Documentation</h5><ul><li class="none"><a href="../index.html">About Commons Configuration</a></li><li class="none"><a href="../downloads.html">Downloads</a></li><li class="collapsed"><a href="../project-info.html">Project Info</a></li><li class="collapsed"><a href="../maven-reports.html">Project Reports</a></li><li class="none"><a href="http://commons.apache.org/charter.html" class="externalLink" title="External Link">Development Process</a></li></ul></div><div id="menuCommons"><h5>Commons</h5><ul><li class="none"><a href="http://commons.apache.org/" class="externalLink" title="External Link">Home</a></li><li class="collapsed"><a href="http://commons.apache.org/components.html" class="externalLink" title="External Link">Components</a></li><li class="collapsed"><a href="http://commons.apache.org/sandbox/index.html" class="externalLink" title="External Link">Sandbox</a></li><li class="collapsed"><a href="http://commons.apache.org/dormant/index.html" class="externalLink" title="External Link">Dormant</a></li><li class="none"><a href="http://commons.apache.org/volunteering.html" class="externalLink" title="External Link">Volunteering</a></li><li class="none"><a href="http://commons.apache.org/patches.html" class="externalLink" title="External Link">Contributing Patches</a></li><li class="none"><a href="http://commons.apache.org/building.html" class="externalLink" title="External Link">Building Components</a></li><li class="none"><a href="http://commons.apache.org/releases/index.html" class="externalLink" title="External Link">Releasing Components</a></li><li class="none"><a href="http://wiki.apache.org/commons/FrontPage" class="externalLink" title="External Link">Wiki</a></li></ul></div><a href="http://maven.apache.org/" title="Built by Maven" id="poweredBy"><img alt="Built by Maven" src="../images/logos/maven-feather.png"></img></a></div></div><div id="bodyColumn"><div class="contentBox"><div class="section"><a name="Using_DefaultConfigurationBuilder"></a><h2>Using DefaultConfigurationBuilder</h2><p>
+      The <code>ConfigurationFactory</code> class that was introduced in the
+      <a href="howto_configurationfactory.html#Using_a_Configuration_Factory">last
+      section</a> is a powerful tool for dealing with multiple different
+      configuration sources, but it also has some shortcomings:
+      <ul>
+        <li>The format for configuration definition files is not extensible.</li>
+        <li>Complex initializations of the declared configuration sources (e.g.
+        for assigning a reloading strategy) are not supported.</li>
+        <li>The returned configuration object is not hierarchical, which limits
+        the query facilities somewhat.</li>
+        <li>Declared configuration sources can only be accessed by index from the
+        returned composite configuration, which means that code using a
+        <code>ConfigurationFactory</code> depends on the order of declarations
+        in a configuration definition file.</li>
+      </ul>
+    </p><p>
+      To work around these limitations the class
+      <code><a href="apidocs/org/apache/commons/configuration/DefaultConfigurationBuilder.html">
+      DefaultConfigurationBuilder</a></code> was introduced.
+    </p><div class="subsection"><a name="ConfigurationFactory_Differences"></a><h3>ConfigurationFactory Differences</h3><p>
+      From its basic usage scenarios <code>DefaultConfigurationBuilder</code> is
+      very similar to <code>ConfigurationFactory</code>. It is able to process
+      the same configuration definition files as can be read by
+      <code>ConfigurationFactory</code>, but supports more options. The following
+      list identifies the main differences between these classes:
+	</p><p>
+      <ul>
+        <li><code>DefaultConfigurationBuilder</code> extends <code>XMLConfiguration</code>.
+        This means that it is a <a href="howto_filebased.html#File-based Configurations">
+        file-based configuration</a>, and thus supports multiple ways of
+        specifying the location of the configuration definition file (e.g.
+        as <code>java.io.File</code> object, as URL, etc.).</li>
+        <li>The configuration object returned by a <code>DefaultConfigurationBuilder</code>
+        is an instance of the <a href="howto_combinedconfiguration.html#Combined Configuration">
+        CombinedConfiguration</a> class, i.e. a truely hierarchical
+        configuration supporting enhanced query facilities.</li>
+        <li>Each declaration of a configuration source in the configuration
+        definition file is interpreted as a
+        <a href="howto_beans.html#Declaring and Creating Beans">bean
+        declaration</a>, so complex initializations are supported.</li>
+        <li><code>DefaultConfigurationBuilder</code> supports custom tags in its
+        configuration definition file. For this purpose a so-called
+        <em>configuration provider</em> has to be registered, which will be
+        called when a corresponding tag is encountered.</li>
+      </ul>
+    </p></div><div class="subsection"><a name="Enhancements_to_the_configuration_definition_file"></a><h3>Enhancements to the configuration definition file</h3><p>
+      As was already pointed out, <code>DefaultConfigurationBuilder</code>
+      maintains compatibility with <code>ConfigurationFactory</code> in that it
+      understands the same configuration definition files. In addition to the
+      elements that are allowed in a configuration definition file for
+      <code>ConfigurationFactory</code> the data files for
+      <code>DefaultConfigurationBuilder</code> support some additional options
+      providing greater flexibility. This section explains these enhanced
+      features.
+    </p><p>
+      <strong>Overall structure of a configuration definition file</strong>
+    </p><p>
+      A configuration definition file for <code>DefaultConfigurationBuilder</code>
+      can contain three sections, all of which are optional. A skeleton looks as
+      follows:
+    </p>
+    <div class="source"><pre>
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+
+&lt;configuration systemProperties="path to property file"&gt;
+  &lt;header&gt;
+    &lt;!-- Meta data about the resulting combined configuration --&gt;
+  &lt;/header&gt;
+  &lt;override&gt;
+    &lt;!-- Configuration declarations with override semantics --&gt;
+  &lt;/override&gt;
+  &lt;additional&gt;
+    &lt;!-- Configuration declarations that form a union configuration --&gt;
+  &lt;/additional&gt;
+&lt;/configuration&gt;
+</pre></div>
+  <p>
+      <strong>Declaring configuration sources</strong>
+    </p><p>
+      The <code>override</code> and <code>additional</code> sections should look
+      familar to users that have already worked with
+      <code>ConfigurationFactory</code>. They have the exact same purpose here,
+      i.e. they contain declarations for the configuration sources to be
+      embedded. For compatibility reasons it is also allowed to declare
+      configuration sources outside these sections; they are then treated as if
+      they were placed inside the <code>override</code> section.
+    </p><p>
+      Each declaration of a configuration source is represented by an XML
+      element whose name determines the type of the configuration source (e.g.
+      <code>properties</code> for properties files, or <code>xml</code> for
+      XML documents). Per default all configuration types are supported that
+      are also allowed for <code>ConfigurationFactory</code>. A list of all
+      supported tags can be found
+      <a href="howto_configurationfactory.html#Configuration definition file reference">here</a>.
+      In addition to the default tags provided by <code>ConfigurationFactory</code>
+      <code>DefaultConfigurationBuilder</code> knows the following tags:
+    </p><p>
+      <dl>
+        <dt>configuration</dt>
+        <dd>The <code>configuration</code> tag allows other configuration
+        definition files to be included. This makes it possible to nest these
+        definition files up to an arbitrary depth. In fact, this tag will
+        create another <code>DefaultConfigurationBuilder</code> object,
+        initialize it, and obtain the <code>CombinedConfiguation</code> from it.
+        This combined configuration will then be added to the resulting
+        combined configuration. Like all file-based configurations the
+        <code>fileName</code> attribute can be used to specify the configuration
+        definition file to be loaded. This file must be an XML document that
+        conforms to the format described here.</dd>
+      </dl>
+    </p><p>
+      In the declaration of a configuration source it is possible to set
+      properties on the corresponding configuration objects. Configuration
+      declarations are indeed
+      <a href="howto_beans.html#Declaring and Creating Beans">Bean
+      declarations</a>. That means they can have attributes matching simple
+      properties of the configuration object to create and sub elements
+      matching complex properties. The following example fragment shows how
+      complex initialization can be performed in a configuration declaration:
+    </p>
+    <div class="source"><pre>
+  &lt;properties fileName="test.properties" throwExceptionOnMissing="true"&gt;
+    &lt;reloadingStrategy refreshDelay="10000"
+    config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/&gt;
+  &lt;/properties&gt;
+  &lt;xml fileName="test.xml" delimiterParsingDisabled="true"&gt;
+    &lt;expressionEngine config-class="org.apache.commons.configuration.tree.DefaultExpressionEngine"
+      propertyDelimiter="/" indexStart="[" indexEnd="]"/&gt;
+  &lt;/xml&gt;
+</pre></div>
+  <p>
+      In this example a configuration source for a properties file and one for
+      an XML document are defined. For the properties source the
+      <code>throwExceptionOnMissing</code> property is set to <b>true</b>,
+      which means that it should throw an exception if a requested property is
+      not found. In addition it is assigned a reloading strategy, which is
+      declared and configured in a sub element. The XML configuration source is
+      initialized in a similar way: a simple property is set, and an expression
+      engine is assigned. More information about the format for declaring objects
+      and initializing their properties can be found in the section about
+      <a href="howto_beans.html#Declaring and Creating Beans">bean
+      declarations</a>.
+    </p><p>
+      In addition to the attributes that correspond to properties of the
+      configuration object to be created, a configuration declaration can have a
+      set of special attributes that are evaluated by
+      <code>DefaultConfigurationBuilder</code> when it creates the objects.
+      These attributes are listed in the following table:
+    </p><p>
+    <table class="bodyTable"><tr class="b"><th>Attribute</th><th>Meaning</th></tr><tr class="a"><td valign="top"><code>config-name</code></td><td>Allows a name to be specified for this configuration. This name can
+      be used to obtain a reference to the configuration from the resulting
+      combined configuration (see below).</td></tr><tr class="b"><td valign="top"><code>config-at</code></td><td>With this attribute an optional prefix can be specified for the
+      properties of the corresponding configuration.</td></tr><tr class="a"><td valign="top"><code>config-optional</code></td><td>Declares a configuration as optional. This means that errors that
+      occur when creating the configuration are silently ignored. The default
+      behavior when an error occurs is that no configuration is added to
+      the resulting combined configuration. This behavior can be used to find
+      out whether an optional configuration could be successfully created or
+      not. If you specify a name for the optional configuration (using the
+      <code>config-name</code> attribute), you can later check whether the
+      combined configuration contains a configuration with this name. With the
+      <code>config-forceCreate</code> attribute (see below) this default
+      behavior can be changed.</td></tr><tr class="b"><td valign="top"><code>config-forceCreate</code></td><td>This boolean attribute is only evaluated for configurations declared as
+      optional. It determines the behavior of the configuration builder when
+      the optional configuration could not be created. If set to <b>true</b>,
+      the builder tries to create an empty, uninitialized configuration of the
+      correct type and add it to the resulting combined configuration. This is
+      especially useful for file-based configurations. Consider a use case
+      where an application wants to store user specific configuration files in
+      the users' home directories. When a user starts this application for the
+      first time, the user configuration does not exist yet. If it is declared
+      as <em>optional</em> and <em>forceCreate</em>, the missing configuration
+      file won't cause an error, but an empty configuration will be created.
+      The application can then obtain this configuration, add properties to it
+      (e.g. user specific settings) and save it. Without the
+      <code>config-forceCreate</code> attribute the application would have to
+      check whether the user configuration exists in the combined configuration
+      and eventually create it manually. Note that not all configuration
+      providers support this mechanism. Sometimes it may not be possible to
+      create an empty configuration if the standard initialization fails. In
+      this case no configuration will be added to the combined configuration
+      (with other words: the <code>config-forceCreate</code> attribute will not
+      have any effect).</td></tr></table>
+    </p><p>
+      The <code>config-at</code> and <code>config-optional</code> attributes
+      have the same meaning as the <code>at</code> and <code>optional</code>
+      attributes for <code>ConfigurationFactory</code>. For compatibility
+      reasons the old attributes without the <code>config-</code> prefix are
+      still supported. Note that the <code>config-at</code> is now allowed for
+      override configurations, too (<code>ConfigurationFactory</code> evaluated
+      the <code>at</code> attribute only for configuration declarations in the
+      <code>additional</code> section).
+    </p><p>
+      Another useful feature is the built-in support for interpolation (i.e.
+      variable substitution): You can use variables in your configuration
+      definition file that are defined in declared configuration sources. For
+      instance, if the name of a configuration file to be loaded is defined by
+      the system property <code>CONFIG_FILE</code>, you can do something like
+      this:
+    </p>
+    <div class="source"><pre>
+&lt;configuration&gt;
+  &lt;!-- Load the system properties --&gt;
+  &lt;system/&gt;
+  &lt;!-- Now load the config file, using a system property as file name --&gt;
+  &lt;properties fileName="${CONFIG_FILE}"/&gt;
+&lt;/configuration&gt;
+</pre></div>
+  <p>
+      Note that you can refer only to properties that have already been loaded.
+      If you change the order of the <code>&lt;system&gt;</code> and the
+      <code>&lt;properties&gt;</code> elements in the example above, an error
+      will occur because the <code>${CONFIG_FILE}</code> variable will then be
+      undefined at the moment it is evaluated.
+    </p>
+    <div class="source"><pre>
+&lt;configuration systemProperties="systemProperties.xml"&gt;
+  &lt;!-- Load the system properties --&gt;
+  &lt;system/&gt;
+  &lt;!-- Now load the config file, using a system property as file name --&gt;
+  &lt;properties fileName="${CONFIG_FILE}"/&gt;
+&lt;/configuration&gt;
+</pre></div>
+  <p>
+      This example differs from the previous one by allowing CONFIG_FILE, and other
+      properties, to be defined in a properties file and added to the system
+      properties before the configuration is constructed.
+    </p><p>
+      <strong>The header section</strong>
+    </p><p>
+      In the header section properties of the resulting combined configuration
+      object can be set. The main part of this section is a bean declaration
+      that is used for creating the resulting configuration object. Other
+      elements can be used for customizing the
+      <a href="howto_combinedconfiguration.html#Node combiners">Node combiners</a>
+      used by the override and the union combined configuration. The following
+      example shows a header section that uses all supported properties:
+    </p>
+    <div class="source"><pre>
+  &lt;header&gt;
+    &lt;result delimiterParsingDisabled="true" forceReloadCheck="true"&gt;
+      &lt;nodeCombiner config-class="org.apache.commons.configuration.tree.OverrideCombiner"/&gt;
+      &lt;expressionEngine config-class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine"/&gt;
+    &lt;/result&gt;
+    &lt;combiner&gt;
+      &lt;override&gt;
+        &lt;list-nodes&gt;
+          &lt;node&gt;table&lt;/node&gt;
+          &lt;node&gt;list&lt;/node&gt;
+        &lt;/list-nodes&gt;
+      &lt;/override&gt;
+      &lt;additional&gt;
+        &lt;list-nodes&gt;
+          &lt;node&gt;table&lt;/node&gt;
+        &lt;/list-nodes&gt;
+      &lt;/additional&gt;
+    &lt;/combiner&gt;
+  &lt;/header&gt;
+</pre></div>
+  <p>
+      The <code>result</code> element points to the bean declaration for the
+      resulting combined configuration. In this example we set some attributes
+      and initialize the node combiner (which is not necessary because the
+      default override combiner is specified) and the expression engine to be
+      used. Note that the <code>config-class</code> attribute makes it
+      possible to inject custom classes for the resulting configuration or the
+      node combiner.
+    </p><p>
+      The <code>combiner</code> section allows nodes to be defined as list nodes.
+      This can be necessary for certain node combiner implementations to work
+      correctly. More information can be found in the section about
+      <a href="howto_combinedconfiguration.html#Node combiners">Node combiners</a>.
+    </p></div><div class="subsection"><a name="An_example"></a><h3>An example</h3><p>
+      After all that theory let's go through an example! We start with the
+      configuration definition file that looks like the following:
+    </p>
+    <div class="source"><pre>
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
+&lt;!-- Test configuration definition file that demonstrates complex initialization --&gt;
+&lt;configuration&gt;
+  &lt;header&gt;
+    &lt;result delimiterParsingDisabled="true" forceReloadCheck="true"&gt;
+      &lt;expressionEngine config-class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine"/&gt;
+    &lt;/result&gt;
+    &lt;combiner&gt;
+      &lt;additional&gt;
+        &lt;list-nodes&gt;
+          &lt;node&gt;table&lt;/node&gt;
+        &lt;/list-nodes&gt;
+      &lt;/additional&gt;
+    &lt;/combiner&gt;
+  &lt;/header&gt;
+  &lt;override&gt;
+    &lt;properties fileName="user.properties" throwExceptionOnMissing="true"
+      config-name="properties" config-optional="true"&gt;
+      &lt;reloadingStrategy refreshDelay="10000"
+      config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/&gt;
+    &lt;/properties&gt;
+    &lt;xml fileName="settings.xml" config-name="xml"/&gt;
+  &lt;/override&gt;
+  &lt;additional&gt;
+    &lt;xml config-name="tab1" fileName="table1.xml" config-at="database.tables"/&gt;
+    &lt;xml config-name="tab2" fileName="table2.xml" config-at="database.tables"
+        validating="true"/&gt;
+  &lt;/additional&gt;
+&lt;/configuration&gt;
+</pre></div>
+  <p>
+      This configuration definition file includes four configuration sources and
+      sets some properties for the resulting <code>CombinedConfiguration</code>.
+      Of special interest is the <code>forceReloadCheck</code> property, which
+      enables a special check for detecting property changes in the contained
+      configuration sources. If this property is not set, reloading won't work.
+      Because we have configured a reloading strategy for one of the included
+      configuration sources we have to set this flag so that this reloading
+      strategy can function properly. More details about this topic can be
+      found in the Javadocs for
+      <code><a href="apidocs/org/apache/commons/configuration/CombinedConfiguration.html">
+      CombinedConfiguration</a></code>. We also set some properties for the
+      configurations to be loaded; for instance we declare that one of the XML
+      configurations should be validated.
+    </p><p>
+      With the following code we can create a <code>DefaultConfigurationBuilder</code>
+      and load this file:
+    </p>
+    <div class="source"><pre>
+DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
+builder.setFile(new File("configuration.xml"));
+CombinedConfiguration cc = builder.getConfiguration(true);
+</pre></div>
+  <p>
+      It would have been possible to specify the location of the configuration
+      definition file in multiple other ways, e.g. as a URL. The boolean argument
+      in the call to <code>getConfiguration()</code> determines whether the
+      configuration definition file should be loaded. For our simple example we
+      want this to happen, but it would also be possible to load the file
+      manually (by calling the <code>load()</code> method), and after that
+      updating the configuration. (Remember that <code>DefaultConfigurationBuilder</code>
+      is derived from <code>XMLConfiguration</code>, that means you can use all methods
+      provided by this class to alter its data, e.g. to add further configuration
+      sources.) If the configuration's data was manually changed, you should
+      call <code>getConfiguration()</code> with the argument <b>false</b>.
+      <code>XMLConfiguration</code> also provides the <code>registerEntityId()</code>
+      method that can be used to define the location of DTD files (refer to the
+      section <a href="howto_xml.html#Validation_of_XML_configuration_files">
+      Validation of XML configuration files</a> for more details). This method
+      is available for <code>DefaultConfigurationBuilder</code>, too. The
+      entities registered here will be passed to the loaded child XML
+      configurations. So you can register the DTDs of all child XML configurations
+      globally at the configuration builder.
+    </p><p>
+      In the <code>header</code> section we have chosen an XPATH expression
+      engine for the resulting configuration. So we can query our properties
+      using the convenient XPATH syntax. By providing the <code>config-name</code>
+      attribute we have given all configuration sources a name. This name can
+      be used to obtain the corresponding sources from the combined
+      configuration. For configurations in the override section this is
+      directly possible:
+    </p>
+    <div class="source"><pre>
+Configuration propertiesConfig = cc.getConfiguration("properties");
+Configuration xmlConfig = cc.getConfiguration("xml");
+</pre></div>
+  <p>
+      Configurations in the <code>additional</code> section are treated a bit
+      differently: they are all packed together in another combined configuration
+      and then added to the resulting combined configuration. So in our example
+      the combined configuration <code>cc</code> will contain three configurations:
+      the two configurations from the override section, and the combined
+      configuration with the <code>additional</code> configurations. The latter
+      is stored under a name determined by the <code>ADDITIONAL_NAME</code>
+      constant of <code>DefaultConfigurationBuilder</code>. The following
+      code shows how the configurations of the <code>additional</code> section
+      can be accessed:
+    </p>
+    <div class="source"><pre>
+CombinedConfiguration ccAdd = (CombinedConfiguration)
+  cc.getConfiguration(DefaultConfigurationBuilder.ADDITIONAL_NAME);
+Configuration tab1Config = ccAdd.getConfiguration("tab1");
+Configuration tab2Config = ccAdd.getConfiguration("tab2");
+</pre></div>
+  </div><div class="subsection"><a name="Extending_the_configuration_definition_file_format"></a><h3>Extending the configuration definition file format</h3><p>
+      If you have written a custom configuration class, you might want to
+      declare instances of this class in a configuration definition file, too.
+      With <code>DefaultConfigurationBuilder</code> this is now possible by
+      registering a <em>ConfigurationProvider</em>.
+    </p><p>
+      <code>ConfigurationProvider</code> is an inner class defined in
+      <code>DefaultConfigurationBuilder</code>. Its task is to create and
+      initialize a configuration object. Whenever <code>DefaultConfigurationBuilder</code>
+      encounters a tag in the <code>override</code> or the <code>additional</code>
+      section it checks whether for this tag a <code>ConfigurationProvider</code>
+      was registered. If this is the case, the provider is asked to create a
+      new configuration instance; otherwise an exception will be thrown.
+    </p><p>
+      So for adding support for a new configuration class you have to create an
+      instance of <code>ConfigurationProvider</code> (or a derived class) and
+      register it at the configuration builder using the
+      <code>addConfigurationProvider()</code> method. This method expects the
+      name of the associated tag and the provider instance as arguments.
+    </p><p>
+      If your custom configuration class does not need any special initialization,
+      you can use the <code>ConfigurationProvider</code> class directly. It is
+      able of creating an instance of a specified class (which must be derived
+      from <code>AbstractConfiguration</code>). Let's take a look at an example
+      where we want to add support for a configuration class called
+      <code>MyConfiguration</code>. The corresponding tag in the configuration
+      definition file should have the name <code>myconfig</code>. The code for
+      registering the new provider and loading the configuration definition file
+      looks as follows:
+    </p>
+    <div class="source"><pre>
+DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
+DefaultConfigurationBuilder.ConfigurationProvider provider = new
+  DefaultConfigurationBuilder.ConfigurationProvider(MyConfiguration.class);
+builder.addConfigurationProvider("myconfig", provider);
+
+builder.setFileName("configuration.xml");
+Configuration config = builder.getConfiguration();
+</pre></div>
+  <p>
+      If your configuration provider is registered this way, your configuration
+      definition file can contain the <code>myconfig</code> tag just as any
+      other tag for declaring a configuration source:
+    </p>
+    <div class="source"><pre>
+&lt;configuration&gt;
+  &lt;additional&gt;
+    &lt;xml fileName="settings.xml"/&gt;
+    &lt;myconfig delimiterParsingDisabled="true"/&gt;
+  &lt;/additional&gt;
+&lt;/configuration&gt;
+</pre></div>
+  <p>
+      As is demonstrated in this example, it is possible to specify attributes
+      for initializing properties of your configuration object. In this example
+      we set the default <code>delimiterParsingDisabled</code> property
+      inherited from <code>AbstractConfiguration</code>. Of course you can set
+      custom properties of your configuration class, too.
+    </p><p>
+      If your custom configuration class is a file-based configuration, you
+      should use the <code>FileConfigurationProvider</code> class instead of
+      <code>ConfigurationProvider</code>. <code>FileConfigurationProvider</code>
+      is another inner class of <code>DefaultConfigurationBuilder</code> that
+      knows how to deal with file-based configurations: it ensures that the
+      correct base path is set and takes care of invoking the <code>load()</code>
+      method.
+    </p><p>
+      If your custom configuration class requires special initialization, you
+      need to create your own provider class that extends
+      <code>ConfigurationProvider</code>. Here you will have to override the
+      <code>getConfiguration(ConfigurationDeclaration)</code> method, which is
+      responsible for creating the configuration instance (all information
+      necessary for this purpose can be obtained from the passed in declaration
+      object). It is recommended that you call the inherited method first,
+      which will instantiate and initialize the new configuration object. Then
+      you can perform your specific initialization.
+    </p></div></div></div></div><div class="clear"><hr></hr></div><div id="footer"><div class="xright">© 2001-2008, The Apache Software Foundation</div><div class="clear"><hr></hr></div></div></body></html>
