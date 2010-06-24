@@ -1,0 +1,7 @@
+stack player 1's deck with 7 2 2 2 A 3 3 3 K
+stack player 2's deck with 7 2 2 2 A 3 3 3 Q
+start the game
+play next turn; players draw battle
+play next turn; players draw war
+play next turn; player 1 wins war
+

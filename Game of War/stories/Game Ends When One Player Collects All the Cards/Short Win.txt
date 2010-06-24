@@ -1,0 +1,6 @@
+stack deck so that player 1 wins all the cards on the first battle
+start the game
+play next turn; player 1 wins battle
+game ends
+player 1 wins game
+

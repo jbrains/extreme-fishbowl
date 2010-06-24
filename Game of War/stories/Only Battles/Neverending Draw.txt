@@ -1,0 +1,8 @@
+stack deck with cards of a single rank
+start the game
+play a battle; draw
+play next turn; players draw a battle
+play next turn; players draw a battle
+play next turn; players draw a battle
+play next turn; players draw a battle
+

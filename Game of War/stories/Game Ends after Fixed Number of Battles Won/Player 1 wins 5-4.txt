@@ -1,0 +1,13 @@
+decide that winning 5 battles wins the game
+start the game
+play a battle; player 1 wins
+play a battle; player 2 wins
+play a battle; player 1 wins
+play a battle; player 1 wins
+play a battle; player 2 wins
+play a battle; player 2 wins
+play a battle; player 2 wins
+play a battle; player 1 wins
+play a battle; player 1 wins
+the game ends
+player 1 wins
