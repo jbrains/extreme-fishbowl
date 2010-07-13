@@ -6,7 +6,6 @@ import static org.junit.Assert.assertSame;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
@@ -15,9 +14,7 @@ import org.junit.Test;
 
 public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	public interface Configuration {
-
 		int numberOfBattlesToWin();
-
 	}
 
 	public static class GameOfWar {
@@ -25,13 +22,19 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		private Configuration configuration;
 
 		public GameOfWar(Object[] players) {
-			this.winsByPlayer = new HashMap<Object, Integer>();
+			this.winsByPlayer = initializeScoreboard(players);
+		}
+
+		// REFACTOR Encapsulate in Scoreboard object
+		private static Map<Object, Integer> initializeScoreboard(Object[] players) {
+			final Map<Object, Integer> winsByPlayer = new HashMap<Object, Integer>();
 			CollectionUtils.forAllDo(Arrays.asList(players), new Closure() {
 				@Override
 				public void execute(Object input) {
 					winsByPlayer.put(input, 0);
 				}
 			});
+			return winsByPlayer;
 		}
 
 		/** @deprecated */
