@@ -14,17 +14,16 @@ import org.junit.Test;
 
 public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	public static class GameOfWarConfiguration {
-
+		// SMELL No need for separate Configuration interface
 		private final Configuration configuration;
 
 		public GameOfWarConfiguration(Configuration configuration) {
 			this.configuration = configuration;
 		}
 
-		public GameOfWar withPlayers(Object... players) {
+		public GameOfWar playWith(Object... players) {
 			return new GameOfWar(configuration, players);
 		}
-
 	}
 
 	public interface Configuration {
@@ -92,12 +91,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 
 	@Test
 	public void playerOneWinsAfterOneBattle() throws Exception {
-		startGameWith(jbrains, coreyhaines, new Configuration() {
-			@Override
-			public int numberOfBattlesToWin() {
-				return 1;
-			}
-		});
+		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 1);
 
 		gameOfWar.signalBattleWinner(jbrains);
 
@@ -106,12 +100,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 
 	@Test
 	public void playerOneWinsAfterTwoBattles() throws Exception {
-		startGameWith(jbrains, coreyhaines, new Configuration() {
-			@Override
-			public int numberOfBattlesToWin() {
-				return 2;
-			}
-		});
+		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 1);
 
 		gameOfWar.signalBattleWinner(jbrains);
 		gameOfWar.signalBattleWinner(jbrains);
@@ -123,12 +112,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	public void needingTwoBattlesToWinNobodyWinsAfterBattleOne()
 			throws Exception {
 
-		startGameWith(jbrains, coreyhaines, new Configuration() {
-			@Override
-			public int numberOfBattlesToWin() {
-				return 2;
-			}
-		});
+		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 2);
 
 		gameOfWar.signalBattleWinner(jbrains);
 
@@ -137,48 +121,44 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 
 	@Test
 	public void needingFiveBattlesToWin() throws Exception {
-		startGameWith(jbrains, coreyhaines, new Configuration() {
-			public int numberOfBattlesToWin() {
-				return 5;
-			}
-		});
+		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 5);
 
-		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.signalBattleWinner(jbrains);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.signalBattleWinner(coreyhaines);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.signalBattleWinner(jbrains);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.signalBattleWinner(coreyhaines);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.signalBattleWinner(jbrains);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.signalBattleWinner(coreyhaines);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.signalBattleWinner(jbrains);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.signalBattleWinner(coreyhaines);
 		assertNull(gameOfWar.winner());
 
-		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.signalBattleWinner(coreyhaines);
 		assertSame(coreyhaines, gameOfWar.winner());
 	}
 
-	private void supposeNextBattleWinnerIs(Object battleWinner) {
-		gameOfWar.signalBattleWinner(battleWinner);
-	}
+	private void playGameWithPlayersToFixedNumberOfWins(Object playerOne,
+			Object playerTwo, final int winsNeeded) {
 
-	private void startGameWith(Object playerOne, Object playerTwo,
-			Configuration configuration) {
-
-		gameOfWar = new GameOfWarConfiguration(configuration).withPlayers(
-				playerOne, playerTwo);
+		gameOfWar = new GameOfWarConfiguration(new Configuration() {
+			@Override
+			public int numberOfBattlesToWin() {
+				return winsNeeded;
+			}
+		}).playWith(playerOne, playerTwo);
 	}
 }
