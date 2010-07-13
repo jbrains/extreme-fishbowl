@@ -26,7 +26,8 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		}
 
 		// REFACTOR Encapsulate in Scoreboard object
-		private static Map<Object, Integer> initializeScoreboard(Object[] players) {
+		private static Map<Object, Integer> initializeScoreboard(
+				Object[] players) {
 			final Map<Object, Integer> winsByPlayer = new HashMap<Object, Integer>();
 			CollectionUtils.forAllDo(Arrays.asList(players), new Closure() {
 				@Override
@@ -35,11 +36,6 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 				}
 			});
 			return winsByPlayer;
-		}
-
-		public void playTurn() {
-			if (configuration == null)
-				throw new IllegalStateException("Unconfigured.");
 		}
 
 		public Object winner() {
@@ -69,6 +65,9 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		}
 
 		public GameOfWar andConfiguration(Configuration configuration) {
+			if (configuration == null)
+				throw new IllegalStateException("Unconfigured.");
+
 			this.configuration = configuration;
 			return this;
 		}
@@ -97,8 +96,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 			}
 		});
 
-		supposeJbrainsWinsFirstBattle();
-		gameOfWar.playTurn();
+		gameOfWar.signalBattleWinner(jbrains);
 
 		assertSame(jbrains, gameOfWar.winner());
 	}
@@ -112,9 +110,8 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 			}
 		});
 
-		supposeJbrainsWinsSecondBattle();
-		gameOfWar.playTurn();
-		gameOfWar.playTurn();
+		gameOfWar.signalBattleWinner(jbrains);
+		gameOfWar.signalBattleWinner(jbrains);
 
 		assertSame(jbrains, gameOfWar.winner());
 	}
@@ -122,7 +119,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	@Test
 	public void needingTwoBattlesToWinNobodyWinsAfterBattleOne()
 			throws Exception {
-		
+
 		startGameWith(jbrains, coreyhaines, new Configuration() {
 			@Override
 			public int numberOfBattlesToWin() {
@@ -144,39 +141,30 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		});
 
 		supposeNextBattleWinnerIs(jbrains);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(coreyhaines);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(jbrains);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(coreyhaines);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(jbrains);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(coreyhaines);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(jbrains);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(coreyhaines);
-		gameOfWar.playTurn();
 		assertNull(gameOfWar.winner());
 
 		supposeNextBattleWinnerIs(coreyhaines);
-		gameOfWar.playTurn();
 		assertSame(coreyhaines, gameOfWar.winner());
 	}
 
@@ -187,20 +175,9 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	private void startGameWith(Object playerOne, Object playerTwo,
 			Configuration configuration) {
 
+		// SMELL Insane state; maybe GameOfWarConfiguration factory for
+		// GameOfWar?
 		gameOfWar = GameOfWar.withPlayers(playerOne, playerTwo)
 				.andConfiguration(configuration);
-	}
-
-	private void supposeJbrainsWinsFirstBattle() {
-		gameOfWar.signalBattleWinner(jbrains);
-	}
-
-	private void supposeJbrainsWinsSecondBattle() {
-		gameOfWar.signalBattleWinner(jbrains);
-		gameOfWar.signalBattleWinner(jbrains);
-	}
-
-	private void startGameWith(Object playerOne, Object playerTwo) {
-		gameOfWar = GameOfWar.withPlayers(playerOne, playerTwo);
 	}
 }
