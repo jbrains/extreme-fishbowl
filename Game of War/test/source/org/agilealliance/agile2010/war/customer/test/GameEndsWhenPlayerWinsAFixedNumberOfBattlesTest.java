@@ -13,15 +13,30 @@ import org.apache.commons.collections.Predicate;
 import org.junit.Test;
 
 public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
+	public static class GameOfWarConfiguration {
+
+		private final Configuration configuration;
+
+		public GameOfWarConfiguration(Configuration configuration) {
+			this.configuration = configuration;
+		}
+
+		public GameOfWar withPlayers(Object... players) {
+			return new GameOfWar(configuration, players);
+		}
+
+	}
+
 	public interface Configuration {
 		int numberOfBattlesToWin();
 	}
 
 	public static class GameOfWar {
-		private Map<Object, Integer> winsByPlayer;
-		private Configuration configuration;
+		private final Map<Object, Integer> winsByPlayer;
+		private final Configuration configuration;
 
-		public GameOfWar(Object[] players) {
+		public GameOfWar(Configuration configuration, Object[] players) {
+			this.configuration = configuration;
 			this.winsByPlayer = initializeScoreboard(players);
 		}
 
@@ -58,18 +73,6 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 
 		public void signalBattleWinner(Object battleWinner) {
 			winsByPlayer.put(battleWinner, winsByPlayer.get(battleWinner) + 1);
-		}
-
-		public static GameOfWar withPlayers(Object... players) {
-			return new GameOfWar(players);
-		}
-
-		public GameOfWar andConfiguration(Configuration configuration) {
-			if (configuration == null)
-				throw new IllegalStateException("Unconfigured.");
-
-			this.configuration = configuration;
-			return this;
 		}
 	}
 
@@ -175,9 +178,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	private void startGameWith(Object playerOne, Object playerTwo,
 			Configuration configuration) {
 
-		// SMELL Insane state; maybe GameOfWarConfiguration factory for
-		// GameOfWar?
-		gameOfWar = GameOfWar.withPlayers(playerOne, playerTwo)
-				.andConfiguration(configuration);
+		gameOfWar = new GameOfWarConfiguration(configuration).withPlayers(
+				playerOne, playerTwo);
 	}
 }
