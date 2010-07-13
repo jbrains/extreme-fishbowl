@@ -109,7 +109,12 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 
 	@Test
 	public void playerOneWinsAfterTwoBattles() throws Exception {
-		startGameWith(jbrains, coreyhaines);
+		startGameWith(jbrains, coreyhaines, new Configuration() {
+			@Override
+			public int numberOfBattlesToWin() {
+				return 2;
+			}
+		});
 
 		supposeJbrainsWinsSecondBattle();
 		gameOfWar.playTurn();
@@ -121,10 +126,15 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	@Test
 	public void needingTwoBattlesToWinNobodyWinsAfterBattleOne()
 			throws Exception {
-		startGameWith(jbrains, coreyhaines);
+		
+		startGameWith(jbrains, coreyhaines, new Configuration() {
+			@Override
+			public int numberOfBattlesToWin() {
+				return 2;
+			}
+		});
 
-		supposeJbrainsWinsSecondBattle();
-		gameOfWar.playTurn();
+		gameOfWar.signalBattleWinner(jbrains);
 
 		assertNull(gameOfWar.winner());
 	}
@@ -190,21 +200,8 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	}
 
 	private void supposeJbrainsWinsSecondBattle() {
-		gameOfWar = new GameOfWar() {
-			private Object winner = null;
-			private int turnsPlayed = 0;
-
-			public void playTurn() {
-				if (turnsPlayed == 1)
-					winner = jbrains;
-
-				turnsPlayed++;
-			}
-
-			public Object winner() {
-				return winner;
-			};
-		};
+		gameOfWar.signalBattleWinner(jbrains);
+		gameOfWar.signalBattleWinner(jbrains);
 	}
 
 	private void startGameWith(Object playerOne, Object playerTwo) {
