@@ -5,33 +5,84 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
-	public interface Battle {
-		void play();
+	public class GameOfWar {
+		public void playTurn() {
+		}
 
-		Object winner();
+		public Object winner() {
+			return null;
+		}
 	}
 
-	private Object jbrains;
-	private Object coreyhaines;
+	private Object jbrains = new Object();
+	private Object coreyhaines = new Object();
+	private GameOfWar gameOfWar;
 
 	@Test
 	public void playerOneWinsAfterOneBattle() throws Exception {
 		startGameWith(jbrains, coreyhaines);
 
-		Battle battle = supposeJbrainsWinsNextBattle();
-		battle.play();
+		supposeJbrainsWinsFirstBattle();
+		gameOfWar.playTurn();
 
-		assertSame(jbrains, battle.winner());
+		assertSame(jbrains, gameOfWar.winner());
 	}
 
-	private Battle supposeJbrainsWinsNextBattle() {
-		return new Battle() {
-			public void play() {
+	private void supposeJbrainsWinsFirstBattle() {
+		gameOfWar = new GameOfWar() {
+			private Object winner = null;
+			private int turnsPlayed = 0;
+
+			public void playTurn() {
+				if (turnsPlayed == 0)
+					winner = jbrains;
+
+				turnsPlayed++;
 			}
 
 			public Object winner() {
-				return jbrains;
+				return winner;
+			};
+		};
+	}
+
+	@Test
+	public void playerOneWinsAfterTwoBattles() throws Exception {
+		startGameWith(jbrains, coreyhaines);
+
+		supposeJbrainsWinsSecondBattle();
+		gameOfWar.playTurn();
+		gameOfWar.playTurn();
+
+		assertSame(jbrains, gameOfWar.winner());
+	}
+
+	@Test
+	public void needingTwoBattlesToWinNobodyWinsAfterBattleOne()
+			throws Exception {
+		startGameWith(jbrains, coreyhaines);
+
+		supposeJbrainsWinsSecondBattle();
+		gameOfWar.playTurn();
+
+		assertNull(gameOfWar.winner());
+	}
+
+	private void supposeJbrainsWinsSecondBattle() {
+		gameOfWar = new GameOfWar() {
+			private Object winner = null;
+			private int turnsPlayed = 0;
+
+			public void playTurn() {
+				if (turnsPlayed == 1)
+					winner = jbrains;
+
+				turnsPlayed++;
 			}
+
+			public Object winner() {
+				return winner;
+			};
 		};
 	}
 
