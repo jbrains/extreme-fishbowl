@@ -1,21 +1,92 @@
 package org.agilealliance.agile2010.war.customer.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.collections.Closure;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.junit.Test;
 
 public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
-	public class GameOfWar {
+	public interface Configuration {
+
+		int numberOfBattlesToWin();
+
+	}
+
+	public static class GameOfWar {
+		private Map<Object, Integer> winsByPlayer;
+		private Configuration configuration;
+
+		public GameOfWar(Object[] players) {
+			this.winsByPlayer = new HashMap<Object, Integer>();
+			CollectionUtils.forAllDo(Arrays.asList(players), new Closure() {
+				@Override
+				public void execute(Object input) {
+					winsByPlayer.put(input, 0);
+				}
+			});
+		}
+
+		/** @deprecated */
+		public GameOfWar() {
+		}
+
 		public void playTurn() {
+			if (configuration == null)
+				throw new IllegalStateException("Unconfigured.");
 		}
 
 		public Object winner() {
-			return null;
+			@SuppressWarnings("unchecked")
+			Map.Entry<Object, Integer> winningScoreboardEntry = (Map.Entry<Object, Integer>) CollectionUtils
+					.find(winsByPlayer.entrySet(), new Predicate() {
+						@Override
+						public boolean evaluate(Object input) {
+							Map.Entry<Object, Integer> each = (Map.Entry<Object, Integer>) input;
+							return each.getValue() >= configuration
+									.numberOfBattlesToWin();
+						}
+					});
+
+			if (winningScoreboardEntry == null)
+				return null;
+
+			return winningScoreboardEntry.getKey();
+		}
+
+		public void signalBattleWinner(Object battleWinner) {
+			winsByPlayer.put(battleWinner, winsByPlayer.get(battleWinner) + 1);
+		}
+
+		public static GameOfWar withPlayers(Object... players) {
+			return new GameOfWar(players);
+		}
+
+		public GameOfWar andConfiguration(Configuration configuration) {
+			this.configuration = configuration;
+			return this;
 		}
 	}
 
-	private Object jbrains = new Object();
-	private Object coreyhaines = new Object();
+	private Object jbrains = new Object() {
+		public String toString() {
+			return "jbrains";
+		}
+	};
+
+	private Object coreyhaines = new Object() {
+		public String toString() {
+			return "coreyhaines";
+		}
+	};
+
 	private GameOfWar gameOfWar;
 
 	@Test
@@ -26,24 +97,6 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		gameOfWar.playTurn();
 
 		assertSame(jbrains, gameOfWar.winner());
-	}
-
-	private void supposeJbrainsWinsFirstBattle() {
-		gameOfWar = new GameOfWar() {
-			private Object winner = null;
-			private int turnsPlayed = 0;
-
-			public void playTurn() {
-				if (turnsPlayed == 0)
-					winner = jbrains;
-
-				turnsPlayed++;
-			}
-
-			public Object winner() {
-				return winner;
-			};
-		};
 	}
 
 	@Test
@@ -68,6 +121,80 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		assertNull(gameOfWar.winner());
 	}
 
+	@Test
+	public void needingFiveBattlesToWin() throws Exception {
+		startGameWith(jbrains, coreyhaines, new Configuration() {
+			public int numberOfBattlesToWin() {
+				return 5;
+			}
+		});
+
+		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(jbrains);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.playTurn();
+		assertNull(gameOfWar.winner());
+
+		supposeNextBattleWinnerIs(coreyhaines);
+		gameOfWar.playTurn();
+		assertSame(coreyhaines, gameOfWar.winner());
+	}
+
+	private void supposeNextBattleWinnerIs(Object battleWinner) {
+		gameOfWar.signalBattleWinner(battleWinner);
+	}
+
+	private void startGameWith(Object playerOne, Object playerTwo,
+			Configuration configuration) {
+
+		gameOfWar = GameOfWar.withPlayers(playerOne, playerTwo)
+				.andConfiguration(configuration);
+	}
+
+	private void supposeJbrainsWinsFirstBattle() {
+		gameOfWar = new GameOfWar() {
+			private Object winner = null;
+			private int turnsPlayed = 0;
+
+			public void playTurn() {
+				if (turnsPlayed == 0)
+					winner = jbrains;
+
+				turnsPlayed++;
+			}
+
+			public Object winner() {
+				return winner;
+			};
+		};
+	}
+
 	private void supposeJbrainsWinsSecondBattle() {
 		gameOfWar = new GameOfWar() {
 			private Object winner = null;
@@ -87,5 +214,6 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	}
 
 	private void startGameWith(Object playerOne, Object playerTwo) {
+		gameOfWar = GameOfWar.withPlayers(playerOne, playerTwo);
 	}
 }
