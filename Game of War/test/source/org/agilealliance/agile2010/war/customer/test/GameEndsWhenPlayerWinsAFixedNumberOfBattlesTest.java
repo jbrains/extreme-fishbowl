@@ -37,10 +37,6 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 			return winsByPlayer;
 		}
 
-		/** @deprecated */
-		public GameOfWar() {
-		}
-
 		public void playTurn() {
 			if (configuration == null)
 				throw new IllegalStateException("Unconfigured.");
