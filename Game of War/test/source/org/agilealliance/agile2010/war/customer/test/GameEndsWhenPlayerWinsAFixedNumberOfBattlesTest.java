@@ -31,6 +31,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	}
 
 	public static class GameOfWar {
+		// SMELL Primitive Obsession: Naked Map of player to battles won
 		private final Map<Object, Integer> winsByPlayer;
 		private final Configuration configuration;
 
@@ -42,6 +43,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		// REFACTOR Encapsulate in Scoreboard object
 		private static Map<Object, Integer> initializeScoreboard(
 				Object[] players) {
+
 			final Map<Object, Integer> winsByPlayer = new HashMap<Object, Integer>();
 			CollectionUtils.forAllDo(Arrays.asList(players), new Closure() {
 				@Override
