@@ -100,7 +100,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 
 	@Test
 	public void playerOneWinsAfterTwoBattles() throws Exception {
-		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 1);
+		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 2);
 
 		gameOfWar.signalBattleWinner(jbrains);
 		gameOfWar.signalBattleWinner(jbrains);
