@@ -40,7 +40,7 @@ public class PlayDecisiveBattleTest {
 		PlayerWithDeck jbrainsWithWinningCard = playerWithNextCard(jbrains, 7);
 		PlayerWithDeck coreyhainesWithLosingCard = playerWithNextCard(
 				coreyhaines, 2);
-		
+
 		playBattle(new BattleListener() {
 			public void signalBattleWinner(Object battleWinner) {
 				PlayDecisiveBattleTest.this.winner = battleWinner;
@@ -50,14 +50,28 @@ public class PlayDecisiveBattleTest {
 		assertSame(jbrains, winner);
 	}
 
-	private void playBattle(BattleListener battleListener,
-			PlayerWithDeck jbrainsWithWinningCard,
-			PlayerWithDeck coreyhainesWithLosingCard) {
+	@Test
+	public void secondPlayerWins() throws Exception {
+		PlayerWithDeck jbrainsWithLosingCard = playerWithNextCard(jbrains, 3);
+		PlayerWithDeck coreyhainesWithWinningCard = playerWithNextCard(
+				coreyhaines, 4);
 
-		if (jbrainsWithWinningCard.nextCard().beats(
-				coreyhainesWithLosingCard.nextCard()))
-			
+		playBattle(new BattleListener() {
+			public void signalBattleWinner(Object battleWinner) {
+				PlayDecisiveBattleTest.this.winner = battleWinner;
+			}
+		}, jbrainsWithLosingCard, coreyhainesWithWinningCard);
+
+		assertSame(coreyhaines, winner);
+	}
+
+	private void playBattle(BattleListener battleListener,
+			PlayerWithDeck firstPlayer, PlayerWithDeck secondPlayer) {
+
+		if (firstPlayer.nextCard().beats(secondPlayer.nextCard()))
 			battleListener.signalBattleWinner(jbrains);
+		else if (secondPlayer.nextCard().beats(firstPlayer.nextCard()))
+			battleListener.signalBattleWinner(coreyhaines);
 	}
 
 	private PlayerWithDeck playerWithNextCard(Object player, int cardWithRank) {

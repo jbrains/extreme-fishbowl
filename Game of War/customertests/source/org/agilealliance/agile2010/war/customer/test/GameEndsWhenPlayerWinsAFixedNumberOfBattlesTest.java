@@ -126,7 +126,6 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	}
 
 	private void playNextBattle() {
-		// TODO Auto-generated method stub
 	}
 
 	private void givePlayerCardsWithRanks(Object player, int... ranks) {
