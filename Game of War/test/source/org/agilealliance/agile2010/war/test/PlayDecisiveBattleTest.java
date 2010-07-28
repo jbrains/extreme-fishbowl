@@ -8,13 +8,19 @@ import org.junit.Test;
 public class PlayDecisiveBattleTest {
 	public static class PlayerWithDeck {
 		private final int cardWithRank;
+		private final Object player;
 
 		public PlayerWithDeck(Object player, int cardWithRank) {
+			this.player = player;
 			this.cardWithRank = cardWithRank;
 		}
 
 		public Card nextCard() {
 			return new Card(cardWithRank);
+		}
+
+		public Object getPlayer() {
+			return player;
 		}
 	}
 
@@ -66,12 +72,15 @@ public class PlayDecisiveBattleTest {
 	}
 
 	private void playBattle(BattleListener battleListener,
-			PlayerWithDeck firstPlayer, PlayerWithDeck secondPlayer) {
+			PlayerWithDeck firstPlayerWithDeck,
+			PlayerWithDeck secondPlayerWithDeck) {
 
-		if (firstPlayer.nextCard().beats(secondPlayer.nextCard()))
-			battleListener.signalBattleWinner(jbrains);
-		else if (secondPlayer.nextCard().beats(firstPlayer.nextCard()))
-			battleListener.signalBattleWinner(coreyhaines);
+		if (firstPlayerWithDeck.nextCard().beats(
+				secondPlayerWithDeck.nextCard()))
+			battleListener.signalBattleWinner(firstPlayerWithDeck.getPlayer());
+		else if (secondPlayerWithDeck.nextCard().beats(
+				firstPlayerWithDeck.nextCard()))
+			battleListener.signalBattleWinner(secondPlayerWithDeck.getPlayer());
 	}
 
 	private PlayerWithDeck playerWithNextCard(Object player, int cardWithRank) {
