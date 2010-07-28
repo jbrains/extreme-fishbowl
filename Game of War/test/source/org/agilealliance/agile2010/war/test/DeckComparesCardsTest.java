@@ -2,6 +2,7 @@ package org.agilealliance.agile2010.war.test;
 
 import static org.junit.Assert.*;
 
+import org.agilealliance.agile2010.war.test.DeckComparesCardsTest.Card;
 import org.junit.Test;
 
 public class DeckComparesCardsTest {
@@ -33,6 +34,11 @@ public class DeckComparesCardsTest {
 
 		public static Card king() {
 			return new Card(13);
+		}
+
+		// SMELL No tests for beats()
+		public boolean beats(Card that) {
+			return this.compareTo(that) > 0;
 		}
 
 	}

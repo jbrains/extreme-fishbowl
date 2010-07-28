@@ -92,65 +92,44 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	private GameOfWar gameOfWar;
 
 	@Test
-	public void playerOneWinsAfterOneBattle() throws Exception {
-		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 1);
-
-		gameOfWar.signalBattleWinner(jbrains);
-
-		assertSame(jbrains, gameOfWar.winner());
-	}
-
-	@Test
-	public void playerOneWinsAfterTwoBattles() throws Exception {
-		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 2);
-
-		gameOfWar.signalBattleWinner(jbrains);
-		gameOfWar.signalBattleWinner(jbrains);
-
-		assertSame(jbrains, gameOfWar.winner());
-	}
-
-	@Test
-	public void needingTwoBattlesToWinNobodyWinsAfterBattleOne()
-			throws Exception {
-
-		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 2);
-
-		gameOfWar.signalBattleWinner(jbrains);
-
-		assertNull(gameOfWar.winner());
-	}
-
-	@Test
 	public void needingFiveBattlesToWin() throws Exception {
 		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 5);
+		givePlayerCardsWithRanks(jbrains, 7, 2, 7, 2, 7, 2, 7, 2, 2);
+		givePlayerCardsWithRanks(coreyhaines, 2, 7, 2, 7, 2, 7, 2, 7, 7);
 
-		gameOfWar.signalBattleWinner(jbrains);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(coreyhaines);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(jbrains);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(coreyhaines);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(jbrains);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(coreyhaines);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(jbrains);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(coreyhaines);
+		playNextBattle();
 		assertNull(gameOfWar.winner());
 
-		gameOfWar.signalBattleWinner(coreyhaines);
+		playNextBattle();
 		assertSame(coreyhaines, gameOfWar.winner());
+	}
+
+	private void playNextBattle() {
+		// TODO Auto-generated method stub
+	}
+
+	private void givePlayerCardsWithRanks(Object player, int... ranks) {
 	}
 
 	private void playGameWithPlayersToFixedNumberOfWins(Object playerOne,

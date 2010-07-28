@@ -1,2 +1,3 @@
 Implement the battle with fake cards (infinite deck, no suits); all battles are decisive.
 + Implemented Card; but still need Battle
++ Write tests for Card.beats()
