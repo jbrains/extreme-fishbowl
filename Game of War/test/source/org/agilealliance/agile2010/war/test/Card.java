@@ -9,7 +9,6 @@ public class Card implements Comparable<Card> {
 
 	@Override
 	public int compareTo(Card that) {
-
 		if (rank < that.rank) {
 			return -1;
 		} else if (rank > that.rank) {
@@ -17,6 +16,25 @@ public class Card implements Comparable<Card> {
 		} else {
 			return 0;
 		}
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof Card) {
+			Card that = (Card) other;
+			return this.rank == that.rank;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return rank;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("a Card with rank %d", rank);
 	}
 
 	// SMELL Do we want jack() and queen(), or

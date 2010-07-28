@@ -142,7 +142,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		return decksByPlayer.get(player).popCard();
 	}
 
-	private void givePlayerCardsWithRanks(Object player, int... ranks) {
+	private void givePlayerCardsWithRanks(Object player, Integer... ranks) {
 		decksByPlayer.put(player, Deck.withCardsWithRanks(ranks));
 	}
 
