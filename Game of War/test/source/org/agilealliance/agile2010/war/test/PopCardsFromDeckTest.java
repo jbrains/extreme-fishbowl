@@ -1,6 +1,5 @@
 package org.agilealliance.agile2010.war.test;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -30,7 +29,7 @@ public class PopCardsFromDeckTest {
 		}
 
 		private static BoundedFifoBuffer bufferFor(Collection<Card> cards) {
-			// SMELL Collections shouldn't make me do this!
+			// REFACTOR Move to EmptyTolerantBuffer?
 			if (cards.isEmpty())
 				return new BoundedFifoBuffer(1);
 			else
@@ -50,6 +49,7 @@ public class PopCardsFromDeckTest {
 		}
 
 		public Card popCard() {
+			// REFACTOR Move to EmptyTolerantBuffer?
 			if (cards.isEmpty())
 				return null;
 
@@ -69,9 +69,21 @@ public class PopCardsFromDeckTest {
 	}
 
 	@Test
-	public void arraysAsListWithIntsAndIntegers() throws Exception {
-		assertEquals(2, Arrays.asList(new Integer[] { 2 }).get(0).intValue());
-		assertArrayEquals(new int[] { 2 }, Arrays.asList(new int[] { 2 })
-				.get(0));
+	public void manyCards() throws Exception {
+		Deck deck = Deck.withCardsWithRanks(new Integer[] { 2, 3, 4, 5 });
+
+		deck.popCard();
+		deck.popCard();
+		assertEquals(new Card(4), deck.popCard());
 	}
+	
+	@Test
+	public void noMoreCards() throws Exception {
+		Deck deck = Deck.withCardsWithRanks(new Integer[] { 2, 3 });
+		
+		deck.popCard();
+		deck.popCard();
+		assertNull(deck.popCard());
+	}
+
 }
