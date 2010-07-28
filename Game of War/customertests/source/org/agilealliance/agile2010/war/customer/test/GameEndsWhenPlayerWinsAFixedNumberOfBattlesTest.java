@@ -7,6 +7,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.agilealliance.agile2010.war.test.Battle;
+import org.agilealliance.agile2010.war.test.Card;
+import org.agilealliance.agile2010.war.test.PlayDecisiveBattleTest.BattleListener;
+import org.agilealliance.agile2010.war.test.PlayerWithCard;
+import org.agilealliance.agile2010.war.test.PopCardsFromDeckTest.Deck;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -30,7 +35,7 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		int numberOfBattlesToWin();
 	}
 
-	public static class GameOfWar {
+	public static class GameOfWar implements BattleListener {
 		// SMELL Primitive Obsession: Naked Map of player to battles won
 		private final Map<Object, Integer> winsByPlayer;
 		private final Configuration configuration;
@@ -91,6 +96,8 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 
 	private GameOfWar gameOfWar;
 
+	private Map<Object, Deck> decksByPlayer;
+
 	@Test
 	public void needingFiveBattlesToWin() throws Exception {
 		playGameWithPlayersToFixedNumberOfWins(jbrains, coreyhaines, 5);
@@ -126,9 +133,17 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 	}
 
 	private void playNextBattle() {
+		new Battle().playBattle(gameOfWar, new PlayerWithCard(jbrains,
+				nextCardFor(jbrains)), new PlayerWithCard(coreyhaines,
+				nextCardFor(coreyhaines)));
+	}
+
+	private Card nextCardFor(Object player) {
+		return decksByPlayer.get(player).popCard();
 	}
 
 	private void givePlayerCardsWithRanks(Object player, int... ranks) {
+		decksByPlayer.put(player, Deck.withCardsWithRanks(ranks));
 	}
 
 	private void playGameWithPlayersToFixedNumberOfWins(Object playerOne,
