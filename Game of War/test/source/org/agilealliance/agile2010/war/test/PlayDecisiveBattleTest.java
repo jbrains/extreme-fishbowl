@@ -6,25 +6,21 @@ import org.agilealliance.agile2010.war.test.DeckComparesCardsTest.Card;
 import org.junit.Test;
 
 public class PlayDecisiveBattleTest {
-	public static class PlayerWithDeck {
-		private final int cardWithRank;
+	public static class PlayerWithCard {
 		private final Object player;
+		private final Card card;
 
-		public PlayerWithDeck(Object player, int cardWithRank) {
+		public PlayerWithCard(Object player, int cardWithRank) {
 			this.player = player;
-			this.cardWithRank = cardWithRank;
-		}
-
-		public Card nextCard() {
-			return new Card(cardWithRank);
+			this.card = new Card(cardWithRank);
 		}
 
 		public Object getPlayer() {
 			return player;
 		}
 
-		public boolean beats(PlayerWithDeck that) {
-			return this.nextCard().beats(that.nextCard());
+		public boolean beats(PlayerWithCard that) {
+			return this.card.beats(that.card);
 		}
 	}
 
@@ -44,49 +40,47 @@ public class PlayDecisiveBattleTest {
 	};
 
 	private Object winner;
+	private BattleListener spyBattleListener = new BattleListener() {
+		public void signalBattleWinner(Object battleWinner) {
+			PlayDecisiveBattleTest.this.winner = battleWinner;
+		}
+	};
 
 	@Test
 	public void firstPlayerWins() throws Exception {
-		PlayerWithDeck jbrainsWithWinningCard = playerWithNextCard(jbrains, 7);
-		PlayerWithDeck coreyhainesWithLosingCard = playerWithNextCard(
+		PlayerWithCard jbrainsWithWinningCard = playerWithNextCard(jbrains, 7);
+		PlayerWithCard coreyhainesWithLosingCard = playerWithNextCard(
 				coreyhaines, 2);
 
-		playBattle(new BattleListener() {
-			public void signalBattleWinner(Object battleWinner) {
-				PlayDecisiveBattleTest.this.winner = battleWinner;
-			}
-		}, jbrainsWithWinningCard, coreyhainesWithLosingCard);
+		playBattle(spyBattleListener, jbrainsWithWinningCard,
+				coreyhainesWithLosingCard);
 
 		assertSame(jbrains, winner);
 	}
 
 	@Test
 	public void secondPlayerWins() throws Exception {
-		PlayerWithDeck jbrainsWithLosingCard = playerWithNextCard(jbrains, 3);
-		PlayerWithDeck coreyhainesWithWinningCard = playerWithNextCard(
+		PlayerWithCard jbrainsWithLosingCard = playerWithNextCard(jbrains, 3);
+		PlayerWithCard coreyhainesWithWinningCard = playerWithNextCard(
 				coreyhaines, 4);
 
-		playBattle(new BattleListener() {
-			public void signalBattleWinner(Object battleWinner) {
-				PlayDecisiveBattleTest.this.winner = battleWinner;
-			}
-		}, jbrainsWithLosingCard, coreyhainesWithWinningCard);
+		playBattle(spyBattleListener, jbrainsWithLosingCard,
+				coreyhainesWithWinningCard);
 
 		assertSame(coreyhaines, winner);
 	}
 
+	// SMELL PlayerWithDeck, or Map<Object, Deck>?
 	private void playBattle(BattleListener battleListener,
-			PlayerWithDeck firstPlayerWithDeck,
-			PlayerWithDeck secondPlayerWithDeck) {
+			PlayerWithCard firstPlayerWithDeck,
+			PlayerWithCard secondPlayerWithDeck) {
 
-		Object winningPlayer = chooseWinningPlayer(firstPlayerWithDeck,
-				secondPlayerWithDeck);
-
-		battleListener.signalBattleWinner(winningPlayer);
+		battleListener.signalBattleWinner(chooseWinningPlayer(
+				firstPlayerWithDeck, secondPlayerWithDeck));
 	}
 
-	private Object chooseWinningPlayer(PlayerWithDeck firstPlayerWithDeck,
-			PlayerWithDeck secondPlayerWithDeck) {
+	private Object chooseWinningPlayer(PlayerWithCard firstPlayerWithDeck,
+			PlayerWithCard secondPlayerWithDeck) {
 
 		// SMELL Looks like max(), but not sure whether I want to do that yet
 		if (firstPlayerWithDeck.beats(secondPlayerWithDeck))
@@ -97,7 +91,7 @@ public class PlayDecisiveBattleTest {
 		return null;
 	}
 
-	private PlayerWithDeck playerWithNextCard(Object player, int cardWithRank) {
-		return new PlayerWithDeck(player, cardWithRank);
+	private PlayerWithCard playerWithNextCard(Object player, int cardWithRank) {
+		return new PlayerWithCard(player, cardWithRank);
 	}
 }
