@@ -22,6 +22,10 @@ public class PlayDecisiveBattleTest {
 		public Object getPlayer() {
 			return player;
 		}
+
+		public boolean beats(PlayerWithDeck that) {
+			return this.nextCard().beats(that.nextCard());
+		}
 	}
 
 	public static interface BattleListener {
@@ -75,12 +79,22 @@ public class PlayDecisiveBattleTest {
 			PlayerWithDeck firstPlayerWithDeck,
 			PlayerWithDeck secondPlayerWithDeck) {
 
-		if (firstPlayerWithDeck.nextCard().beats(
-				secondPlayerWithDeck.nextCard()))
-			battleListener.signalBattleWinner(firstPlayerWithDeck.getPlayer());
-		else if (secondPlayerWithDeck.nextCard().beats(
-				firstPlayerWithDeck.nextCard()))
-			battleListener.signalBattleWinner(secondPlayerWithDeck.getPlayer());
+		Object winningPlayer = chooseWinningPlayer(firstPlayerWithDeck,
+				secondPlayerWithDeck);
+
+		battleListener.signalBattleWinner(winningPlayer);
+	}
+
+	private Object chooseWinningPlayer(PlayerWithDeck firstPlayerWithDeck,
+			PlayerWithDeck secondPlayerWithDeck) {
+
+		// SMELL Looks like max(), but not sure whether I want to do that yet
+		if (firstPlayerWithDeck.beats(secondPlayerWithDeck))
+			return firstPlayerWithDeck.getPlayer();
+		else if (secondPlayerWithDeck.beats(firstPlayerWithDeck))
+			return secondPlayerWithDeck.getPlayer();
+
+		return null;
 	}
 
 	private PlayerWithDeck playerWithNextCard(Object player, int cardWithRank) {
