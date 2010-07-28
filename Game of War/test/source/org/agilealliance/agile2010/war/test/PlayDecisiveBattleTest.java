@@ -6,6 +6,37 @@ import org.agilealliance.agile2010.war.test.DeckComparesCardsTest.Card;
 import org.junit.Test;
 
 public class PlayDecisiveBattleTest {
+	public static class Battle {
+		
+		public void playBattle(BattleListener battleListener,
+				PlayerWithCard firstPlayerWithCard,
+				PlayerWithCard secondPlayerWithCard) {
+
+			battleListener.signalBattleWinner(chooseWinningPlayer(
+					firstPlayerWithCard, secondPlayerWithCard));
+		}
+
+		private Object chooseWinningPlayer(PlayerWithCard firstPlayerWithCard,
+				PlayerWithCard secondPlayerWithCard) {
+
+			return chooseWinningPlayerWithCard(firstPlayerWithCard,
+					secondPlayerWithCard).getPlayer();
+		}
+
+		private PlayerWithCard chooseWinningPlayerWithCard(
+				PlayerWithCard firstPlayerWithCard,
+				PlayerWithCard secondPlayerWithCard) {
+
+			// REFACTOR sort(playersWithCards).first()
+			if (firstPlayerWithCard.beats(secondPlayerWithCard))
+				return firstPlayerWithCard;
+			else if (secondPlayerWithCard.beats(firstPlayerWithCard))
+				return secondPlayerWithCard;
+
+			return PlayerWithCard.nullObject();
+		}
+	}
+
 	public static class PlayerWithCard {
 		private final Object player;
 		private final Card card;
@@ -21,6 +52,10 @@ public class PlayDecisiveBattleTest {
 
 		public boolean beats(PlayerWithCard that) {
 			return this.card.beats(that.card);
+		}
+
+		static PlayerWithCard nullObject() {
+			return new PlayerWithCard(null, 0);
 		}
 	}
 
@@ -52,7 +87,7 @@ public class PlayDecisiveBattleTest {
 		PlayerWithCard coreyhainesWithLosingCard = playerWithNextCard(
 				coreyhaines, 2);
 
-		playBattle(spyBattleListener, jbrainsWithWinningCard,
+		new Battle().playBattle(spyBattleListener, jbrainsWithWinningCard,
 				coreyhainesWithLosingCard);
 
 		assertSame(jbrains, winner);
@@ -64,31 +99,10 @@ public class PlayDecisiveBattleTest {
 		PlayerWithCard coreyhainesWithWinningCard = playerWithNextCard(
 				coreyhaines, 4);
 
-		playBattle(spyBattleListener, jbrainsWithLosingCard,
+		new Battle().playBattle(spyBattleListener, jbrainsWithLosingCard,
 				coreyhainesWithWinningCard);
 
 		assertSame(coreyhaines, winner);
-	}
-
-	// SMELL PlayerWithDeck, or Map<Object, Deck>?
-	private void playBattle(BattleListener battleListener,
-			PlayerWithCard firstPlayerWithDeck,
-			PlayerWithCard secondPlayerWithDeck) {
-
-		battleListener.signalBattleWinner(chooseWinningPlayer(
-				firstPlayerWithDeck, secondPlayerWithDeck));
-	}
-
-	private Object chooseWinningPlayer(PlayerWithCard firstPlayerWithDeck,
-			PlayerWithCard secondPlayerWithDeck) {
-
-		// SMELL Looks like max(), but not sure whether I want to do that yet
-		if (firstPlayerWithDeck.beats(secondPlayerWithDeck))
-			return firstPlayerWithDeck.getPlayer();
-		else if (secondPlayerWithDeck.beats(firstPlayerWithDeck))
-			return secondPlayerWithDeck.getPlayer();
-
-		return null;
 	}
 
 	private PlayerWithCard playerWithNextCard(Object player, int cardWithRank) {
