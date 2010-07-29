@@ -80,6 +80,30 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		public void signalBattleWinner(Object battleWinner) {
 			winsByPlayer.put(battleWinner, winsByPlayer.get(battleWinner) + 1);
 		}
+
+		public void playNextBattle(
+				GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest) {
+			new Battle()
+					.playBattle(
+							this,
+							new PlayerWithCard(
+									gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest.jbrains,
+									nextCardFor(
+											gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest,
+											gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest.jbrains)),
+							new PlayerWithCard(
+									gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest.coreyhaines,
+									nextCardFor(
+											gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest,
+											gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest.coreyhaines)));
+		}
+
+		Card nextCardFor(
+				GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest,
+				Object player) {
+			return gameEndsWhenPlayerWinsAFixedNumberOfBattlesTest.decksByPlayer
+					.get(player).popCard();
+		}
 	}
 
 	private Object jbrains = new Object() {
@@ -104,42 +128,32 @@ public class GameEndsWhenPlayerWinsAFixedNumberOfBattlesTest {
 		givePlayerCardsWithRanks(jbrains, 7, 2, 7, 2, 7, 2, 7, 2, 2);
 		givePlayerCardsWithRanks(coreyhaines, 2, 7, 2, 7, 2, 7, 2, 7, 7);
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertNull(gameOfWar.winner());
 
-		playNextBattle();
+		gameOfWar.playNextBattle(this);
 		assertSame(coreyhaines, gameOfWar.winner());
-	}
-
-	private void playNextBattle() {
-		new Battle().playBattle(gameOfWar, new PlayerWithCard(jbrains,
-				nextCardFor(jbrains)), new PlayerWithCard(coreyhaines,
-				nextCardFor(coreyhaines)));
-	}
-
-	private Card nextCardFor(Object player) {
-		return decksByPlayer.get(player).popCard();
 	}
 
 	private void givePlayerCardsWithRanks(Object player, Integer... ranks) {

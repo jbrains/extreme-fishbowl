@@ -1,6 +1,8 @@
 package org.agilealliance.agile2010.war.test;
 
 public class PlayerWithCard {
+	private static final PlayerWithCard NULL_OBJECT = new PlayerWithCard(null, null);
+
 	private final Object player;
 	private final Card card;
 
@@ -18,6 +20,6 @@ public class PlayerWithCard {
 	}
 
 	public static PlayerWithCard nullObject() {
-		return new PlayerWithCard(null, null);
+		return NULL_OBJECT;
 	}
 }
