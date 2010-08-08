@@ -20,4 +20,5 @@ public class ArraysAsListTest {
 		assertArrayEquals(new int[] { 2 }, Arrays.asList(new int[] { 2 })
 				.get(0));
 	}
+	
 }
