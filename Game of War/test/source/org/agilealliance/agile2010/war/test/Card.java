@@ -32,6 +32,7 @@ public class Card implements Comparable<Card> {
 		return rank;
 	}
 	
+	
 	@Override
 	public String toString() {
 		return String.format("a Card with rank %d", rank);
