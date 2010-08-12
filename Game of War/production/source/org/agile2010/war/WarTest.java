@@ -33,7 +33,7 @@ public class WarTest {
 	}
 	
 	@Test
-	public void gameIsNotWonAfter4Battles() 	{
+	public void gameIsNotWonAfterFourBattles() 	{
 		War war = new War();
 		war.battle(1, 2);
 		war.battle(1, 2);
