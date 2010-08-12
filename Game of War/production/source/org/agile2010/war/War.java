@@ -9,8 +9,8 @@ public class War {
 	private int armyOneVictories;
 	private int armyTwoVictories;
 
-	public void battle(int card1, int card2) {
-		if (card1 > card2) {
+	public void battle(Card card1, Card card2) {
+		if (card1.beats(card2)) {
 			armyOneVictories++;
 		}
 		else {
